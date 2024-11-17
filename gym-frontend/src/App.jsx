@@ -1,25 +1,24 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import LoginPage from './componenets/LoginPage'
-import Dashboard from './componenets/Dashboard'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
+import LoginPage from './componenets/LoginPage';
+import Dashboard from './componenets/Dashboard';
+import GenderSelectionPage from './componenets/GenderSelection';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
-  // Check if user is authenticated
   const isAuthenticated = () => {
     const token = localStorage.getItem('accessToken');
-    return !!token; // Returns true if token exists
+    return !!token;
   };
 
   if (!isAuthenticated()) {
-    // Redirect to login if not authenticated
     return <Navigate to="/login" replace />;
   }
 
   return children;
 };
 
-// Auth Provider Component
 const AuthenticatedRoute = ({ element: Component, ...rest }) => {
   return (
     <ProtectedRoute>
@@ -29,29 +28,17 @@ const AuthenticatedRoute = ({ element: Component, ...rest }) => {
 };
 
 const App = () => {
-  return (
-    <Router>
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/login" element={<LoginPage />} />
-        
-        {/* Protected Routes */}
-        <Route 
-          path="/" 
-          element={
-            <AuthenticatedRoute element={Dashboard} />
-          } 
-        />
+  const location = useLocation(); // This is now within the Router context
 
-        {/* Redirect any unknown routes to dashboard if authenticated, otherwise to login */}
-        <Route 
-          path="*" 
-          element={
-            <Navigate to="/" replace />
-          }
-        />
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/" element={<AuthenticatedRoute element={Dashboard} />} />
+        <Route path="/genderselection" element={<AuthenticatedRoute element={GenderSelectionPage} />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-    </Router>
+    </AnimatePresence>
   );
 };
 

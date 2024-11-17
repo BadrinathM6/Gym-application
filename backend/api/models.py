@@ -19,7 +19,15 @@ class CustomUserManager(BaseUserManager):
         return user
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
+    GENDER_CHOICES = [
+        ('M', 'Male'),
+        ('F', 'Female'),
+        ('O', 'Other'),
+        ('N', 'Prefer not to say')
+    ]
+    
     user_id = models.CharField(max_length=50, unique=True)
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
@@ -27,7 +35,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
     
     USERNAME_FIELD = 'user_id'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['gender']
     
     def __str__(self):
         return self.user_id

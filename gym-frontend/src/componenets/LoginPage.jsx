@@ -54,7 +54,7 @@ const LoginPage = () => {
         setShowAnimation(true);
         animateText('Login Successful! Redirecting...', () => {
           setTimeout(() => {
-            navigate('/');
+            navigate('/genderselection');
           }, 2500);
         });
       }
