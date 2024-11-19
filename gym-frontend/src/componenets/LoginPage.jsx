@@ -73,7 +73,6 @@ const LoginPage = () => {
   return (
     <div className="login-page">
       <header className="header">
-        <h1 className="gym-name">Buffalo GYM</h1>
         <div className="navbar">
           <img src="/src/assets/logo.png" alt="Logo" className="logo" />
         </div>

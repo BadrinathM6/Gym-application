@@ -21,7 +21,7 @@ const GenderSelectionPage = () => {
         if (response.data.gender) {
           setIsExiting(true);
           setTimeout(() => {
-            navigate('/home');
+            navigate('/');
           }, 500);
         }
       } catch (err) {
@@ -36,8 +36,6 @@ const GenderSelectionPage = () => {
   }, [navigate]);
 
   const handleGenderSelection = (gender) => {
-    // Only set the selected gender if it's different from the current selection
-    // If it's the same, do nothing (this prevents deselection)
     if (gender !== selectedGender) {
       setSelectedGender(gender);
     }
@@ -64,7 +62,7 @@ const GenderSelectionPage = () => {
 
       setIsExiting(true);
       setTimeout(() => {
-        navigate("/home");
+        navigate("/");
       }, 500);
       
     } catch (err) {

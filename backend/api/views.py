@@ -11,11 +11,9 @@ class LoginView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        # Extract data from the request
         user_id = request.data.get('user_id')
         password = request.data.get('password')
 
-        # Check if either field is missing
         if not user_id or not password:
             missing_fields = []
             if not user_id:
@@ -27,10 +25,8 @@ class LoginView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Use the serializer to validate input data
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
-            # Try to authenticate the user
             user = authenticate(
                 user_id=serializer.validated_data['user_id'],
                 password=serializer.validated_data['password']
@@ -46,7 +42,6 @@ class LoginView(APIView):
                 {'error': 'Invalid credentials'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
-        # If serializer is invalid, return the errors
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserDetailView(APIView):
@@ -58,7 +53,7 @@ class UserDetailView(APIView):
         serializer = UserSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    def put(self, request):  # Changed from patch to put
+    def put(self, request): 
         user = request.user
         serializer = UserSerializer(user, data=request.data, partial=True)
         if serializer.is_valid():
@@ -66,5 +61,5 @@ class UserDetailView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    def patch(self, request):  # Add explicit patch method
+    def patch(self, request):
         return self.put(request)

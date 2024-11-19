@@ -1,12 +1,9 @@
-/* LoginPage.css */
-/* General reset */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
   }
   
-  /* Page layout */
   .login-page {
     display: flex;
     flex-direction: column;
@@ -44,7 +41,7 @@
   }
   
   .Mlogo {
-    display: none;  /* Hidden by default in desktop view */
+    display: none;  
   }
   
   .navbar nav a {
@@ -54,7 +51,6 @@
     font-size: 18px;
   }
   
-  /* Content layout */
   .content {
     display: flex;
     align-items: center;
@@ -75,7 +71,7 @@
   .login-form {
     background-color: white;
     padding: 20px 40px;
-    border-radius: 10px;
+    border-radius: 20px; /* Increase the border-radius for a more curved look */
     width: 300px;
     min-height: 380px;
     text-align: center;
@@ -129,7 +125,6 @@
     text-decoration: none;
   }
   
-  /* Animation container */
   .animation-container {
     margin: 10px 0;
   }
@@ -148,10 +143,150 @@
     color: #dc3545;
   }
 
+  @media (max-width: 768px) {
+    .login-page {
+      background-image: url('/src/assets/mobile-bg.jpg');
+      padding: 0;
+    }
   
-@media (max-width: 768px) {
+    .content {
+      padding: 0;
+      justify-content: flex-start;
+    }
+  
+    .header {
+        flex-direction: column;
+        padding: 10px;
+    }
+  
+    .gym-name {
+        font-size: 36px;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+  
+    .navbar {
+        position: static;
+        flex-direction: column;
+        align-items: center;
+    }
+  
+    .logo {
+        display: none;
+    }
+  
+    .form-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0;
+        padding: 0;
+    }
+  
+    .Mlogo {
+        display: block;
+        width: 80px;
+        margin: 0;
+        padding: 0;
+        position: relative;
+        bottom: 40px;
+    }
+  
+    .welcome-text {
+        font-size: 20px;
+        margin: 8px 0 0 0;
+        padding: 0;
+        color: #b30000;
+        position: relative;
+        bottom: 30px;
+    }
+  
+    .login-form {
+        width: 100%;
+        max-width: none;
+        padding: 20px;
+        min-height: auto;
+        height: 400px;
+        margin-bottom: 50px;
+        border-radius: 0 60px 0 0;
+        position:relative;
+        top:0;
+    }
+  
+    .login-form form {
+        position: relative;
+        bottom: 65px;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+  
+    .login-form.showing-animation form {
+        visibility: hidden;
+        opacity: 0;
+    }
+  
+    .animation-container {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        top: 50%;
+        margin-top: -60px; 
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+  
+    .login-form.showing-animation .animation-container {
+        opacity: 1;
+        visibility: visible;
+    }
+  
+    .animation-text {
+        margin-top: 10px;
+        font-size: 14px;
+        padding: 0 20px;
+    }
+  
+    .login-form h2 {
+        display: none;
+        font-size: 20px;
+        position: relative;
+        bottom: 60px;
+    }
+  
+    .content {
+        align-items: center;
+        justify-content: center;
+        padding-bottom: 20px;
+        padding-top: 65%;
+    }
+  
+    .login-form input {
+        width: 80%;
+        padding: 20px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 20px;
+        background-color: #ccc;
+    }
+  
+    .login-form button {
+        margin-top: 15px;
+        width: 80%;
+        background-color: black;
+        color: white;
+    }
+  }
+
+  @media (max-width: 426px) {
     .login-page {
         background-image: url('/src/assets/mobile-bg.jpg');
+        padding: 0;
+    }
+
+    .content {
+      padding: 0;
+      justify-content: flex-start;
     }
   
     .header {
@@ -202,40 +337,40 @@
     }
   
     .login-form {
-        width: 90%;
-        max-width: 400px;
+        width: 100%;
+        max-width: none;
         padding: 20px;
-        min-height: 350px;
+        height: 330px;
+        min-height: auto;
         margin-bottom: 50px;
-        position: relative;
+        border-radius: 0 60px 0 0;
+        position:relative;
+        top:0;
     }
 
     .login-form form {
         position: relative;
-        bottom: 40px;
+        bottom: 80px;
         transition: opacity 0.3s ease, visibility 0.3s ease;
     }
 
-    /* Hide form when animation is shown */
     .login-form.showing-animation form {
         visibility: hidden;
         opacity: 0;
     }
 
-    /* Animation container styles */
     .animation-container {
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
         width: 100%;
         top: 50%;
-        margin-top: -60px; /* Half of the animation height */
+        margin-top: -60px; 
         opacity: 0;
         visibility: hidden;
         transition: opacity 0.3s ease, visibility 0.3s ease;
     }
 
-    /* Show animation when active */
     .login-form.showing-animation .animation-container {
         opacity: 1;
         visibility: visible;
@@ -257,20 +392,279 @@
         align-items: center;
         justify-content: center;
         padding-bottom: 20px;
-        padding-top: 92%;
+        padding-top: 95%;
     }
 
-    /* Input and button styles */
     .login-form input {
         width: 100%;
-        padding: 10px;
+        padding: 15px;
         margin: 10px 0;
         border: 1px solid #ccc;
-        border-radius: 5px;
     }
 
     .login-form button {
         margin-top: 15px;
         width: 100%;
     }
-}
+  }
+  
+  @media (max-width: 376px) {
+    .login-page {
+        background-image: url('/src/assets/mobile-bg.jpg');
+        padding: 0;
+    }
+
+    .content {
+      padding: 0;
+      justify-content: flex-start;
+    }
+  
+    .header {
+        flex-direction: column;
+        padding: 10px;
+    }
+  
+    .gym-name {
+        font-size: 36px;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+  
+    .navbar {
+        position: static;
+        flex-direction: column;
+        align-items: center;
+    }
+  
+    .logo {
+        display: none;
+    }
+  
+    .form-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0;
+        padding: 0;
+    }
+  
+    .Mlogo {
+        display: block;
+        width: 80px;
+        margin: 0;
+        padding: 0;
+        position: relative;
+        bottom: 40px;
+    }
+
+    .welcome-text {
+        font-size: 20px;
+        margin: 8px 0 0 0;
+        padding: 0;
+        color: #b30000;
+        position: relative;
+        bottom: 30px;
+    }
+  
+    .login-form {
+        width: 100%;
+        max-width: none;
+        padding: 20px;
+        height: 330px;
+        min-height: auto;
+        margin-bottom: 50px;
+        border-radius: 0 60px 0 0;
+        position:relative;
+        top:0;
+    }
+
+    .login-form form {
+        position: relative;
+        bottom: 80px;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .login-form.showing-animation form {
+        visibility: hidden;
+        opacity: 0;
+    }
+
+    .animation-container {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        top: 50%;
+        margin-top: -60px; 
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .login-form.showing-animation .animation-container {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .animation-text {
+        margin-top: 10px;
+        font-size: 14px;
+        padding: 0 20px;
+    }
+  
+    .login-form h2 {
+        font-size: 20px;
+        position: relative;
+        bottom: 60px;
+    }
+  
+    .content {
+        align-items: center;
+        justify-content: center;
+        padding-bottom: 20px;
+        padding-top: 108%;
+    }
+
+    .login-form input {
+        width: 100%;
+        padding: 15px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+    }
+
+    .login-form button {
+        margin-top: 15px;
+        width: 100%;
+    }
+  }
+
+  @media (max-width: 320px) {
+    .login-page {
+        background-image: url('/src/assets/mobile-bg.jpg');
+        padding: 0;
+    }
+
+    .content {
+      padding: 0;
+      justify-content: flex-start;
+    }
+  
+    .header {
+        flex-direction: column;
+        padding: 10px;
+    }
+  
+    .gym-name {
+        font-size: 36px;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+  
+    .navbar {
+        position: static;
+        flex-direction: column;
+        align-items: center;
+    }
+  
+    .logo {
+        display: none;
+    }
+  
+    .form-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0;
+        padding: 0;
+    }
+  
+    .Mlogo {
+        display: block;
+        width: 80px;
+        margin: 0;
+        padding: 0;
+        position: relative;
+        bottom: 40px;
+    }
+
+    .welcome-text {
+        font-size: 20px;
+        margin: 8px 0 0 0;
+        padding: 0;
+        color: #b30000;
+        position: relative;
+        bottom: 30px;
+    }
+  
+    .login-form {
+        width: 100%;
+        max-width: none;
+        padding: 20px;
+        height: 330px;
+        min-height: auto;
+        margin-bottom: 50px;
+        border-radius: 0 60px 0 0;
+        position:relative;
+        top:0;
+    }
+
+    .login-form form {
+        position: relative;
+        bottom: 80px;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .login-form.showing-animation form {
+        visibility: hidden;
+        opacity: 0;
+    }
+
+    .animation-container {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        top: 50%;
+        margin-top: -60px; 
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .login-form.showing-animation .animation-container {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .animation-text {
+        margin-top: 10px;
+        font-size: 14px;
+        padding: 0 20px;
+    }
+  
+    .login-form h2 {
+        font-size: 20px;
+        position: relative;
+        bottom: 60px;
+    }
+  
+    .content {
+        align-items: center;
+        justify-content: center;
+        padding-bottom: 20px;
+        padding-top: 125%;
+    }
+
+    .login-form input {
+        width: 100%;
+        padding: 15px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+    }
+
+    .login-form button {
+        margin-top: 15px;
+        width: 100%;
+    }
+  }
+
