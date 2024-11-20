@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Lottie from 'react-lottie';
 import { useNavigate } from 'react-router-dom';
 import athleteAnimation from './olympic-athlete.json';
+import invalidCredentialsAnimation from './error1.json';
 import axiosInstance from './utils/axiosInstance';
 import '../css/LoginPage.css';
 
@@ -13,8 +14,12 @@ const LoginPage = () => {
   const [showAnimation, setShowAnimation] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [animationText, setAnimationText] = useState('');
+  const [errors, setErrors] = useState({
+    userId: '',
+    password: ''
+  });
 
-  const defaultOptions = {
+  const athleteOptions = {
     loop: false,
     autoplay: true,
     animationData: athleteAnimation,
@@ -22,6 +27,32 @@ const LoginPage = () => {
       preserveAspectRatio: 'xMidYMid slice',
     },
     speed: 1.5,
+  };
+
+  const invalidCredentialsOptions = {
+    loop: false,
+    autoplay: true,
+    animationData: invalidCredentialsAnimation,
+    rendererSettings: {
+      preserveAspectRatio: 'xMidYMid slice',
+    },
+  };
+
+  const validateForm = () => {
+    const newErrors = {
+      userId: userId.trim() ? '' : 'User ID is required',
+      password: password.trim() ? '' : 'Password is required'
+    };
+
+    setErrors(newErrors);
+
+    if (newErrors.userId || newErrors.password) {
+      setTimeout(() => {
+        setErrors({ userId: '', password: '' });
+      }, 2000);
+    }
+
+    return !newErrors.userId && !newErrors.password;
   };
 
   const animateText = (text, callback) => {
@@ -37,6 +68,11 @@ const LoginPage = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+
     resetAnimations();
     setIsLoading(true);
 
@@ -60,6 +96,7 @@ const LoginPage = () => {
       }
     } catch (err) {
       setShowAnimation(true);
+      setShowSuccess(false);
       animateText(err.response?.data?.error || 'Login failed. Please try again.');
 
       setTimeout(() => {
@@ -75,21 +112,27 @@ const LoginPage = () => {
       <header className="header">
         <div className="navbar">
           <img src="/src/assets/logo.png" alt="Logo" className="logo" />
+          <h1 className="gym-name">Buffalo GYM</h1>
         </div>
       </header>
       
       <div className="content">
         <div className={`login-form ${showAnimation ? 'showing-animation' : ''}`}>
+          {/* Logo remains hidden during animation */}
           <div className="form-header">
-            <img src="/src/assets/logo.png" alt="Logo" className="Mlogo" />
-            <h2 className='welcome-text'>Welcome To New Team</h2>
+            {!showAnimation && (
+              <>
+                <img src="/src/assets/logo.png" alt="Logo" className="Mlogo" />
+                <h2 className='welcome-text'>Welcome To New Team</h2>
+              </>
+            )}
           </div>
           
           <div className="animation-container">
             {showAnimation && (
               <>
                 <Lottie
-                  options={defaultOptions}
+                  options={showSuccess ? athleteOptions : invalidCredentialsOptions}
                   height={120}
                   width={120}
                   isStopped={!showAnimation}
@@ -107,14 +150,26 @@ const LoginPage = () => {
               type="text"
               placeholder="User ID"
               value={userId}
-              onChange={(e) => setUserId(e.target.value)}
+              onChange={(e) => {
+                setUserId(e.target.value);
+                setErrors(prev => ({ ...prev, userId: '' }));
+              }}
+              className={errors.userId ? 'error-input' : ''}
             />
+            {errors.userId && <span className="error-message">{errors.userId}</span>}
+            
             <input
               type="password"
               placeholder="Password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setErrors(prev => ({ ...prev, password: '' }));
+              }}
+              className={errors.password ? 'error-input' : ''}
             />
+            {errors.password && <span className="error-message">{errors.password}</span>}
+            
             <button type="submit" disabled={isLoading}>
               {isLoading ? 'Logging in...' : 'Login'}
             </button>
