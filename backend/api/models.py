@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
+from django.conf import settings
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, user_id, password=None):
@@ -39,3 +40,19 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     
     def __str__(self):
         return self.user_id
+
+
+class DietaryPreference(models.Model):
+    DIET_TYPES = [
+        ('VEG', 'Vegetarian'),
+        ('NON_VEG', 'Non-Vegetarian'),
+        ('VEGAN', 'Vegan')
+    ]
+    
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='dietary_preference')
+    diet_type = models.CharField(max_length=10, choices=DIET_TYPES)
+    allergies = models.TextField(blank=True, null=True)
+    dietary_restrictions = models.TextField(blank=True, null=True)
+    
+    def __str__(self):
+        return f"{self.user.user_id}'s Dietary Preference: {self.get_diet_type_display()}"

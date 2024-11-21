@@ -62,7 +62,7 @@ const GenderSelectionPage = () => {
 
       setIsExiting(true);
       setTimeout(() => {
-        navigate("/");
+        navigate("/foodtypeselection");
       }, 500);
       
     } catch (err) {

@@ -4,6 +4,7 @@ import { AnimatePresence } from 'framer-motion';
 import LoginPage from './componenets/LoginPage';
 import Dashboard from './componenets/Dashboard';
 import GenderSelectionPage from './componenets/GenderSelection';
+import VegAndNonVegPage from './componenets/foodTypeSelection';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -36,6 +37,7 @@ const App = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/" element={<AuthenticatedRoute element={Dashboard} />} />
         <Route path="/genderselection" element={<AuthenticatedRoute element={GenderSelectionPage} />} />
+        <Route path="/foodtypeselection" element={<AuthenticatedRoute element={VegAndNonVegPage} />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AnimatePresence>

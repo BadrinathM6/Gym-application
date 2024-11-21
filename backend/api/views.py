@@ -3,9 +3,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .serializers import LoginSerializer, UserSerializer
+from .serializers import LoginSerializer, UserSerializer, DietaryPreferenceSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
+from .models import DietaryPreference
 
 class LoginView(APIView):
     permission_classes = [AllowAny]
@@ -63,3 +64,38 @@ class UserDetailView(APIView):
     
     def patch(self, request):
         return self.put(request)
+    
+class DietaryPreferenceView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    
+    def get(self, request):
+        try:
+            dietary_preference = DietaryPreference.objects.get(user=request.user)
+            serializer = DietaryPreferenceSerializer(dietary_preference)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except DietaryPreference.DoesNotExist:
+            return Response({'message': 'No dietary preferences set'}, status=status.HTTP_404_NOT_FOUND)
+    
+    def post(self, request):
+        serializer = DietaryPreferenceSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def put(self, request):
+        try:
+            dietary_preference = DietaryPreference.objects.get(user=request.user)
+            serializer = DietaryPreferenceSerializer(
+                dietary_preference, 
+                data=request.data, 
+                partial=True, 
+                context={'request': request}
+            )
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except DietaryPreference.DoesNotExist:
+            return self.post(request)
