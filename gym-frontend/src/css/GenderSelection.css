@@ -101,3 +101,12 @@
     background-color: #888;
     cursor: not-allowed;
   }
+
+  .loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #f8f9fa; /* Optional: Adjust the background */
+  }
+  

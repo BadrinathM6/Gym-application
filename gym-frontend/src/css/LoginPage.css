@@ -184,7 +184,7 @@
         align-items: center;
         justify-content: center;
         padding-bottom: 20px;
-        padding-top: 80%;
+        padding-top: 70%;
     }
   
     .header {
@@ -240,7 +240,7 @@
         max-width: none;
         padding: 20px;
         min-height: auto;
-        height: 485px;
+        height: 550px;
         margin-bottom: 50px;
         border-radius: 0 60px 0 0;
         position:relative;
