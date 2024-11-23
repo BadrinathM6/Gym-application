@@ -64,7 +64,7 @@ const GenderSelectionPage = () => {
 
       setIsExiting(true);
       setTimeout(() => {
-        navigate('/foodtypeselection');
+        navigate('/age');
       }, 500);
     } catch (err) {
       console.error('Error updating gender:', err);

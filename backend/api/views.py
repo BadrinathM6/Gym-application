@@ -3,10 +3,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .serializers import LoginSerializer, UserSerializer, DietaryPreferenceSerializer
+from .serializers import LoginSerializer, UserSerializer, DietaryPreferenceSerializer, BodyTypeProfileSerializer, PhysicalProfileSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
-from .models import DietaryPreference
+from .models import DietaryPreference, BodyTypeProfile, PhysicalProfile
 
 class LoginView(APIView):
     permission_classes = [AllowAny]
@@ -65,6 +65,40 @@ class UserDetailView(APIView):
     def patch(self, request):
         return self.put(request)
     
+class AgeUpdateView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    
+    def put(self, request):
+        """
+        Update user's age
+        """
+        age = request.data.get('age')
+        
+        if age is None:
+            return Response(
+                {'error': 'Age is required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+            
+        serializer = UserSerializer(
+            request.user,
+            data={'age': age},
+            partial=True
+        )
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def get(self, request):
+        """
+        Get user's age
+        """
+        serializer = UserSerializer(request.user)
+        return Response({'age': serializer.data.get('age')}, status=status.HTTP_200_OK)
+    
 class DietaryPreferenceView(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
@@ -98,4 +132,94 @@ class DietaryPreferenceView(APIView):
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except DietaryPreference.DoesNotExist:
+            return self.post(request)
+        
+class PhysicalProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    
+    def get(self, request):
+        try:
+            profile = PhysicalProfile.objects.get(user=request.user)
+            serializer = PhysicalProfileSerializer(profile)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except PhysicalProfile.DoesNotExist:
+            return Response(
+                {'message': 'Physical profile not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+    
+    def post(self, request):
+        serializer = PhysicalProfileSerializer(
+            data=request.data,
+            context={'request': request}
+        )
+        if serializer.is_valid():
+            profile = serializer.save()
+            return Response({
+                **serializer.data,
+                'bmi': profile.bmi,
+                'bmi_category': profile.bmi_category
+            }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def put(self, request):
+        try:
+            profile = PhysicalProfile.objects.get(user=request.user)
+            serializer = PhysicalProfileSerializer(
+                profile,
+                data=request.data,
+                partial=True,
+                context={'request': request}
+            )
+            if serializer.is_valid():
+                profile = serializer.save()
+                return Response({
+                    **serializer.data,
+                    'bmi': profile.bmi,
+                    'bmi_category': profile.bmi_category
+                }, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except PhysicalProfile.DoesNotExist:
+            return self.post(request)
+
+class BodyTypeProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    
+    def get(self, request):
+        try:
+            profile = BodyTypeProfile.objects.get(user=request.user)
+            serializer = BodyTypeProfileSerializer(profile)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except BodyTypeProfile.DoesNotExist:
+            return Response(
+                {'message': 'Body type profile not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+    
+    def post(self, request):
+        serializer = BodyTypeProfileSerializer(
+            data=request.data,
+            context={'request': request}
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def put(self, request):
+        try:
+            profile = BodyTypeProfile.objects.get(user=request.user)
+            serializer = BodyTypeProfileSerializer(
+                profile,
+                data=request.data,
+                partial=True,
+                context={'request': request}
+            )
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except BodyTypeProfile.DoesNotExist:
             return self.post(request)

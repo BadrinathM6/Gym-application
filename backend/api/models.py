@@ -29,6 +29,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     
     user_id = models.CharField(max_length=50, unique=True)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
+    age = models.PositiveIntegerField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
@@ -56,3 +57,69 @@ class DietaryPreference(models.Model):
     
     def __str__(self):
         return f"{self.user.user_id}'s Dietary Preference: {self.get_diet_type_display()}"
+
+class PhysicalProfile(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='physical_profile'
+    )
+    height = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        help_text="Height in centimeters"
+    )
+    weight = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        help_text="Weight in kilograms"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    @property
+    def bmi(self):
+        """Calculate BMI: weight (kg) / (height (m))²"""
+        height_in_meters = self.height / 100
+        return round(self.weight / (height_in_meters ** 2), 2)
+
+    @property
+    def bmi_category(self):
+        bmi = self.bmi
+        if bmi < 18.5:
+            return "Underweight"
+        elif 18.5 <= bmi < 25:
+            return "Normal weight"
+        elif 25 <= bmi < 30:
+            return "Overweight"
+        else:
+            return "Obese"
+
+    def __str__(self):
+        return f"{self.user.user_id}'s Physical Profile - BMI: {self.bmi}"
+
+class BodyTypeProfile(models.Model):
+    BODY_TYPE_CHOICES = [
+        ('SKINNY', 'Skinny - Need to gain muscle mass'),
+        ('FLABBY', 'Flabby - Need to lose fat and tone up'),
+        ('IDEAL', 'Ideal - Maintain current physique')
+    ]
+
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='body_type_profile'
+    )
+    body_type = models.CharField(
+        max_length=20,
+        choices=BODY_TYPE_CHOICES
+    )
+    fitness_goal = models.TextField(
+        help_text="Specific fitness goals based on body type",
+        blank=True
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.user.user_id}'s Body Type - {self.get_body_type_display()}"
