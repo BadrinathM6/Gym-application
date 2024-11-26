@@ -59,7 +59,9 @@ const DashboardPage = () => {
         </div>
         <nav className="nav-links">
           <a href="#home">HOME</a>
-          <a href="#workout">WORKOUT</a>
+          <span onClick={() => navigate('/ai-chat')} style={{ cursor: 'pointer' }}>
+            WORKOUT
+          </span>
         </nav>
         <button className="settings-button">settings</button>
       </header>

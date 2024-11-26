@@ -121,3 +121,6 @@ class BodyTypeProfileSerializer(serializers.ModelSerializer):
             body_type_profile.save()
         
         return body_type_profile
+    
+class AIChatSerializer(serializers.Serializer):
+    message = serializers.CharField(max_length=1000)

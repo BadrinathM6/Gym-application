@@ -3,10 +3,14 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .serializers import LoginSerializer, UserSerializer, DietaryPreferenceSerializer, BodyTypeProfileSerializer, PhysicalProfileSerializer
+from .serializers import LoginSerializer, AIChatSerializer, UserSerializer, DietaryPreferenceSerializer, BodyTypeProfileSerializer, PhysicalProfileSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
+from django.conf import settings
 from .models import DietaryPreference, BodyTypeProfile, PhysicalProfile
+import cohere
+import logging
+import random
 
 class LoginView(APIView):
     permission_classes = [AllowAny]
@@ -223,3 +227,94 @@ class BodyTypeProfileView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except BodyTypeProfile.DoesNotExist:
             return self.post(request)
+        
+logger = logging.getLogger(__name__)
+
+class AIChatView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Initialize Cohere client
+        try:
+            self.cohere_client = cohere.Client(settings.COHERE_API_KEY)
+        except Exception as e:
+            self.cohere_client = None
+            print(f"Cohere Client Initialization Error: {e}")
+
+    def generate_fitness_context(self, user_message):
+        """
+        Create a structured context for fitness-related queries
+        """
+        fitness_context = (
+            "You are a professional fitness assistant. "
+            "Provide motivational, scientifically-backed, and safe fitness advice. "
+            f"Respond to this query in a helpful, concise manner: {user_message}"
+        )
+        return fitness_context
+
+    def post(self, request):
+        try:
+            # Validate incoming request
+            serializer = AIChatSerializer(data=request.data)
+            
+            if not serializer.is_valid():
+                return Response(
+                    serializer.errors, 
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            user_message = serializer.validated_data['message']
+            
+            # Fallback responses
+            fallback_responses = [
+                "Fitness is a personal journey. Consistency is key to seeing results.",
+                "Every small step counts towards your fitness goals.",
+                "Remember to consult with a healthcare professional before starting any new fitness regimen.",
+                "Nutrition and exercise go hand in hand in achieving fitness goals."
+            ]
+
+            # Attempt to generate response with Cohere
+            try:
+                if not self.cohere_client:
+                    raise Exception("Cohere client not initialized")
+
+                # Generate response using Cohere's generation endpoint
+                response = self.cohere_client.generate(
+                    model='command-nightly',  # Use the most capable model
+                    prompt=self.generate_fitness_context(user_message),
+                    max_tokens=150,
+                    temperature=0.7,
+                    k=0,
+                    p=0.75,
+                    frequency_penalty=0,
+                    presence_penalty=0,
+                    stop_sequences=[],
+                    return_likelihoods='NONE'
+                )
+
+                # Extract and clean the generated text
+                if response.generations:
+                    ai_response = response.generations[0].text.strip()
+                    
+                    # Ensure response is not empty
+                    if not ai_response:
+                        ai_response = random.choice(fallback_responses)
+                else:
+                    ai_response = random.choice(fallback_responses)
+
+            except Exception as cohere_error:
+                print(f"Cohere API Error: {cohere_error}")
+                ai_response = random.choice(fallback_responses)
+
+            return Response({
+                'message': ai_response
+            }, status=status.HTTP_200_OK)
+        
+        except Exception as e:
+            print(f"Unexpected error in AI chat: {e}")
+            return Response({
+                'error': 'Failed to process your request',
+                'details': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

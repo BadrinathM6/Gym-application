@@ -10,6 +10,7 @@ import VegAndNonVegPage from './componenets/foodTypeSelection';
 import BodyTypeSelectionPage from './componenets/bodyTypeSelectionPage';
 import BMIPage from './componenets/BMICalculatorPage';
 import AgePage from './componenets/AgePage';
+import ChatPage from './componenets/chatPage';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -66,6 +67,7 @@ const App = () => {
         <Route path="/bodytypeselection" element={<AuthenticatedRoute element={BodyTypeSelectionPage} />} />
         <Route path="/bmi-calculator" element={<AuthenticatedRoute element={BMIPage} />} />
         <Route path="/age" element={<AuthenticatedRoute element={AgePage} />} />
+        <Route path="/ai-chat" element={<AuthenticatedRoute element={ChatPage} />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AnimatePresence>
