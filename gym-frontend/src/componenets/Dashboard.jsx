@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axiosInstance from './utils/axiosInstance';
 import "../css/Homepage.css";
 import logo from "../assets/logo.png"; // Replace with the actual path to your logo
@@ -11,6 +12,23 @@ import workout4 from "../assets/workout4.jpg"
 const DashboardPage = () => {
   const [userData, setUserData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Disable browser back button
+    const disableBackButton = (event) => {
+      event.preventDefault();
+      navigate('/'); // Replace with the current page route
+    };
+
+    // Replace current history entry to prevent going back
+    window.history.pushState(null, document.title, window.location.href);
+    window.addEventListener('popstate', disableBackButton);
+
+    return () => {
+      window.removeEventListener('popstate', disableBackButton);
+    };
+  }, [navigate]);
 
   useEffect(() => {
     const fetchUserData = async () => {
