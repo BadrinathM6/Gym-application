@@ -8,6 +8,11 @@ import "../css/Homepage.css";
 import FooterNav from "./FooterNav";
 import ChataiImg from '../assets/ai-icon.jpg'
 import logo from '../assets/logo.png'
+import shedule from '../assets/gym-schedulea.svg'
+import search from '../assets/search.svg'
+import userIcon from "../assets/user.svg"; 
+import workoutIcon from "../assets/muscle.svg"; 
+import settingsIcon from "../assets/settings.svg";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -59,27 +64,28 @@ const HomePage = () => {
   return (
     <div className="homepage">
       {/* Header - same as before */}
-      <header className="header1">
-        <div className="header-left">
-          <h1 className="brand-name">Buffalo</h1>
-        </div>
-        <div className="header-right">
-          <div className="search-bar-container">
-            <input type="text" className="search-bar" placeholder="Search here" />
-            <button className="search-icon">🔍</button>
+      <div className="header1">
+        <div className="header-top">
+          <div onClick={() => navigate("/")} style={{ cursor: "pointer" }}>
+            <img src={logo} alt="Gym Logo" className="gym-logo" />
           </div>
-          <button 
-            className="chat-ai-icon-button" 
-            onClick={() => navigate("/ai-chat")}
-          >
-            <img 
-              src={ChataiImg} 
-              alt="Chat AI" 
-              className="chat-ai-icon" 
-            />
+          <h1 className="header-title">Buffalo Gym</h1>     
+          <div onClick={() => navigate("/ai-chat")} style={{ cursor: "pointer" }}>
+            <img src={ChataiImg} alt="AI Chat Logo" className="ai-logo" />
+          </div>
+        </div>
+        <div className="header-bottom">
+          <div className="search-bar">
+            <input type="text" placeholder="Search for workouts..." className="search-input" />
+            <button className="search-button">
+              <img src={search} alt="search-icon" className="search-icon"/>
+            </button>
+          </div>
+          <button className="filter-button">
+            <img src={shedule} alt="setting-icon" className="filter-icon"/>
           </button>
         </div>
-      </header>
+      </div>
 
       {/* Banner Section */}
       <section className="banner1">
@@ -98,6 +104,18 @@ const HomePage = () => {
         </Slider>
       </section>
 
+      <section className="section-buttons">
+        <div className="button workout">
+          <img src={workoutIcon} alt="Workout Icon" /><span>Workout</span>
+        </div>
+        <div className="button user">
+          <img src={userIcon} alt="user Icon" /><span>Profile</span>
+        </div>
+        <div className="button settings">
+          <img src={settingsIcon} alt="Settings Icon" /><span>Settings</span>
+        </div>
+      </section>
+
       {/* Programs Section */}
       <section className="programs">
         <h2>Our Programs</h2>
@@ -108,6 +126,7 @@ const HomePage = () => {
               className="program-card"
               onClick={() => navigate(program.link)}
             >
+              <div className="heart-icon">🤍</div>
               <img src={program.src} alt={program.title} className="program-image" />
               <h3>{program.title}</h3>
             </div>

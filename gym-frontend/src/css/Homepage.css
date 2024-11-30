@@ -3,7 +3,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Arial", sans-serif;
+  font-family: 'Sour Gummy', sans-serif;
 }
 
 /* Homepage Layout */
@@ -14,85 +14,163 @@
 /* Header Section */
 .header1 {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-  padding: 10px 20px;
   background-color: #c7e7d8;
-}
-.header-logo {
-  width: 50px; /* Adjust width */
-  height: 50px; /* Adjust height */
-  border-radius: 50%; /* Optional: Make logo circular */
-  object-fit: cover; /* Ensure proper scaling */
-}
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 10px; /* Space between logo and brand name */
+  padding: 10px 10px;
+  width: 100%;
 }
 
-.brand-name {
-  font-size: 32px;
+/* Top Row Styles */
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.gym-logo {
+  width: 20px;
+  transform: scale(3.5);
+  cursor: pointer;
+}
+
+.header-title {
+  font-size: 24px;
   font-weight: bold;
-  margin-bottom: 10px;
+  color: #333;
+  margin: 0 auto;
+  text-align: center;
 }
 
-.header-right {
-  display: flex;
-  gap: 15px;
-  align-items: center;
+.ai-logo {
+  width: 50px;
+  height: 50px;
+  border-radius: 50px;
+  cursor:pointer;
 }
 
-.search-bar {
-  
-  padding: 8px 12px;
-  border: none;
-  border-radius: 20px;
-  outline: none;
-}
-.search-bar-container {
+/* Bottom Row Styles */
+.header-bottom {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex: 1; /* Allows search bar to take available space */
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 10px;
 }
-.search-icon {
-  background: none;
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 600px; /* Ensures the search bar doesn't stretch beyond this width */
+  border: 2px solid #ccc;
+  border-radius: 25px;
+  overflow: hidden;
+  background-color: #fff;
+}
+
+.search-input {
+  flex: 1; /* Allow the input to take up remaining space */
   border: none;
-  font-size: 18px;
+  outline: none;
+  padding: 10px;
+  font-size: 16px;
+  min-width: 0; /* Prevents the input from overflowing */
+}
+
+.search-button {
+  flex-shrink: 0; /* Prevent the button from shrinking */
+  width: 40px; /* Ensure the button has a fixed size */
+  height: 40px; /* Same size for a square button */
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-icon {
+  width: 30px; /* Define size for the search icon */
+  height: 30px;
+  object-fit: contain; /* Prevent distortion */
+  display: block;
+}
+
+.filter-button {
+  border: none;
+  background: none;
+  margin-left: 10px;
   cursor: pointer;
 }
 
-.chat-ai-icon-button {
-  font-size: 18px;
+.filter-icon {
+  width: 30px;
+  height: 30px;
+}
+
+.section-buttons {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 40px 300px 0 300px;
+  gap: 5px;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 10px 20px;
+  text-align: center;
   cursor: pointer;
-}
-/* Chat AI Icon Button */
-.chat-ai-icon-button {
-  background: none; /* No button background */
-  border: none; /* No border */
-  padding: 0; /* Remove extra space */
-  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.chat-ai-icon {
-  width: 40px; /* Adjust the width of the image */
-  height: 40px; /* Adjust the height of the image */
-  border-radius: 50%; /* Makes the image circular */
-  object-fit: cover; /* Ensures the image fits properly */
-  transition: transform 0.2s;
+.button:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 10px rgba(0, 0, 0, 0.15);
 }
 
-.chat-ai-icon-button:hover .chat-ai-icon {
-  transform: scale(1.1); /* Slight zoom effect on hover */
+.button img {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
 }
 
+.button span {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
 
+.workout {
+  background: #ffffff;
+  color: #EEB163;
+  border: 2px solid #EEB163;
+}
+
+.user {
+  background: #ffffff;
+  border: 2px solid #8b38f3;
+  color: #8b38f3;
+}
+
+.settings {
+  background: #ffffff;
+  border: 2px solid #6fbf49;
+  color: #6fbf49;
+}
 
 /* Banner Section */
 .banner1 {
   margin: 20px auto;
-  width: 90%;
+  width: 95%;
 }
 
 .banner1-image {
@@ -132,17 +210,48 @@
 }
 
 .program-card {
+  position: relative;
   background-color: white;
   border-radius: 10px;
   padding: 15px;
   text-align: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
+
+.program-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 10px rgba(0, 0, 0, 0.15);
+}
+
+.heart-icon {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 23px; /* Size of the circle */
+  height: 23px;
+  background-color: red; /* Red background */
+  border-radius: 50%; /* Makes it round */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white; /* White heart color */
+  font-size: 16px; /* Size of the heart */
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Slight shadow for a pop effect */
+}
+
+.heart-icon:hover {
+  transform: scale(1.2); /* Grows slightly on hover */
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3); /* Increases shadow on hover */
+}
+
 
 .program-image {
   width: 100%;
-  height: 150px;
+  height: 180px;
   border-radius: 10px;
   object-fit: cover;
 }
@@ -154,6 +263,7 @@
 }
 
 .foot{
+  display: none;
   color: white;
   text-align: center;
   padding-top: 20px;
@@ -161,39 +271,50 @@
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+@media screen and (min-width: 600px) and (max-width: 820px) and (max-height: 1180px){
 
-  .header1 {
-    flex-direction: column; /* Stack header elements vertically */
-    align-items: center;
-    padding: 10px;
-  }
-  .header-left {
-    justify-content:start; /* Center logo and brand name */
-  }
-  .header-logo {
-    width: 40px; /* Adjust logo size for mobile */
-    height: 40px;
-  }
-  .brand-name {
-    font-size: 18px; /* Reduce brand name size for mobile */
+  .header-top {
+    padding: 0 10px;
   }
 
-  .search-bar-container {
-    margin-top: 10px; /* Add spacing below logo/brand */
-    width: 100%; /* Make the search bar full-width */
+  .header-title {
+    font-size: 18px;
   }
 
   .search-bar {
-    width: 90%; /* Adjust search bar width */
-    padding: 8px;
+    max-width: 70%; /* Adjust search bar to use full width */
+  }
+
+  .search-input {
+    font-size: 14px; /* Smaller font size for smaller screens */
+  }
+
+  .search-button {
+    width: 36px; /* Slightly smaller button */
+    height: 36px;
+  }
+
+  .search-icon {
+    width: 20px; /* Adjust size for smaller screens */
+    height: 20px;
+  }
+
+  .filter-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .section-buttons {
+    margin: 40px 150px 0 150px;
   }
 
   .program-grid {
     grid-template-columns: repeat(2, 1fr);
+    padding: 0 20px;
   }
-  .search-icon{
-    display: none;
+
+  .program-image{
+    height: 170px;
   }
 
   .banner1{
@@ -201,30 +322,31 @@
   }
 }
 
-@media (max-width: 480px) {
-  .header1 {
-    padding: 5px;
+@media screen and (max-width: 430px) and (max-height: 932px){
+
+  .foot{
+    display: block;
+    color: white;
+    text-align: center;
+    padding-top: 20px;
+    margin-top: 20px;
   }
 
-  .header-logo {
-    width: 35px; /* Further reduce logo size for smaller screens */
-    height: 35px;
-  }
-
-  .brand-name {
-    font-size: 16px;
-  }
-
-  .search-bar {
-    width: 100%; /* Ensure full-width for small screens */
-  }
-
-  .search-icon{
+  .section-buttons{
     display: none;
   }
 
   .program-grid {
     grid-template-columns: repeat(2,1fr);
+    padding: 0 0;
+  }
+
+  .program-card{
+    height: 180px;
+  }
+
+  .program-image{
+    height: 100px;
   }
 
   .banner1{
