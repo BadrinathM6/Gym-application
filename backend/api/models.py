@@ -123,3 +123,33 @@ class BodyTypeProfile(models.Model):
 
     def __str__(self):
         return f"{self.user.user_id}'s Body Type - {self.get_body_type_display()}"
+
+class HomeProgram(models.Model):
+    PROGRAM_CATEGORIES = [
+        ('WEIGHT_LOSS', 'Weight Loss'),
+        ('STRENGTH', 'Strength Training'), 
+        ('YOGA', 'Yoga'),
+        ('CARDIO', 'Cardio')
+    ]
+
+    title = models.CharField(max_length=100)
+    category = models.CharField(max_length=20, choices=PROGRAM_CATEGORIES)
+    description = models.TextField(blank=True)
+    image_path = models.CharField(max_length=255) # Use image path instead of ImageField
+    active = models.BooleanField(default=True)
+    
+    def __str__(self):
+        return self.title
+
+class HomeBanner(models.Model):
+    title = models.CharField(max_length=200)
+    subtitle = models.CharField(max_length=300, blank=True, null=True)
+    image_path = models.CharField(max_length=255) # Use image path instead of ImageField
+    order = models.IntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return self.title

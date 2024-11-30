@@ -1,90 +1,126 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import Slider from "react-slick";
+import { useNavigate } from "react-router-dom";
 import axiosInstance from './utils/axiosInstance';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import "../css/Homepage.css";
-import logo from "../assets/logo.png"; // Replace with the actual path to your logo
-import heroImage from "../assets/hero-image.jpg"; // Replace with the actual path to your hero image
-import workout1 from "../assets/workout1.jpg"; // Replace with the actual path to your first workout image
-import workout2 from "../assets/workout2.jpg"; // Replace with the actual path to your second workout image
-import workout3 from "../assets/workout3.jpg"; // Replace with the actual path to your third workout image
-import workout4 from "../assets/workout4.jpg"
+import FooterNav from "./FooterNav";
+import ChataiImg from '../assets/ai-icon.jpg'
+import logo from '../assets/logo.png'
 
-const DashboardPage = () => {
-  const [userData, setUserData] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+const HomePage = () => {
   const navigate = useNavigate();
+  const [bannerImages, setBannerImages] = useState([]);
+  const [programs, setPrograms] = useState([]);
 
   useEffect(() => {
-    // Disable browser back button
-    const disableBackButton = (event) => {
-      event.preventDefault();
-      navigate('/'); // Replace with the current page route
-    };
-
-    // Replace current history entry to prevent going back
-    window.history.pushState(null, document.title, window.location.href);
-    window.addEventListener('popstate', disableBackButton);
-
-    return () => {
-      window.removeEventListener('popstate', disableBackButton);
-    };
-  }, [navigate]);
-
-  useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchHomePageData = async () => {
       try {
-        const accessToken = localStorage.getItem('accessToken');
-        const response = await axiosInstance.get('/user/', {
-          headers: {
-            'Authorization': `Bearer ${accessToken}`
-          }
-        });
-        setUserData(response.data);
-      } catch (err) {
-        console.error('Error fetching user data:', err);
-      } finally {
-        setIsLoading(false);
+        const response = await axiosInstance.get('/home/');
+        
+        // Transform banners
+        const fetchedBanners = response.data.banners.map((banner, index) => ({
+          id: banner.id,
+          src: banner.image_path,
+          alt: banner.title,
+          subtitle: banner.subtitle
+        }));
+        setBannerImages(fetchedBanners);
+
+        // Transform programs
+        const fetchedPrograms = response.data.programs.map((program, index) => ({
+          id: program.id,
+          src: program.image_path,
+          title: program.title,
+          link: `/${program.category.toLowerCase().replace('_', '-')}`
+        }));
+        setPrograms(fetchedPrograms);
+      } catch (error) {
+        console.error("Error fetching home page data:", error);
+        // Optionally set default images/programs or show an error message
       }
     };
 
-    fetchUserData();
+    fetchHomePageData();
   }, []);
+
+  const sliderSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 5000,
+    pauseOnHover: true,
+  };
 
   return (
     <div className="homepage">
+      {/* Header - same as before */}
       <header className="header1">
-        <div className="logo-container1">
-          <img src={logo} alt="Buffalo Logo" className="logo1" />
-          <span className="brand-name">Buffalo</span>
+        <div className="header-left">
+          <h1 className="brand-name">Buffalo</h1>
         </div>
-        <nav className="nav-links">
-          <a href="#home">HOME</a>
-          <span onClick={() => navigate('/ai-chat')} style={{ cursor: 'pointer' }}>
-            WORKOUT
-          </span>
-        </nav>
-        <button className="settings-button">settings</button>
+        <div className="header-right">
+          <div className="search-bar-container">
+            <input type="text" className="search-bar" placeholder="Search here" />
+            <button className="search-icon">🔍</button>
+          </div>
+          <button 
+            className="chat-ai-icon-button" 
+            onClick={() => navigate("/ai-chat")}
+          >
+            <img 
+              src={ChataiImg} 
+              alt="Chat AI" 
+              className="chat-ai-icon" 
+            />
+          </button>
+        </div>
       </header>
-      <main>
-        <div className="hero-section">
-          <img src={heroImage} alt="Hero" className="hero-image" />
+
+      {/* Banner Section */}
+      <section className="banner1">
+        <Slider {...sliderSettings}>
+          {bannerImages.map((image) => (
+            <div
+              key={image.id}
+              className="slide"
+              onClick={() => navigate(image.link)}
+            >
+              <img src={image.src} alt={image.alt} className="banner1-image" />
+              <h2 className="banner1-text">{image.alt}</h2>
+              {image.subtitle && <p>{image.subtitle}</p>}
+            </div>
+          ))}
+        </Slider>
+      </section>
+
+      {/* Programs Section */}
+      <section className="programs">
+        <h2>Our Programs</h2>
+        <div className="program-grid">
+          {programs.map((program) => (
+            <div
+              key={program.id}
+              className="program-card"
+              onClick={() => navigate(program.link)}
+            >
+              <img src={program.src} alt={program.title} className="program-image" />
+              <h3>{program.title}</h3>
+            </div>
+          ))}
         </div>
-        <div className="content1">
-          <div className="content_andbutton">
-          <h1>Let's start to workout</h1>
-          <button className="start-button">start</button>
-          </div>
-          <div className="workout-gallery">
-            <img src={workout1} alt="Workout 1" className="workout-image" />
-            <img src={workout2} alt="Workout 2" className="workout-image" />
-            <img src={workout3} alt="Workout 3" className="workout-image" />
-            <img src={workout4} alt="Workout 4" className="workout-image" />
-          </div>
-          
-        </div>
-      </main>
+      </section>
+
+      {/* Footer */}
+      <div className="foot">
+        <FooterNav/>
+      </div>
     </div>
   );
 };
 
-export default DashboardPage;
+export default HomePage;

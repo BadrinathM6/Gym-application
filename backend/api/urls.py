@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import LoginView, UserDetailView, AIChatView, DietaryPreferenceView, BodyTypeProfileView, PhysicalProfileView, AgeUpdateView
+from .views import LoginView, HomePageView, UserDetailView, AIChatView, DietaryPreferenceView, BodyTypeProfileView, PhysicalProfileView, AgeUpdateView
 from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
@@ -11,4 +11,5 @@ urlpatterns = [
     path('physical-profile/', PhysicalProfileView.as_view(), name='physical_profile'),
     path('body-type/', BodyTypeProfileView.as_view(), name='body_type'),
     path('ai-chat/', AIChatView.as_view(), name='ai_chat'),
+    path('home/', HomePageView.as_view(), name='home_page'),
 ]

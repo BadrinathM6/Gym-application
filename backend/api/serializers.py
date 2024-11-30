@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser, DietaryPreference, PhysicalProfile, BodyTypeProfile
+from .models import CustomUser, DietaryPreference, PhysicalProfile, BodyTypeProfile, HomeBanner, HomeProgram
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -124,3 +124,33 @@ class BodyTypeProfileSerializer(serializers.ModelSerializer):
     
 class AIChatSerializer(serializers.Serializer):
     message = serializers.CharField(max_length=1000)
+
+class HomeProgramSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = HomeProgram
+        fields = [
+            'id', 
+            'title', 
+            'category', 
+            'description', 
+            'image_path'
+        ]
+        read_only_fields = ['id']
+
+class HomeBannerSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = HomeBanner
+        fields = [
+            'id', 
+            'title', 
+            'subtitle', 
+            'image_path', 
+            'order'
+        ]
+        read_only_fields = ['id']
+
+class HomePageSerializer(serializers.Serializer):
+    programs = HomeProgramSerializer(many=True)
+    banners = HomeBannerSerializer(many=True)

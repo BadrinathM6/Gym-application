@@ -3,11 +3,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .serializers import LoginSerializer, AIChatSerializer, UserSerializer, DietaryPreferenceSerializer, BodyTypeProfileSerializer, PhysicalProfileSerializer
+from .serializers import LoginSerializer, HomeBannerSerializer, HomeProgramSerializer, AIChatSerializer, UserSerializer, DietaryPreferenceSerializer, BodyTypeProfileSerializer, PhysicalProfileSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from django.conf import settings
-from .models import DietaryPreference, BodyTypeProfile, PhysicalProfile
+from .models import DietaryPreference, BodyTypeProfile, PhysicalProfile, HomeProgram, HomeBanner
 import cohere
 import logging
 import random
@@ -317,4 +317,34 @@ class AIChatView(APIView):
             return Response({
                 'error': 'Failed to process your request',
                 'details': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+class HomePageView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        """
+        Retrieve data for home page
+        """
+        try:
+            # Get active programs
+            programs = HomeProgram.objects.filter(active=True)
+            program_serializer = HomeProgramSerializer(programs, many=True)
+
+            # Get active banners
+            banners = HomeBanner.objects.filter(is_active=True)
+            banner_serializer = HomeBannerSerializer(banners, many=True)
+
+            # Prepare response data
+            response_data = {
+                'programs': program_serializer.data,
+                'banners': banner_serializer.data
+            }
+
+            return Response(response_data, status=status.HTTP_200_OK)
+        
+        except Exception as e:
+            return Response({
+                'error': str(e),
+                'status': 'error'
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
