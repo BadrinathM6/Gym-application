@@ -153,3 +153,42 @@ class HomeBanner(models.Model):
 
     def __str__(self):
         return self.title
+    
+class Workout(models.Model):
+    WEEK_CHOICES = [
+        ('Week 1', 'Assessment Week'),
+        ('Week 2', 'Main Part'),
+        ('Week 3', 'Deload Week'),
+        ('Week 4', 'Brutal Week'),
+        ('Week 5', 'Stretching')
+    ]
+
+    CATEGORY_CHOICES = [
+        ('Abs', 'Abs'),
+        ('Upper Body', 'Upper Body'),
+        ('Lower Body', 'Lower Body'),
+        ('Cardio', 'Cardio')
+    ]
+
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    week = models.CharField(max_length=20, choices=WEEK_CHOICES)
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
+    image = models.CharField(max_length=255)  # Use image path instead of ImageField
+    
+    def __str__(self):
+        return self.title
+
+class UserWorkout(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    workout = models.ForeignKey(Workout, on_delete=models.CASCADE)
+    is_favorite = models.BooleanField(default=False)
+    started_at = models.DateTimeField(null=True, blank=True)
+    ended_at = models.DateTimeField(null=True, blank=True)
+    calories_burned = models.FloatField(default=0)
+
+    class Meta:
+        unique_together = ('user', 'workout')
+
+    def __str__(self):
+        return f"{self.user.user_id} - {self.workout.title}"

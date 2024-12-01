@@ -3,14 +3,16 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .serializers import LoginSerializer, HomeBannerSerializer, HomeProgramSerializer, AIChatSerializer, UserSerializer, DietaryPreferenceSerializer, BodyTypeProfileSerializer, PhysicalProfileSerializer
+from .serializers import LoginSerializer, UserWorkoutSerializer, WorkoutSerializer, HomeBannerSerializer, HomeProgramSerializer, AIChatSerializer, UserSerializer, DietaryPreferenceSerializer, BodyTypeProfileSerializer, PhysicalProfileSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from django.conf import settings
-from .models import DietaryPreference, BodyTypeProfile, PhysicalProfile, HomeProgram, HomeBanner
+from .models import DietaryPreference, BodyTypeProfile, PhysicalProfile, HomeProgram, HomeBanner, UserWorkout, Workout
 import cohere
 import logging
 import random
+from django.utils import timezone
+from django.shortcuts import get_object_or_404
 
 class LoginView(APIView):
     permission_classes = [AllowAny]
@@ -348,3 +350,99 @@ class HomePageView(APIView):
                 'error': str(e),
                 'status': 'error'
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+class WorkoutListView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        # Get query parameters for filtering
+        category = request.query_params.get('category')
+        week = request.query_params.get('week')
+
+        # Base queryset
+        workouts = Workout.objects.all()
+
+        # Apply filters if provided
+        if category:
+            workouts = workouts.filter(category=category)
+        if week:
+            workouts = workouts.filter(week=week)
+
+        # Serialize workouts
+        serializer = WorkoutSerializer(workouts, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class WorkoutCategoriesView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        # Return list of workout categories
+        categories = [choice[0] for choice in Workout.CATEGORY_CHOICES]
+        return Response(categories, status=status.HTTP_200_OK)
+
+class UserWorkoutView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        # Get user's workouts
+        user_workouts = UserWorkout.objects.filter(user=request.user)
+        serializer = UserWorkoutSerializer(user_workouts, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        # Start a new workout
+        workout_id = request.data.get('workout_id')
+        workout = get_object_or_404(Workout, id=workout_id)
+
+        # Create or update UserWorkout
+        user_workout, created = UserWorkout.objects.get_or_create(
+            user=request.user, 
+            workout=workout
+        )
+        
+        user_workout.started_at = timezone.now()
+        user_workout.save()
+
+        serializer = UserWorkoutSerializer(user_workout)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def put(self, request):
+        # End workout and log calories
+        workout_id = request.data.get('workout_id')
+        calories = request.data.get('calories', 0)
+
+        user_workout = get_object_or_404(
+            UserWorkout, 
+            user=request.user, 
+            workout_id=workout_id, 
+            ended_at__isnull=True
+        )
+        
+        user_workout.ended_at = timezone.now()
+        user_workout.calories_burned = calories
+        user_workout.save()
+
+        serializer = UserWorkoutSerializer(user_workout)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class FavoriteWorkoutToggleView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def post(self, request):
+        workout_id = request.data.get('workout_id')
+        workout = get_object_or_404(Workout, id=workout_id)
+
+        user_workout, created = UserWorkout.objects.get_or_create(
+            user=request.user, 
+            workout=workout
+        )
+        
+        user_workout.is_favorite = not user_workout.is_favorite
+        user_workout.save()
+
+        serializer = UserWorkoutSerializer(user_workout)
+        return Response(serializer.data, status=status.HTTP_200_OK)

@@ -106,7 +106,13 @@ const HomePage = () => {
 
       <section className="section-buttons">
         <div className="button workout">
-          <img src={workoutIcon} alt="Workout Icon" /><span>Workout</span>
+          <div 
+            onClick={() => navigate("/workout")} 
+            style={{ cursor: "pointer", display: "flex", alignItems: "center",}}
+          >
+            <img src={workoutIcon} alt="Workout Icon"/>
+            <span>Workout</span>
+          </div>
         </div>
         <div className="button user">
           <img src={userIcon} alt="user Icon" /><span>Profile</span>

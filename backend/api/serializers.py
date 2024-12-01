@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser, DietaryPreference, PhysicalProfile, BodyTypeProfile, HomeBanner, HomeProgram
+from .models import CustomUser, DietaryPreference, PhysicalProfile, BodyTypeProfile, HomeBanner, HomeProgram, Workout, UserWorkout
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -154,3 +154,15 @@ class HomeBannerSerializer(serializers.ModelSerializer):
 class HomePageSerializer(serializers.Serializer):
     programs = HomeProgramSerializer(many=True)
     banners = HomeBannerSerializer(many=True)
+
+class WorkoutSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Workout
+        fields = ['id', 'title', 'description', 'week', 'category', 'image']
+
+class UserWorkoutSerializer(serializers.ModelSerializer):
+    workout = WorkoutSerializer(read_only=True)
+    
+    class Meta:
+        model = UserWorkout
+        fields = ['id', 'workout', 'is_favorite', 'started_at', 'ended_at', 'calories_burned']
