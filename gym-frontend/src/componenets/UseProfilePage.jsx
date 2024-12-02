@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../css/UserProfilePage.css";
 import { FaPen, FaDumbbell, FaBell } from "react-icons/fa";
+import { Player } from '@lottiefiles/react-lottie-player';
 import usericonImg from '../assets/user-icon.jpg'
 import callenderimg from '../assets/callender.jpg'
 import { useNavigate } from "react-router-dom"; 
@@ -9,6 +10,7 @@ import axiosInstance from './utils/axiosInstance';
 import SuccessAlert from '../constants/successAlert';
 import logo from '../assets/logo.png'
 import FooterNav from "./FooterNav";
+import loader from './Main Scene.json';
 
 const ProfilePage = () => {
   const navigate = useNavigate();
@@ -21,6 +23,7 @@ const ProfilePage = () => {
   });
 
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // State for dietary preferences
   const [dietaryPreferences, setDietaryPreferences] = useState({
@@ -90,6 +93,7 @@ const ProfilePage = () => {
 
   const fetchUserDetails = async () => {
     try {
+      setLoading(true);
       const response = await axiosInstance.get('user/');
       setUserDetails(response.data);
       // Initialize temp state with current values
@@ -99,11 +103,14 @@ const ProfilePage = () => {
       });
     } catch (error) {
       console.error('Error fetching user details:', error);
+    }finally{
+      setLoading(false);
     }
   };
 
   const fetchDietaryPreferences = async () => {
     try {
+      setLoading(true);
       const response = await axiosInstance.get('update-dietary-preferences/');
       setDietaryPreferences(response.data);
       // Initialize temp state with current values
@@ -112,11 +119,14 @@ const ProfilePage = () => {
       });
     } catch (error) {
       console.error('Error fetching dietary preferences:', error);
+    }finally{
+      setLoading(false);
     }
   };
 
   const fetchBodyTypeProfile = async () => {
     try {
+      setLoading(true);
       const response = await axiosInstance.get('update-body-type/');
       setBodyTypeProfile(response.data);
       // Initialize temp state with current values
@@ -125,11 +135,14 @@ const ProfilePage = () => {
       });
     } catch (error) {
       console.error('Error fetching body type profile:', error);
+    }finally{
+      setLoading(false);
     }
   };
 
   const fetchPhysicalProfile = async () => {
     try {
+      setLoading(true);
       const response = await axiosInstance.get('update-physical-profile/');
       setPhysicalProfile(response.data);
       // Initialize temp state with current values
@@ -139,13 +152,15 @@ const ProfilePage = () => {
       });
     } catch (error) {
       console.error('Error fetching physical profile:', error);
+    }finally{
+      setLoading(false);
     }
   };
 
   // Update save function
   const saveAllChanges = async () => {
     try {
-      // Update user details
+      setLoading(true);
       await axiosInstance.put('user/', {
         gender: tempUserDetails.gender,
         age: tempUserDetails.age
@@ -177,6 +192,8 @@ const ProfilePage = () => {
     } catch (error) {
       console.error('Error updating profile:', error);
       alert('Failed to update profile. Please try again.');
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -223,150 +240,163 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="profile-page">
-      {/* Header Section */}
-      <header className="profile-header">
-        <button className="back-button" onClick={() => navigate("/")}>
-          <FaArrowLeft />
-        </button>
-        <div className="logo-container">
-          <img src={logo} alt="Logo" className="logo" />
-        </div>
-        <h1 className="header-title">BUFFALO GYM</h1>
-      </header>
-
-      {/* Profile Info Section */}
-      <div className="profile-info">
-        <img
-          src={usericonImg} 
-          alt="User"
-          className="profile-picture"
-        />
-        <h2 className="user-name">{userDetails.user_id}</h2>
-      </div>
-
-      <div className="button-container">
-        <button className="stats-button" onClick={()=> navigate("/stat")}>Stats</button>
-      </div>
-
-      {/* My Journey Section */}
-      <div className="my-journey">
-        <h3>My Journey</h3>
-        <div className="journey-stats">
-          <div className="stat-box">
-            <p>0</p>
-            <p>Calories</p>
-          </div>
-          <div className="stat-box">
-            <p>0</p>
-            <p>Workout</p>
-          </div>
-          <div className="stat-box">
-            <p>0</p>
-            <p>Minutes</p>
-          </div>
-        </div>
-        <div className="calendar-box">
-          <img
-            src={callenderimg}
-            alt="Calendar"
+    <>
+    {(loading) ? (
+        <div className="loading-container">
+          <Player
+            autoplay
+            loop
+            src={loader}
+            style={{ width: 200, height: 200 }}
           />
-          <p>Calendar</p>
-          <span className="arrow">→</span>
         </div>
-      </div>
+    ) : (
+        <div className="profile-page">
+          {/* Header Section */}
+          <header className="profile-header">
+            <button className="back-button" onClick={() => navigate("/")}>
+              <FaArrowLeft />
+            </button>
+            <div className="logo-container">
+              <img src={logo} alt="Logo" className="logo" />
+            </div>
+            <h1 className="header-title">BUFFALO GYM</h1>
+          </header>
 
-      {/* Settings Section */}
-      <div className="settings">
-        <h3>Settings</h3>
-        <div className="settings-options">
-          <div 
-            className="option" 
-            onClick={() => setIsEditProfileExpanded(!isEditProfileExpanded)}
-          >
-            <FaPen />
-            <p>Edit Profile</p>
+          {/* Profile Info Section */}
+          <div className="profile-info">
+            <img
+              src={usericonImg} 
+              alt="User"
+              className="profile-picture"
+            />
+            <h2 className="user-name"> User id : {userDetails.user_id}</h2>
           </div>
-          {isEditProfileExpanded && (
-            <div className="edit-profile-container">
-              <div className="edit-profile-details">
-                {renderDropdownField(
-                  'Gender', 
-                  tempUserDetails.gender || userDetails.gender, 
-                  GENDER_OPTIONS,
-                  (value) => setTempUserDetails({...tempUserDetails, gender: value})
-                )}
-              </div>
-              <div className="edit-profile-details">
-                {renderNumericField(
-                  'Age', 
-                  tempUserDetails.age || userDetails.age, 
-                  (value) => setTempUserDetails({...tempUserDetails, age: value})
-                )}
-              </div>
-              <div className="edit-profile-details"> 
-                {renderDropdownField(
-                  'Diet Type', 
-                  tempDietaryPreferences.diet_type || dietaryPreferences.diet_type, 
-                  DIET_TYPE_OPTIONS,
-                  (value) => setTempDietaryPreferences({...tempDietaryPreferences, diet_type: value})
-                )}
-              </div>
-              <div className="edit-profile-details"> 
-                {renderDropdownField(
-                  'Body Type', 
-                  tempBodyTypeProfile.body_type || bodyTypeProfile.body_type, 
-                  BODY_TYPE_OPTIONS,
-                  (value) => setTempBodyTypeProfile({...tempBodyTypeProfile, body_type: value})
-                )}
-              </div>
-              <div className="edit-profile-details">  
-                {renderNumericField(
-                  'Height (cm)', 
-                  tempPhysicalProfile.height || physicalProfile.height, 
-                  (value) => setTempPhysicalProfile({...tempPhysicalProfile, height: value})
-                )}
-              </div>
-              <div className="edit-profile-details"> 
-                {renderNumericField(
-                  'Weight (kg)', 
-                  tempPhysicalProfile.weight || physicalProfile.weight, 
-                  (value) => setTempPhysicalProfile({...tempPhysicalProfile, weight: value})
-                )}
-              </div>
 
-              <div className="save-changes-container">
-                <button 
-                  className="save-changes-button" 
-                  onClick={saveAllChanges}
-                >
-                  Save Changes
-                </button>
+          <div className="button-container">
+            <button className="stats-button" onClick={()=> navigate("/stat")}>Stats</button>
+          </div>
+
+          {/* My Journey Section */}
+          <div className="my-journey">
+            <h3>My Journey</h3>
+            <div className="journey-stats">
+              <div className="stat-box">
+                <p>0</p>
+                <p>Calories</p>
+              </div>
+              <div className="stat-box">
+                <p>0</p>
+                <p>Workout</p>
+              </div>
+              <div className="stat-box">
+                <p>0</p>
+                <p>Minutes</p>
               </div>
             </div>
-          )}
-          <div className="option">
-            <FaDumbbell />
-            <p>Fitness Plan</p>
+            <div className="calendar-box">
+              <img
+                src={callenderimg}
+                alt="Calendar"
+              />
+              <p>Calendar</p>
+              <span className="arrow">→</span>
+            </div>
           </div>
-          <div className="option">
-            <FaBell />
-            <p>Reminders</p>
+
+          {/* Settings Section */}
+          <div className="settings">
+            <h3>Settings</h3>
+            <div className="settings-options">
+              <div 
+                className="option" 
+                onClick={() => setIsEditProfileExpanded(!isEditProfileExpanded)}
+              >
+                <FaPen />
+                <p>Edit Profile</p>
+              </div>
+              {isEditProfileExpanded && (
+                <div className="edit-profile-container">
+                  <div className="edit-profile-details">
+                    {renderDropdownField(
+                      'Gender', 
+                      tempUserDetails.gender || userDetails.gender, 
+                      GENDER_OPTIONS,
+                      (value) => setTempUserDetails({...tempUserDetails, gender: value})
+                    )}
+                  </div>
+                  <div className="edit-profile-details">
+                    {renderNumericField(
+                      'Age', 
+                      tempUserDetails.age || userDetails.age, 
+                      (value) => setTempUserDetails({...tempUserDetails, age: value})
+                    )}
+                  </div>
+                  <div className="edit-profile-details"> 
+                    {renderDropdownField(
+                      'Diet Type', 
+                      tempDietaryPreferences.diet_type || dietaryPreferences.diet_type, 
+                      DIET_TYPE_OPTIONS,
+                      (value) => setTempDietaryPreferences({...tempDietaryPreferences, diet_type: value})
+                    )}
+                  </div>
+                  <div className="edit-profile-details"> 
+                    {renderDropdownField(
+                      'Body Type', 
+                      tempBodyTypeProfile.body_type || bodyTypeProfile.body_type, 
+                      BODY_TYPE_OPTIONS,
+                      (value) => setTempBodyTypeProfile({...tempBodyTypeProfile, body_type: value})
+                    )}
+                  </div>
+                  <div className="edit-profile-details">  
+                    {renderNumericField(
+                      'Height (cm)', 
+                      tempPhysicalProfile.height || physicalProfile.height, 
+                      (value) => setTempPhysicalProfile({...tempPhysicalProfile, height: value})
+                    )}
+                  </div>
+                  <div className="edit-profile-details"> 
+                    {renderNumericField(
+                      'Weight (kg)', 
+                      tempPhysicalProfile.weight || physicalProfile.weight, 
+                      (value) => setTempPhysicalProfile({...tempPhysicalProfile, weight: value})
+                    )}
+                  </div>
+
+                  <div className="save-changes-container">
+                    <button 
+                      className="save-changes-button" 
+                      onClick={saveAllChanges}
+                    >
+                      Save Changes
+                    </button>
+                  </div>
+                </div>
+              )}
+              <div className="option">
+                <FaDumbbell />
+                <p>Fitness Plan</p>
+              </div>
+              <div className="option">
+                <FaBell />
+                <p>Reminders</p>
+              </div>
+            </div>
+          </div>
+
+          {showSuccessAlert && (
+            <SuccessAlert 
+              message="Profile Updated Successfully!" 
+              onClose={() => setShowSuccessAlert(false)} 
+            />
+          )}
+
+          <div className="foot">
+            <FooterNav/>
           </div>
         </div>
-      </div>
-
-      {showSuccessAlert && (
-        <SuccessAlert 
-          message="Profile Updated Successfully!" 
-          onClose={() => setShowSuccessAlert(false)} 
-        />
       )}
-
-      <div className="foot">
-        <FooterNav/>
-      </div>
-    </div>
+    </>
   );
 };
 

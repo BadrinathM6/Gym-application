@@ -1,5 +1,4 @@
-/* Container */
-  /* Title */
+
   h1 {
     font-size: 24px;
     color: #333;
@@ -55,7 +54,7 @@
   .gender-selection-container {
     text-align: center;
     padding: 20px;
-    font-family: Arial, sans-serif;
+    font-family: 'Sour Gummy', sans-serif;
     background-color: #f7f7f7;
     min-height: 100vh;
     display: flex;

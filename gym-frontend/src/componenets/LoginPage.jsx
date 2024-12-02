@@ -111,7 +111,7 @@ const LoginPage = () => {
     <div className="login-page">
       <header className="header">
         <div className="navbar">
-          <img src="/src/assets/logo.png" alt="Logo" className="logo" />
+          <img src="/src/assets/logo.png" alt="Logo" className="Logo" />
           <h1 className="gym-name">Buffalo GYM</h1>
         </div>
       </header>

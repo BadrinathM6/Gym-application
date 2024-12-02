@@ -11,6 +11,7 @@
     background-image: url('/src/assets/laptop-bg2.jpg');
     background-size: cover;
     background-position: center;
+    font-family: 'Sour Gummy', sans-serif;
     transition: background-image 0.3s ease;
   }
    
@@ -49,7 +50,7 @@
     align-items: center;
   }
   
-  .logo {
+  .Logo {
     height: 250px;
   }
 
@@ -204,7 +205,7 @@
         align-items: center;
     }
   
-    .logo {
+    .Logo {
         display: none;
     }
   
@@ -340,7 +341,7 @@
         align-items: center;
     }
   
-    .logo {
+    .Logo {
         display: none;
     }
   

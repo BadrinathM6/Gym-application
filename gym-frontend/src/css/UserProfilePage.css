@@ -1,10 +1,5 @@
-body, html {
-  max-width: 100%;
-  overflow-x: hidden;
-}
-
-.profile-page {
-    font-family: Arial, sans-serif;
+  .profile-page {
+    font-family: 'Sour Gummy', sans-serif;
     color: #333;
     background: #c7e7d8;
   }
@@ -212,11 +207,13 @@ body, html {
     flex-wrap: wrap; /* Allows wrapping for smaller screens */
     justify-content: space-between; /* Evenly distributes space between items */
     gap: 10px; /* Adds spacing between containers */
+    max-width: 100%;
   }
   
   .edit-profile-details {
     flex: 1 1 calc(33.33% - 20px); /* Each container takes one-third width with spacing adjustment */
     max-width: calc(33.33% - 20px); /* Max width to ensure consistency */
+    min-width: 200px;
     box-sizing: border-box; /* Include padding/border in width */
     background-color: #f4f4f4;
     padding: 15px;
@@ -281,6 +278,7 @@ body, html {
     .edit-profile-details {
       flex: 1 1 100%; /* Full width for each container on smaller screens */
       max-width: 100%;
+      min-width: auto;
     }
 
     .back-button {

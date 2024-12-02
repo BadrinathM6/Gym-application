@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import '../css/WorkoutPage.css'; 
 import { FaHeart ,FaArrowLeft } from 'react-icons/fa';
 import axiosInstance from './utils/axiosInstance';
+import { Player } from '@lottiefiles/react-lottie-player';
 import Week1 from '../assets/week1.jpg' 
 import Week2 from '../assets/week2.jpg' 
 import Week3 from '../assets/week3.jpg' 
@@ -11,6 +12,7 @@ import Week5 from '../assets/week5.jpg'
 import search from '../assets/search.svg'
 import Logo from '../assets/logo.png'
 import FooterNav from "./FooterNav";
+import loader from './Main Scene.json';
 
 const WorkoutPage = () => {
   const navigate = useNavigate();
@@ -46,6 +48,8 @@ const WorkoutPage = () => {
         console.error('Error fetching workouts:', err);
         setError('Failed to load workouts');
         setLoading(false);
+      }finally{
+        setLoading(false);
       }
     };
 
@@ -59,74 +63,87 @@ const WorkoutPage = () => {
   );
 
   return (
-    <div className="workout-page">
-      <header className="workout-header">
-        <button className="back-button" onClick={() => navigate('/')}>
-          <FaArrowLeft />
-        </button>
-        <div className="logo-container">
-          <img src={Logo} alt="Logo" className="logo" />
-        </div>
-        <h1 className="header-title">BUFFALO GYM</h1>
-      </header>
-      
-      <div className="workout-search">
-        <div className="search-container">
-          <input
-            type="text"
-            placeholder="Search"
-            className="search-bar"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+    <>
+    {(loading) ? (
+        <div className="loading-container">
+          <Player
+            autoplay
+            loop
+            src={loader}
+            style={{ width: 200, height: 200 }}
           />
-          <div className="search-icon-container">
-            <img src={search} alt="search-icon" className="search-icon" />
-          </div>
         </div>
-        <button className="plan-button">PLAN OVER</button>
-      </div>
-      
-      <div className="workout-categories-container">
-        <div className="workout-categories">
-          {categories.map((category) => (
-            <button 
-              key={category} 
-              className={`category-button ${selectedCategory === category ? 'active' : ''}`}
-              onClick={() => setSelectedCategory(selectedCategory === category ? null : category)}
-            >
-              {category}
+    ) : (
+        <div className="workout-page">
+          <header className="workout-header">
+            <button className="back-button" onClick={() => navigate('/')}>
+              <FaArrowLeft />
             </button>
-          ))}
-        </div>
-      </div>
-      
-      <div className="workout-list">
-        {loading ? (
-          <div className="loading">Loading workouts...</div>
-        ) : error ? (
-          <div className="error">{error}</div>
-        ) : filteredWorkouts.length > 0 ? (
-          filteredWorkouts.map((workout, index) => (
-            <WorkoutCard key={workout.id} workout={workout} />
-          ))
-        ) : (
-          <div className="no-workouts">No workouts found</div>
-        )}
-      </div>
-      
-      <footer className="workout-footer">
-        <div className="calories-info">
-          <p>Calories</p>
-          <p>🔥 0 Min</p>
-        </div>
-        <button className="top-up-button">Top Up +</button>
-      </footer>
+            <div className="logo-container">
+              <img src={Logo} alt="Logo" className="logo" />
+            </div>
+            <h1 className="header-title">BUFFALO GYM</h1>
+          </header>
+          
+          <div className="workout-search">
+            <div className="search-container">
+              <input
+                type="text"
+                placeholder="Search"
+                className="search-bar"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <div className="search-icon-container">
+                <img src={search} alt="search-icon" className="search-icon" />
+              </div>
+            </div>
+            <button className="plan-button">PLAN OVER</button>
+          </div>
+          
+          <div className="workout-categories-container">
+            <div className="workout-categories">
+              {categories.map((category) => (
+                <button 
+                  key={category} 
+                  className={`category-button ${selectedCategory === category ? 'active' : ''}`}
+                  onClick={() => setSelectedCategory(selectedCategory === category ? null : category)}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+          </div>
+          
+          <div className="workout-list">
+            {loading ? (
+              <div className="loading">Loading workouts...</div>
+            ) : error ? (
+              <div className="error">{error}</div>
+            ) : filteredWorkouts.length > 0 ? (
+              filteredWorkouts.map((workout, index) => (
+                <WorkoutCard key={workout.id} workout={workout} />
+              ))
+            ) : (
+              <div className="no-workouts">No workouts found</div>
+            )}
+          </div>
+          
+          <footer className="workout-footer">
+            <div className="calories-info">
+              <p>Calories</p>
+              <p>🔥 0 Min</p>
+            </div>
+            <button className="top-up-button">Top Up +</button>
+          </footer>
 
-      <div className="foot">
-        <FooterNav/>
-      </div>
+          <div className="foot">
+            <FooterNav/>
+          </div>
 
-    </div>
+        </div>
+      )}
+    </>
   );
 };
 

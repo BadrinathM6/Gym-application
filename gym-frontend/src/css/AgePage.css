@@ -1,12 +1,7 @@
-/* General Styling */
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-  }
-  
-  /* Container */
+
   .age-page-container {
     display: flex;
+    font-family: 'Sour Gummy', sans-serif;
     flex-direction: column;
     height: 100vh;
     justify-content: center;

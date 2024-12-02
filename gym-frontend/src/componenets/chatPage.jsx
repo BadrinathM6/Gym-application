@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Lottie from 'lottie-react';
 import axiosInstance from './utils/axiosInstance';
-import ChatBackground from '../assets/chat-background.jpg'; 
+import loader from './Main Scene.json';
+import { Player } from '@lottiefiles/react-lottie-player';
 import UserIcon from '../assets/user-icon.jpg'; 
 import AIIcon from '../assets/ai-icon.jpg'; 
 import LoaderAnimation from './threedot.json';
@@ -13,6 +14,7 @@ const ChatPage = () => {
   ]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -33,7 +35,7 @@ const ChatPage = () => {
     setIsLoading(true);
 
     try {
-      // Send message to backend
+      setLoading(true)
       const response = await axiosInstance.post('/ai-chat/', { 
         message: inputMessage 
       });
@@ -57,6 +59,8 @@ const ChatPage = () => {
       };
       setMessages(prevMessages => [...prevMessages, errorMessage]);
       setIsLoading(false);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -67,66 +71,79 @@ const ChatPage = () => {
   };
 
   return (
-    <div
-      className="chat-page"
-    >
-      {/* Chat Header */}
-      <div className="chat-header">
-        <img src={AIIcon} alt="AI" className="ai-icon" />
-        <h2 className="chat-title">BUFFALO AI</h2>
-      </div>
-
-      {/* Chat Area */}
-      <div className="chat-area">
-        {messages.map((msg, index) => (
-          <div 
-            key={index} 
-            className={`chat-bubble ${msg.type === 'user' ? 'user-bubble' : 'ai-bubble'}`}
-          >
-            <img 
-              src={msg.type === 'user' ? UserIcon : AIIcon} 
-              alt={msg.type === 'user' ? "User" : "AI"} 
-              className="profile-icon" 
-            />
-            <p>{msg.message}</p>
-          </div>
-        ))}
-        
-        {/* Lottie Loader */}
-        {isLoading && (
-          <div className="lottie-loader-container">
-            <Lottie 
-              animationData={LoaderAnimation} 
-              loop={true} 
-              className="lottie-loader"
-            />
-          </div>
-        )}
-        
-        <div ref={messagesEndRef} />
-      </div>
-
-      {/* Input Section */}
-      <div className="chat-input">
-        <button className="icon-button">📷</button>
-        <input
-          type="text"
-          placeholder="Ask Buffalo AI"
-          className="text-input"
-          value={inputMessage}
-          onChange={(e) => setInputMessage(e.target.value)}
-          onKeyPress={handleKeyPress}
-          disabled={isLoading}
-        />
-        <button 
-          className="icon-button"
-          onClick={handleSendMessage}
-          disabled={isLoading}
+    <>
+    {(loading) ? (
+        <div className="loading-container">
+          <Player
+            autoplay
+            loop
+            src={loader}
+            style={{ width: 200, height: 200 }}
+          />
+        </div>
+    ) : (
+        <div
+          className="chat-page"
         >
-          {isLoading ? '⏳' : '➤'}
-        </button>
-      </div>
-    </div>
+          {/* Chat Header */}
+          <div className="chat-header">
+            <img src={AIIcon} alt="AI" className="ai-icon" />
+            <h2 className="chat-title">BUFFALO AI</h2>
+          </div>
+
+          {/* Chat Area */}
+          <div className="chat-area">
+            {messages.map((msg, index) => (
+              <div 
+                key={index} 
+                className={`chat-bubble ${msg.type === 'user' ? 'user-bubble' : 'ai-bubble'}`}
+              >
+                <img 
+                  src={msg.type === 'user' ? UserIcon : AIIcon} 
+                  alt={msg.type === 'user' ? "User" : "AI"} 
+                  className="profile-icon" 
+                />
+                <p>{msg.message}</p>
+              </div>
+            ))}
+            
+            {/* Lottie Loader */}
+            {isLoading && (
+              <div className="lottie-loader-container">
+                <Lottie 
+                  animationData={LoaderAnimation} 
+                  loop={true} 
+                  className="lottie-loader"
+                />
+              </div>
+            )}
+            
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Input Section */}
+          <div className="chat-input">
+            <button className="icon-button">📷</button>
+            <input
+              type="text"
+              placeholder="Ask Buffalo AI"
+              className="text-input"
+              value={inputMessage}
+              onChange={(e) => setInputMessage(e.target.value)}
+              onKeyPress={handleKeyPress}
+              disabled={isLoading}
+            />
+            <button 
+              className="icon-button"
+              onClick={handleSendMessage}
+              disabled={isLoading}
+            >
+              {isLoading ? '⏳' : '➤'}
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
