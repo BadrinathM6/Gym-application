@@ -114,10 +114,11 @@
 
 .section-buttons {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
-  margin: 40px 300px 0 300px;
-  gap: 5px;
+  margin: 40px auto 0px;
+  gap: 20px;
+  width: fit-content;
 }
 
 .button {
@@ -161,7 +162,7 @@
   color: #8b38f3;
 }
 
-.settings {
+.setting {
   background: #ffffff;
   border: 2px solid #6fbf49;
   color: #6fbf49;

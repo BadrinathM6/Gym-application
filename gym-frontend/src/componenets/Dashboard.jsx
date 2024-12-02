@@ -114,11 +114,25 @@ const HomePage = () => {
             <span>Workout</span>
           </div>
         </div>
+
         <div className="button user">
-          <img src={userIcon} alt="user Icon" /><span>Profile</span>
+          <div 
+              onClick={() => navigate("/user-profile")} 
+              style={{ cursor: "pointer", display: "flex", alignItems: "center",}}
+          >
+            <img src={userIcon} alt="user Icon" />
+            <span>Profile</span>
+          </div>
         </div>
-        <div className="button settings">
-          <img src={settingsIcon} alt="Settings Icon" /><span>Settings</span>
+        
+        <div className="button setting">
+          <div 
+            onClick={() => navigate("/settings")}
+            style={{ cursor: "pointer", display: "flex", alignItems: "center",}}
+          >
+            <img src={settingsIcon} alt="Settings Icon" />
+            <span>Settings</span>
+          </div>
         </div>
       </section>
 

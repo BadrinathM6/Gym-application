@@ -166,3 +166,22 @@ class UserWorkoutSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserWorkout
         fields = ['id', 'workout', 'is_favorite', 'started_at', 'ended_at', 'calories_burned']
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['user_id', 'gender', 'age']
+        extra_kwargs = {
+            'user_id': {'read_only': True},
+            'age': {'required': False}
+        }
+    
+    def validate_age(self, value):
+        if value is not None and (value < 13 or value > 100):
+            raise serializers.ValidationError("Age must be between 13 and 100")
+        return value
+    
+    def validate_gender(self, value):
+        if value not in dict(self.Meta.model.GENDER_CHOICES):
+            raise serializers.ValidationError("Invalid gender selection")
+        return value

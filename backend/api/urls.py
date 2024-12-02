@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import LoginView, HomePageView, WorkoutListView, WorkoutCategoriesView, UserWorkoutView, FavoriteWorkoutToggleView, UserDetailView, AIChatView, DietaryPreferenceView, BodyTypeProfileView, PhysicalProfileView, AgeUpdateView
+from .views import LoginView, DietaryPreferenceUpdateView, PhysicalProfileUpdateView, BodyTypeProfileUpdateView, UserProfileDetailView, HomePageView, WorkoutListView, WorkoutCategoriesView, UserWorkoutView, FavoriteWorkoutToggleView, UserDetailView, AIChatView, DietaryPreferenceView, BodyTypeProfileView, PhysicalProfileView, AgeUpdateView
 from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
@@ -16,4 +16,8 @@ urlpatterns = [
     path('workout-categories/', WorkoutCategoriesView.as_view(), name='workout_categories'),
     path('user-workouts/', UserWorkoutView.as_view(), name='user_workouts'),
     path('toggle-favorite/', FavoriteWorkoutToggleView.as_view(), name='toggle_favorite'),
+    path('profile/', UserProfileDetailView.as_view(), name='user_profile'),
+    path('update-dietary-preferences/', DietaryPreferenceUpdateView.as_view(), name='update_dietary_preferences'),
+    path('update-physical-profile/', PhysicalProfileUpdateView.as_view(), name='update_physical_profile'),
+    path('update-body-type/', BodyTypeProfileUpdateView.as_view(), name='update_body_type'),
 ]

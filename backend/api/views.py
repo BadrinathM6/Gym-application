@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .serializers import LoginSerializer, UserWorkoutSerializer, WorkoutSerializer, HomeBannerSerializer, HomeProgramSerializer, AIChatSerializer, UserSerializer, DietaryPreferenceSerializer, BodyTypeProfileSerializer, PhysicalProfileSerializer
+from .serializers import LoginSerializer, UserProfileSerializer, UserWorkoutSerializer, WorkoutSerializer, HomeBannerSerializer, HomeProgramSerializer, AIChatSerializer, UserSerializer, DietaryPreferenceSerializer, BodyTypeProfileSerializer, PhysicalProfileSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from django.conf import settings
@@ -446,3 +446,75 @@ class FavoriteWorkoutToggleView(APIView):
 
         serializer = UserWorkoutSerializer(user_workout)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class UserProfileDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+    
+    def get(self, request):
+        """
+        Retrieve user profile details
+        """
+        serializer = UserProfileSerializer(request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def put(self, request):
+        """
+        Update user profile
+        """
+        serializer = UserProfileSerializer(request.user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class DietaryPreferenceUpdateView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        dietary_preference, created = DietaryPreference.objects.get_or_create(user=request.user)
+        serializer = DietaryPreferenceSerializer(dietary_preference)
+        return Response(serializer.data)
+
+    def put(self, request):
+        dietary_preference, created = DietaryPreference.objects.get_or_create(user=request.user)
+        serializer = DietaryPreferenceSerializer(dietary_preference, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class PhysicalProfileUpdateView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        physical_profile, created = PhysicalProfile.objects.get_or_create(user=request.user)
+        serializer = PhysicalProfileSerializer(physical_profile)
+        return Response(serializer.data)
+
+    def put(self, request):
+        physical_profile, created = PhysicalProfile.objects.get_or_create(user=request.user)
+        serializer = PhysicalProfileSerializer(physical_profile, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class BodyTypeProfileUpdateView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        body_type_profile, created = BodyTypeProfile.objects.get_or_create(user=request.user)
+        serializer = BodyTypeProfileSerializer(body_type_profile)
+        return Response(serializer.data)
+
+    def put(self, request):
+        body_type_profile, created = BodyTypeProfile.objects.get_or_create(user=request.user)
+        serializer = BodyTypeProfileSerializer(body_type_profile, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
