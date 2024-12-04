@@ -581,11 +581,13 @@ class WorkoutDayListView(APIView):
         Get workout days for a specific program and week
         """
         workout_days = WorkoutDay.objects.filter(
-            program_id=program_id, 
-            week_number=week_number
-        )
-        
-        serializer = WorkoutDaySerializer(workout_days, many=True)
+            program_id=program_id
+        ).order_by('week_number', 'day_number')
+
+        # Filter the workout days for the specified week
+        week_days = workout_days.filter(week_number=week_number)
+
+        serializer = WorkoutDaySerializer(week_days, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class WorkoutDayDetailView(APIView):

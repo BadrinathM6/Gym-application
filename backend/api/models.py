@@ -175,6 +175,7 @@ class WorkoutProgram(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField()
     total_weeks = models.IntegerField(default=5)
+    week_no = models.IntegerField(default=1)
     week = models.CharField(max_length=20, choices=WEEK_CHOICES)
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
     image = models.CharField(max_length=255)

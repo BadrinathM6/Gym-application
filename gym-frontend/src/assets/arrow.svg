@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" id="arrow">
+  <g fill="#fff" transform="translate(4.482 -1032.309)">
+    <circle cx="8.018" cy="1044.809" r="12.5" fill="#424242" fill-rule="evenodd"></circle>
+    <path fill="#1f212a" d="M16.895 24.195a12.5 12.5 0 0 0 .134-.045 12.5 12.5 0 0 0 1.14-.51 12.5 12.5 0 0 0 1.085-.622 12.5 12.5 0 0 0 1.016-.727 12.5 12.5 0 0 0 .939-.824 12.5 12.5 0 0 0 .852-.914 12.5 12.5 0 0 0 .755-.994 12.5 12.5 0 0 0 .12-.194l-1.672-1.7L10.656 7.056l-.715.699 4.657 4.742-4.657 4.744 6.954 6.953z" color="#000" font-family="sans-serif" font-weight="400" style="line-height:normal;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal" transform="translate(-4.482 1032.309)"></path>
+    <path d="M5.715 3 5 3.7 9.656 8.44 5 13.186l.715.699 5.344-5.444L5.715 3Z" color="#000" font-family="sans-serif" font-weight="400" overflow="visible" style="line-height:normal;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000;text-transform:none;block-progression:tb;isolation:auto;mix-blend-mode:normal" transform="translate(.46 1036.366)"></path>
+  </g>
+</svg>

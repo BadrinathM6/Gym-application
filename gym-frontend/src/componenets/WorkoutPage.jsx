@@ -169,7 +169,7 @@ const WorkoutCard = ({ workout, navigate, programId }) => {
   };
 
   return (
-    <div className="workout-card" onClick={() => navigate(`/workout-day/${programId}`)}>
+    <div className="workout-card">
       <img 
         src={workout.image || (
           workout.week === 'Week 1' ? Week1 :
@@ -190,7 +190,7 @@ const WorkoutCard = ({ workout, navigate, programId }) => {
           {truncateDescription(workout.description, 3)}
         </p>
         <div className="workout-actions">
-          <button className="start-button">Start</button>
+          <button className="start-button" onClick={() => navigate(`/workout-day/${programId}`)}>Start</button>
         </div>
         <span className="workout-week">{workout.week}</span>
       </div>

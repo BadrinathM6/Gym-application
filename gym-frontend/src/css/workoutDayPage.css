@@ -1,6 +1,6 @@
 /* Overall container */
 .challenge-container {
-    font-family: Arial, sans-serif;
+    font-family: 'Sour Gummy', sans-serif;
     color: #000;
     height: 100vh;
     display: flex;
@@ -12,13 +12,17 @@
   
   /* Header with gradient background */
   .challenge-header {
-    background: linear-gradient(135deg, #ff7e5f, #feb47b); /* Warm gradient */
+    background-color: #c7e7d8;
     color: #fff;
-    padding: 20px;
+    padding: 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 100px; /* Adjust height for header */
+    height: 70px;
+  }
+
+  .challenge-header h1{
+    color: #4E342E;
   }
   
   .back-button {
@@ -36,10 +40,14 @@
   
   /* Progress section */
   .progress-container {
-    background: linear-gradient(135deg, #feb47b, #ff7e5f); /* Gradient matching header */
+    background-color: #c7e7d8; /* Gradient matching header */
     color: #fff;
     text-align: center;
     padding: 10px 0;
+  }
+
+  .progress-container p{
+    color: #4E342E;
   }
   
   .progress-bar {
@@ -63,16 +71,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.05); /* Slight gray overlay */
-    padding: 10px;
+    padding: 10px 10px 0px;
     border-radius: 10px;
-    margin: 20px auto;
+    margin: 20px auto 5px;
   }
   
   .challenge-logo {
-    width: 40px;
-    height: 40px;
-    margin-right: 10px;
+    height: 30px;
+    transform: scale(2.3);
+    border-radius: 50px;
+    margin-bottom: 4px;
   }
   
   /* Day Containers */
@@ -86,14 +94,14 @@
     align-items: center;
     background: #fff; /* White background */
     color: #000; /* Black text */
-    padding: 10px 20px;
+    padding: 30px 30px;
     border-radius: 5px;
-    margin: 5px 10px;
+    margin:  0px 5px 20px;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
   }
   
   .day-card.active {
-    background: #00bcd4; /* Highlight color */
+    background: #EEB163; /* Highlight color */
     color: #fff;
   }
   
@@ -107,5 +115,29 @@
   
   .day-card.active .day-button {
     color: #fff;
+  }
+
+  .foot{
+    display: none;
+    color: white;
+    text-align: center;
+    padding-top: 20px;
+    margin-top: 20px;
+  }
+
+  @media screen and (max-width: 430px) and (max-height: 932px){
+
+    .foot{
+      display: block;
+      color: white;
+      text-align: center;
+      padding-top: 20px;
+      margin-top: 20px;
+    }
+
+    .day-card{
+      padding:20px 20px;
+      margin: 0px 8px 15px;
+    }
   }
   

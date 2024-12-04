@@ -193,7 +193,7 @@ class WorkoutProgramSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = WorkoutProgram
-        fields = ['id', 'name', 'description', 'total_weeks', 'days', 'week', 'image', 'category', 'bodytype']
+        fields = ['id', 'name', 'description', 'total_weeks', 'days', 'week', 'week_no', 'image', 'category', 'bodytype']
 
 class UserWorkoutSerializer(serializers.ModelSerializer):
     workout = WorkoutProgramSerializer(read_only=True)
