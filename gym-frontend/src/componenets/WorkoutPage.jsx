@@ -58,8 +58,9 @@ const WorkoutPage = () => {
   }, [selectedCategory]);
 
   const filteredWorkouts = workouts.filter(workout => 
-    workout.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    workout.description.toLowerCase().includes(searchTerm.toLowerCase())
+    workout.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    workout.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    workout.week.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -122,7 +123,7 @@ const WorkoutPage = () => {
               <div className="error">{error}</div>
             ) : filteredWorkouts.length > 0 ? (
               filteredWorkouts.map((workout, index) => (
-                <WorkoutCard key={workout.id} workout={workout} />
+                <WorkoutCard key={workout.id} workout={workout} navigate={navigate} programId={workout.id} />
               ))
             ) : (
               <div className="no-workouts">No workouts found</div>
@@ -147,8 +148,9 @@ const WorkoutPage = () => {
   );
 };
 
-const WorkoutCard = ({ workout }) => {
+const WorkoutCard = ({ workout, navigate, programId }) => {
   const [isFavorite, setIsFavorite] = useState(workout.is_favorite || false);
+  // const navigate = useNavigate();
 
   const toggleFavorite = async () => {
     try {
@@ -167,7 +169,7 @@ const WorkoutCard = ({ workout }) => {
   };
 
   return (
-    <div className="workout-card">
+    <div className="workout-card" onClick={() => navigate(`/workout-day/${programId}`)}>
       <img 
         src={workout.image || (
           workout.week === 'Week 1' ? Week1 :
@@ -180,7 +182,7 @@ const WorkoutCard = ({ workout }) => {
         className="workout-image" 
       />
       <div className="workout-details">
-        <h3>{workout.title}</h3>
+        <h3>{workout.name}</h3>
         <p
           className="workout-description"
           data-full-description={workout.description}

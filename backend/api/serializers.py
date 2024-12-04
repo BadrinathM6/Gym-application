@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser, DietaryPreference, PhysicalProfile, BodyTypeProfile, HomeBanner, HomeProgram, Workout, UserWorkout
+from .models import CustomUser, DietaryPreference, PhysicalProfile, BodyTypeProfile, HomeBanner, HomeProgram, WorkoutProgram, WorkoutExercise, WorkoutDay, UserExerciseProgress, UserWorkoutProgress, UserWeekWorkout
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -155,18 +155,6 @@ class HomePageSerializer(serializers.Serializer):
     programs = HomeProgramSerializer(many=True)
     banners = HomeBannerSerializer(many=True)
 
-class WorkoutSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Workout
-        fields = ['id', 'title', 'description', 'week', 'category', 'image']
-
-class UserWorkoutSerializer(serializers.ModelSerializer):
-    workout = WorkoutSerializer(read_only=True)
-    
-    class Meta:
-        model = UserWorkout
-        fields = ['id', 'workout', 'is_favorite', 'started_at', 'ended_at', 'calories_burned']
-
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
@@ -185,3 +173,47 @@ class UserProfileSerializer(serializers.ModelSerializer):
         if value not in dict(self.Meta.model.GENDER_CHOICES):
             raise serializers.ValidationError("Invalid gender selection")
         return value
+    
+class WorkoutExerciseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WorkoutExercise
+        fields = ['id', 'name', 'description', 'sets', 'reps', 'rest_time', 
+                  'equipment', 'demonstration_video_url', 'calories_burned']
+
+class WorkoutDaySerializer(serializers.ModelSerializer):
+    exercises = WorkoutExerciseSerializer(many=True, read_only=True)
+    
+    class Meta:
+        model = WorkoutDay
+        fields = ['id', 'week_number', 'day_number', 'difficulty', 'exercises']
+
+class WorkoutProgramSerializer(serializers.ModelSerializer):
+    bodytype = serializers.StringRelatedField()
+    days = WorkoutDaySerializer(many=True, read_only=True)
+    
+    class Meta:
+        model = WorkoutProgram
+        fields = ['id', 'name', 'description', 'total_weeks', 'days', 'week', 'image', 'category', 'bodytype']
+
+class UserWorkoutSerializer(serializers.ModelSerializer):
+    workout = WorkoutProgramSerializer(read_only=True)
+    
+    class Meta:
+        model = UserWeekWorkout
+        fields = ['id', 'workout', 'is_favorite', 'started_at', 'ended_at', 'calories_burned']
+
+class UserWorkoutProgressSerializer(serializers.ModelSerializer):
+    program = WorkoutProgramSerializer(read_only=True)
+    
+    class Meta:
+        model = UserWorkoutProgress
+        fields = ['user', 'program', 'current_week', 'current_day', 
+                  'progress_percentage', 'total_calories_burned', 'total_workout_time']
+
+class UserExerciseProgressSerializer(serializers.ModelSerializer):
+    exercise = WorkoutExerciseSerializer(read_only=True)
+    
+    class Meta:
+        model = UserExerciseProgress
+        fields = ['user', 'exercise', 'completed', 'sets_completed', 
+                  'time_spent', 'calories_burned']

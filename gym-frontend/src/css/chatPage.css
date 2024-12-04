@@ -7,6 +7,7 @@
     background-position: center;
     color: #fff;
     font-family: 'Sour Gummy', sans-serif;
+    background-color: #c7e7d8;;
   }
   
   /* Chat Header */
@@ -15,7 +16,11 @@
     align-items: center;
     justify-content: center;
     padding: 10px 0;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: #c7e7d8;
+  }
+
+  .chat-header h2{
+    color: #4E342E;
   }
   
   .ai-icon {
@@ -72,7 +77,7 @@
   .chat-input {
     display: flex;
     align-items: center;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: #4E342E;
     padding: 10px;
     color: black;
   }
@@ -110,5 +115,13 @@
   @media (max-width: 768px) {
     .chat-page {
         background-image: url('../assets/chat-background.jpg');
+    }
+
+    .chat-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 0;
+      background-color: rgba(0, 0, 0, 0.7)
     }
 }

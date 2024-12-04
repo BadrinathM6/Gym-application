@@ -3,14 +3,15 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .serializers import LoginSerializer, UserProfileSerializer, UserWorkoutSerializer, WorkoutSerializer, HomeBannerSerializer, HomeProgramSerializer, AIChatSerializer, UserSerializer, DietaryPreferenceSerializer, BodyTypeProfileSerializer, PhysicalProfileSerializer
+from .serializers import LoginSerializer, UserProfileSerializer, UserWorkoutSerializer, WorkoutDaySerializer, WorkoutProgramSerializer, UserWorkoutProgressSerializer, HomeBannerSerializer, HomeProgramSerializer, AIChatSerializer, UserSerializer, DietaryPreferenceSerializer, BodyTypeProfileSerializer, PhysicalProfileSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from django.conf import settings
-from .models import DietaryPreference, BodyTypeProfile, PhysicalProfile, HomeProgram, HomeBanner, UserWorkout, Workout
+from .models import DietaryPreference, BodyTypeProfile, PhysicalProfile, HomeProgram, HomeBanner, UserWeekWorkout, UserExerciseProgress, UserWorkoutProgress, WorkoutDay, WorkoutProgram
 import cohere
 import logging
 import random
+from django.db.models import Q
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
 
@@ -356,21 +357,42 @@ class WorkoutListView(APIView):
     authentication_classes = [JWTAuthentication]
 
     def get(self, request):
-        # Get query parameters for filtering
-        category = request.query_params.get('category')
-        week = request.query_params.get('week')
+        # Retrieve the user's body type profile
+        try:
+            body_type_profile = BodyTypeProfile.objects.get(user=request.user)
+            body_type = body_type_profile.body_type
+        except BodyTypeProfile.DoesNotExist:
+            return Response(
+                {"error": "No body type profile found for the user"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-        # Base queryset
-        workouts = Workout.objects.all()
+        # Find WorkoutPrograms based on body type
+        if body_type == 'FLABBY':
+            # If FLABBY, use IDs 7 or 8
+            workouts = WorkoutProgram.objects.filter(bodytype_id__in=[7])
+        elif body_type == 'SKINNY':
+            # Assuming SKINNY might use a different ID
+            workouts = WorkoutProgram.objects.filter(bodytype_id__in=[9])
+        elif body_type == 'IDEAL':
+            workouts = WorkoutProgram.objects.filter(bodytype_id__in=[8])
+        else:
+            # Fallback for any unexpected body type
+            workouts = WorkoutProgram.objects.filter(bodytype_id__in=[7,8,9])
 
-        # Apply filters if provided
-        if category:
-            workouts = workouts.filter(category=category)
-        if week:
-            workouts = workouts.filter(week=week)
+        # Check if any workouts exist
+        if not workouts.exists():
+            return Response(
+                {
+                    "error": f"No workouts found for {body_type} body type",
+                    "user_bodytype_id": body_type_profile.id,
+                    "existing_bodytype_ids": list(WorkoutProgram.objects.values_list('bodytype_id', flat=True).distinct())
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )
 
         # Serialize workouts
-        serializer = WorkoutSerializer(workouts, many=True)
+        serializer = WorkoutProgramSerializer(workouts, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class WorkoutCategoriesView(APIView):
@@ -379,7 +401,7 @@ class WorkoutCategoriesView(APIView):
 
     def get(self, request):
         # Return list of workout categories
-        categories = [choice[0] for choice in Workout.CATEGORY_CHOICES]
+        categories = [choice[0] for choice in WorkoutProgram.CATEGORY_CHOICES]
         return Response(categories, status=status.HTTP_200_OK)
 
 class UserWorkoutView(APIView):
@@ -388,17 +410,17 @@ class UserWorkoutView(APIView):
 
     def get(self, request):
         # Get user's workouts
-        user_workouts = UserWorkout.objects.filter(user=request.user)
+        user_workouts = UserWeekWorkout.objects.filter(user=request.user)
         serializer = UserWorkoutSerializer(user_workouts, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
         # Start a new workout
         workout_id = request.data.get('workout_id')
-        workout = get_object_or_404(Workout, id=workout_id)
+        workout = get_object_or_404(WorkoutProgram, id=workout_id)
 
         # Create or update UserWorkout
-        user_workout, created = UserWorkout.objects.get_or_create(
+        user_workout, created = UserWeekWorkout.objects.get_or_create(
             user=request.user, 
             workout=workout
         )
@@ -415,7 +437,7 @@ class UserWorkoutView(APIView):
         calories = request.data.get('calories', 0)
 
         user_workout = get_object_or_404(
-            UserWorkout, 
+            UserWeekWorkout, 
             user=request.user, 
             workout_id=workout_id, 
             ended_at__isnull=True
@@ -434,9 +456,9 @@ class FavoriteWorkoutToggleView(APIView):
 
     def post(self, request):
         workout_id = request.data.get('workout_id')
-        workout = get_object_or_404(Workout, id=workout_id)
+        workout = get_object_or_404(WorkoutProgram, id=workout_id)
 
-        user_workout, created = UserWorkout.objects.get_or_create(
+        user_workout, created = UserWeekWorkout.objects.get_or_create(
             user=request.user, 
             workout=workout
         )
@@ -518,3 +540,156 @@ class BodyTypeProfileUpdateView(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class WorkoutProgramListView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        """
+        Get available workout programs
+        """
+        programs = WorkoutProgram.objects.all()
+        serializer = WorkoutProgramSerializer(programs, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class WorkoutProgramProgressView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request, program_id):
+        """
+        Get user's progress in a specific workout program
+        """
+        program = get_object_or_404(WorkoutProgram, id=program_id)
+        
+        # Get or create user's workout progress
+        progress, created = UserWorkoutProgress.objects.get_or_create(
+            user=request.user,
+            program=program
+        )
+        
+        serializer = UserWorkoutProgressSerializer(progress)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class WorkoutDayListView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request, program_id, week_number):
+        """
+        Get workout days for a specific program and week
+        """
+        workout_days = WorkoutDay.objects.filter(
+            program_id=program_id, 
+            week_number=week_number
+        )
+        
+        serializer = WorkoutDaySerializer(workout_days, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class WorkoutDayDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request, day_id):
+        """
+        Get detailed workout for a specific day
+        """
+        workout_day = get_object_or_404(WorkoutDay, id=day_id)
+        serializer = WorkoutDaySerializer(workout_day)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class WorkoutStartView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def post(self, request, day_id):
+        """
+        Start a workout day
+        """
+        workout_day = get_object_or_404(WorkoutDay, id=day_id)
+        
+        # Update user workout progress
+        progress, created = UserWorkoutProgress.objects.get_or_create(
+            user=request.user,
+            program=workout_day.program
+        )
+        
+        progress.current_week = workout_day.week_number
+        progress.current_day = workout_day.day_number
+        progress.save()
+        
+        # Track individual exercise progress
+        for exercise in workout_day.exercises.all():
+            UserExerciseProgress.objects.get_or_create(
+                user=request.user,
+                exercise=exercise
+            )
+        
+        return Response({
+            'message': 'Workout started',
+            'day': WorkoutDaySerializer(workout_day).data
+        }, status=status.HTTP_200_OK)
+
+class WorkoutCompleteView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def post(self, request, day_id):
+        """
+        Complete a workout day with progress tracking
+        """
+        workout_day = get_object_or_404(WorkoutDay, id=day_id)
+        
+        # Update workout progress
+        progress = UserWorkoutProgress.objects.get(
+            user=request.user, 
+            program=workout_day.program
+        )
+        
+        # Mark day as completed
+        progress.completed_workouts.add(workout_day)
+        
+        # Calculate progress percentage
+        total_days = WorkoutDay.objects.filter(
+            program=workout_day.program, 
+            week_number=workout_day.week_number
+        ).count()
+        completed_days = progress.completed_workouts.filter(
+            week_number=workout_day.week_number
+        ).count()
+        
+        progress.progress_percentage = (completed_days / total_days) * 100
+        
+        # Update total workout stats
+        progress.total_calories_burned += sum(
+            exercise.calories_burned for exercise in workout_day.exercises.all()
+        )
+        progress.save()
+        
+        return Response({
+            'message': 'Workout completed',
+            'progress_percentage': progress.progress_percentage
+        }, status=status.HTTP_200_OK)
+
+class UserWorkoutStatsView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        """
+        Get overall workout statistics for the user
+        """
+        workout_progresses = UserWorkoutProgress.objects.filter(user=request.user)
+        
+        stats = {
+            'total_programs_enrolled': workout_progresses.count(),
+            'total_calories_burned': sum(progress.total_calories_burned for progress in workout_progresses),
+            'total_workout_time': sum((progress.total_workout_time for progress in workout_progresses), timezone.timedelta()),
+            'completed_programs': workout_progresses.filter(
+                progress_percentage=100
+            ).count()
+        }
+        
+        return Response(stats, status=status.HTTP_200_OK)

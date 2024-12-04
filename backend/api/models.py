@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.conf import settings
@@ -153,8 +154,9 @@ class HomeBanner(models.Model):
 
     def __str__(self):
         return self.title
+
+class WorkoutProgram(models.Model):
     
-class Workout(models.Model):
     WEEK_CHOICES = [
         ('Week 1', 'Assessment Week'),
         ('Week 2', 'Main Part'),
@@ -170,18 +172,20 @@ class Workout(models.Model):
         ('Cardio', 'Cardio')
     ]
 
-    title = models.CharField(max_length=200)
+    name = models.CharField(max_length=200)
     description = models.TextField()
+    total_weeks = models.IntegerField(default=5)
     week = models.CharField(max_length=20, choices=WEEK_CHOICES)
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
-    image = models.CharField(max_length=255)  # Use image path instead of ImageField
+    image = models.CharField(max_length=255)
+    bodytype = models.ForeignKey(BodyTypeProfile, on_delete=models.CASCADE)
     
     def __str__(self):
-        return self.title
-
-class UserWorkout(models.Model):
+        return self.name
+    
+class UserWeekWorkout(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    workout = models.ForeignKey(Workout, on_delete=models.CASCADE)
+    workout = models.ForeignKey(WorkoutProgram, on_delete=models.CASCADE)
     is_favorite = models.BooleanField(default=False)
     started_at = models.DateTimeField(null=True, blank=True)
     ended_at = models.DateTimeField(null=True, blank=True)
@@ -192,3 +196,67 @@ class UserWorkout(models.Model):
 
     def __str__(self):
         return f"{self.user.user_id} - {self.workout.title}"
+
+class WorkoutDay(models.Model):
+    """
+    Represents a specific day in a workout program
+    """
+    DIFFICULTY_CHOICES = [
+        ('BEGINNER', 'Beginner'),
+        ('INTERMEDIATE', 'Intermediate'),
+        ('ADVANCED', 'Advanced')
+    ]
+
+    program = models.ForeignKey(WorkoutProgram, on_delete=models.CASCADE, related_name='days')
+    week_number = models.IntegerField()
+    day_number = models.IntegerField()
+    difficulty = models.CharField(max_length=20, choices=DIFFICULTY_CHOICES, default='BEGINNER')
+    
+    def __str__(self):
+        return f"{self.program.name} - Week {self.week_number} Day {self.day_number}"
+
+class WorkoutExercise(models.Model):
+    """
+    Represents individual exercises for a specific workout day
+    """
+    EQUIPMENT_CHOICES = [
+        ('BODYWEIGHT', 'Bodyweight'),
+        ('DUMBBELL', 'Dumbbell'),
+        ('RESISTANCE_BAND', 'Resistance Band'),
+        ('NO_EQUIPMENT', 'No Equipment')
+    ]
+
+    workout_day = models.ForeignKey(WorkoutDay, on_delete=models.CASCADE, related_name='exercises')
+    name = models.CharField(max_length=200)
+    description = models.TextField()
+    sets = models.IntegerField()
+    reps = models.IntegerField()
+    rest_time = models.IntegerField(help_text="Rest time in seconds")
+    equipment = models.CharField(max_length=50, choices=EQUIPMENT_CHOICES)
+    demonstration_video_url = models.URLField(null=True, blank=True)
+    calories_burned = models.FloatField(default=0)
+
+class UserWorkoutProgress(models.Model):
+    """
+    Tracks user progress through workout programs
+    """
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    program = models.ForeignKey(WorkoutProgram, on_delete=models.CASCADE)
+    current_week = models.IntegerField(default=1)
+    current_day = models.IntegerField(default=1)
+    progress_percentage = models.FloatField(default=0)
+    
+    completed_workouts = models.ManyToManyField(WorkoutDay, related_name='completed_by')
+    total_calories_burned = models.FloatField(default=0)
+    total_workout_time = models.DurationField(default=timezone.timedelta)
+
+class UserExerciseProgress(models.Model):
+    """
+    Tracks individual exercise completions and progress
+    """
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    exercise = models.ForeignKey(WorkoutExercise, on_delete=models.CASCADE)
+    completed = models.BooleanField(default=False)
+    sets_completed = models.IntegerField(default=0)
+    time_spent = models.DurationField(default=timezone.timedelta)
+    calories_burned = models.FloatField(default=0)

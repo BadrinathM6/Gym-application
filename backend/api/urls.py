@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import LoginView, DietaryPreferenceUpdateView, PhysicalProfileUpdateView, BodyTypeProfileUpdateView, UserProfileDetailView, HomePageView, WorkoutListView, WorkoutCategoriesView, UserWorkoutView, FavoriteWorkoutToggleView, UserDetailView, AIChatView, DietaryPreferenceView, BodyTypeProfileView, PhysicalProfileView, AgeUpdateView
+from .views import WorkoutStartView, WorkoutDayListView, WorkoutCompleteView, UserWorkoutStatsView, WorkoutDayDetailView, WorkoutProgramListView, WorkoutProgramProgressView, LoginView, DietaryPreferenceUpdateView, PhysicalProfileUpdateView, BodyTypeProfileUpdateView, UserProfileDetailView, HomePageView, WorkoutListView, WorkoutCategoriesView, UserWorkoutView, FavoriteWorkoutToggleView, UserDetailView, AIChatView, DietaryPreferenceView, BodyTypeProfileView, PhysicalProfileView, AgeUpdateView
 from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
@@ -20,4 +20,11 @@ urlpatterns = [
     path('update-dietary-preferences/', DietaryPreferenceUpdateView.as_view(), name='update_dietary_preferences'),
     path('update-physical-profile/', PhysicalProfileUpdateView.as_view(), name='update_physical_profile'),
     path('update-body-type/', BodyTypeProfileUpdateView.as_view(), name='update_body_type'),
+    path('workout-programs/', WorkoutProgramListView.as_view(), name='workout_programs'),
+    path('workout-program/<int:program_id>/progress/', WorkoutProgramProgressView.as_view(), name='program_progress'),
+    path('workout-program/<int:program_id>/week/<int:week_number>/days/', WorkoutDayListView.as_view(), name='workout_days'),
+    path('workout-day/<int:day_id>/', WorkoutDayDetailView.as_view(), name='workout_day_detail'),
+    path('workout-day/<int:day_id>/start/', WorkoutStartView.as_view(), name='workout_start'),
+    path('workout-day/<int:day_id>/complete/', WorkoutCompleteView.as_view(), name='workout_complete'),
+    path('workout-stats/', UserWorkoutStatsView.as_view(), name='workout_stats'),
 ]

@@ -8,9 +8,13 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: #ff4040;
+    background-color: #c7e7d8;
     padding: 10px;
     position: relative; /* Allows the text to center relative to the entire header */
+  }
+
+  .workout-header h1{
+    color: #4E342E;
   }
   
   .back-button {
@@ -51,7 +55,7 @@
     justify-content: flex-end; /* Align content to the right */
     align-items: center;
     padding: 10px;
-    background-color: white;
+    background-color: #c7e7d8;
     gap: 10px; /* Add spacing between elements */
   }
   
@@ -59,7 +63,8 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    border: 1px solid #ccc;
+    background-color: #ffffff;
+    border: 1px solid  #4E342E;
     border-radius: 5px;
     overflow: hidden;
   }
@@ -80,7 +85,7 @@
   }
   
   .plan-button {
-    background-color: #ffa500;
+    background-color: #8BC34A;
     border: none;
     padding: 5px 10px;
     color: white;
@@ -99,7 +104,7 @@
   }
   
   .category-button {
-    background-color: #ff4040;
+    background-color: #ff9849;
     color: white;
     border: none;
     padding: 10px 15px;
@@ -120,7 +125,7 @@
   }
   
   .workout-card {
-    background-color: white;
+    background-color: #ffffff;
     border-radius: 10px;
     margin: 10px 0;
     display: flex;
@@ -168,8 +173,8 @@
     font-size: 14px;
   }
   
-  .start-button, .end-button {
-    background-color: #ffa500;
+  .start-button {
+    background-color: #8BC34A;
     color: white;
     border: none;
     border-radius: 20px;
@@ -211,7 +216,7 @@
   .workout-footer {
     display: flex;
     justify-content: space-between;
-    background-color: #ff4040;
+    background-color: #4E342E;
     padding: 10px;
     color: white;
   }
@@ -241,6 +246,10 @@
 
     .back-button{
       display: none;
+    }
+
+    .category-button{
+      background-color: #ff9849;
     }
 
     .favorite-button{
@@ -301,18 +310,18 @@
       flex-wrap: nowrap; /* Prevent buttons from wrapping */
       gap: 10px;
       padding: 0 10px; /* Add spacing between buttons */
-      margin: 0 0 0 52px;
+      margin: 0 0 0 0;
     }
     
     .category-button {
-      background-color: #ff4040;
+      background-color: #ff9849;
       color: white;
       border: none;
       border-radius: 20px;
       padding: 10px 15px;
       flex: 0 0 auto; /* Prevent buttons from shrinking */
       cursor: pointer;
-      transition: transform 0.2s;
+      /* transition: transform 0.2s; */
     }
 
     .category-button:first-of-type {
@@ -333,6 +342,26 @@
       text-align: center;
       padding-top: 20px;
       margin-top: 20px;
+    }
+  }
+
+  @media screen and (max-width: 376px) and (max-height: 900px){
+    .workout-categories {
+      display: flex;
+      flex-wrap: nowrap; /* Prevent buttons from wrapping */
+      gap: 10px;
+      padding: 0 10px; /* Add spacing between buttons */
+      margin: 0 0 0 52px;
+    }
+  }
+
+  @media screen and (max-width: 320px){
+    .workout-categories {
+      display: flex;
+      flex-wrap: nowrap; /* Prevent buttons from wrapping */
+      gap: 10px;
+      padding: 0 10px; /* Add spacing between buttons */
+      margin: 0 0 0 112px;
     }
   }
   

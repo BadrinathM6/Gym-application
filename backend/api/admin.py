@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext_lazy as _
-from .models import CustomUser, PhysicalProfile, HomeProgram, HomeBanner, DietaryPreference, BodyTypeProfile
+from .models import CustomUser, PhysicalProfile, HomeProgram, HomeBanner, DietaryPreference, BodyTypeProfile, WorkoutProgram, WorkoutDay, WorkoutExercise, UserWeekWorkout, UserWorkoutProgress, UserExerciseProgress
 
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
@@ -75,3 +75,61 @@ class BodyTypeProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'body_type', 'fitness_goal', 'created_at', 'updated_at')
     list_filter = ('body_type',)
     search_fields = ('user__user_id',)
+
+@admin.register(HomeProgram)
+class HomeProgramAdmin(admin.ModelAdmin):
+    list_display = ('title', 'category', 'active')
+    list_filter = ('category', 'active')
+    search_fields = ('title', 'description')
+
+# Admin for HomeBanner
+@admin.register(HomeBanner)
+class HomeBannerAdmin(admin.ModelAdmin):
+    list_display = ('title', 'subtitle', 'order', 'is_active')
+    list_filter = ('is_active',)
+    search_fields = ('title', 'subtitle')
+    ordering = ('order',)
+
+# Admin for WorkoutProgram
+@admin.register(WorkoutProgram)
+class WorkoutProgramAdmin(admin.ModelAdmin):
+    list_display = ('name', 'week', 'category', 'total_weeks')
+    list_filter = ('week', 'category')
+    search_fields = ('name', 'description')
+
+# Admin for WorkoutDay
+@admin.register(WorkoutDay)
+class WorkoutDayAdmin(admin.ModelAdmin):
+    list_display = ('program', 'week_number', 'day_number', 'difficulty')
+    list_filter = ('difficulty', 'program')
+    search_fields = ('program__name',)
+
+# Admin for WorkoutExercise
+@admin.register(WorkoutExercise)
+class WorkoutExerciseAdmin(admin.ModelAdmin):
+    list_display = ('name', 'workout_day', 'sets', 'reps', 'equipment')
+    list_filter = ('equipment', 'workout_day__program')
+    search_fields = ('name', 'description')
+
+# Admin for UserWeekWorkout
+@admin.register(UserWeekWorkout)
+class UserWeekWorkoutAdmin(admin.ModelAdmin):
+    list_display = ('user', 'workout', 'is_favorite', 'started_at', 'ended_at')
+    list_filter = ('is_favorite', 'workout__category')
+    search_fields = ('user__user_id', 'workout__name')
+
+# Admin for UserWorkoutProgress
+@admin.register(UserWorkoutProgress)
+class UserWorkoutProgressAdmin(admin.ModelAdmin):
+    list_display = ('user', 'program', 'current_week', 'current_day', 'progress_percentage')
+    list_filter = ('program', 'current_week')
+    search_fields = ('user__user_id', 'program__name')
+
+# Admin for UserExerciseProgress
+@admin.register(UserExerciseProgress)
+class UserExerciseProgressAdmin(admin.ModelAdmin):
+    list_display = ('user', 'exercise', 'completed', 'sets_completed', 'calories_burned')
+    list_filter = ('completed', 'exercise__workout_day__program')
+    search_fields = ('user__user_id', 'exercise__name')
+
+

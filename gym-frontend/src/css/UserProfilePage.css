@@ -9,10 +9,14 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #ff4040;
+    background-color: #c7e7d8;
     padding: 10px;
     margin: 0;
     position: relative; 
+  }
+
+  .profile-header h1{
+    color: #4E342E;
   }
 
   .logo-container {
@@ -79,7 +83,7 @@
   
   /* Stats Button */
   .stats-button {
-    background: #ffa500;
+    background: #ff9849;
     color: white;
     border: none;
     border-radius: 20px;

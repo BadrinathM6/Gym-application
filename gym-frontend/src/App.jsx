@@ -13,6 +13,7 @@ import AgePage from './componenets/AgePage';
 import ChatPage from './componenets/chatPage';
 import WorkoutPage from './componenets/WorkoutPage';
 import ProfilePage from './componenets/UseProfilePage';
+import WorkoutChallenge from './componenets/workoutDayPage';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -70,8 +71,9 @@ const App = () => {
         <Route path="/bmi-calculator" element={<AuthenticatedRoute element={BMIPage} />} />
         <Route path="/age" element={<AuthenticatedRoute element={AgePage} />} />
         <Route path="/ai-chat" element={<AuthenticatedRoute element={ChatPage} />} />
-        <Route path="/workout" element={<AuthenticatedRoute element={WorkoutPage} />} />
+        <Route path="/workout-week" element={<AuthenticatedRoute element={WorkoutPage} />} />
         <Route path="/user-profile" element={<AuthenticatedRoute element={ProfilePage} />} />
+        <Route path="/workout-day/:programId" element={<AuthenticatedRoute element={WorkoutChallenge} />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AnimatePresence>

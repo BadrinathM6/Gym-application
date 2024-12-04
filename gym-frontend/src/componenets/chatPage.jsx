@@ -35,7 +35,6 @@ const ChatPage = () => {
     setIsLoading(true);
 
     try {
-      setLoading(true)
       const response = await axiosInstance.post('/ai-chat/', { 
         message: inputMessage 
       });
@@ -59,8 +58,6 @@ const ChatPage = () => {
       };
       setMessages(prevMessages => [...prevMessages, errorMessage]);
       setIsLoading(false);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -71,17 +68,6 @@ const ChatPage = () => {
   };
 
   return (
-    <>
-    {(loading) ? (
-        <div className="loading-container">
-          <Player
-            autoplay
-            loop
-            src={loader}
-            style={{ width: 200, height: 200 }}
-          />
-        </div>
-    ) : (
         <div
           className="chat-page"
         >
@@ -142,8 +128,6 @@ const ChatPage = () => {
             </button>
           </div>
         </div>
-      )}
-    </>
   );
 };
 

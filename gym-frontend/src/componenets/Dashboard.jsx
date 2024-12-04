@@ -123,7 +123,7 @@ const HomePage = () => {
 
           <section className="section-buttons">
             <div className="button workout" 
-                onClick={() => navigate("/workout")}
+                onClick={() => navigate("/workout-week")}
                 style={{ cursor: "pointer", display: "flex", alignItems: "center",}}
             >
               <img src={workoutIcon} alt="Workout Icon"/>

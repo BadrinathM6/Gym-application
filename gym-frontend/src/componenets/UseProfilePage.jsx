@@ -160,7 +160,6 @@ const ProfilePage = () => {
   // Update save function
   const saveAllChanges = async () => {
     try {
-      setLoading(true);
       await axiosInstance.put('user/', {
         gender: tempUserDetails.gender,
         age: tempUserDetails.age
@@ -192,8 +191,6 @@ const ProfilePage = () => {
     } catch (error) {
       console.error('Error updating profile:', error);
       alert('Failed to update profile. Please try again.');
-    }finally{
-      setLoading(false);
     }
   };
 
