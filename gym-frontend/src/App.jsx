@@ -14,6 +14,8 @@ import ChatPage from './componenets/chatPage';
 import WorkoutPage from './componenets/WorkoutPage';
 import ProfilePage from './componenets/UseProfilePage';
 import WorkoutChallenge from './componenets/workoutDayPage';
+import DayWorkoutPage from './componenets/WorkoutListPage';
+import ExercisePage from './componenets/WorkoutDetailPage';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -74,6 +76,8 @@ const App = () => {
         <Route path="/workout-week" element={<AuthenticatedRoute element={WorkoutPage} />} />
         <Route path="/user-profile" element={<AuthenticatedRoute element={ProfilePage} />} />
         <Route path="/workout-day/:programId" element={<AuthenticatedRoute element={WorkoutChallenge} />} />
+        <Route path="/exercise-day/:dayId" element={<AuthenticatedRoute element={DayWorkoutPage} />} />
+        <Route path="/exercise/:exerciseId" element={<AuthenticatedRoute element={ExercisePage} />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AnimatePresence>

@@ -3,11 +3,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .serializers import LoginSerializer, UserProfileSerializer, UserWorkoutSerializer, WorkoutDaySerializer, WorkoutProgramSerializer, UserWorkoutProgressSerializer, HomeBannerSerializer, HomeProgramSerializer, AIChatSerializer, UserSerializer, DietaryPreferenceSerializer, BodyTypeProfileSerializer, PhysicalProfileSerializer
+from .serializers import LoginSerializer, UserExerciseProgressSerializer, UserProfileSerializer, UserWorkoutSerializer, WorkoutDaySerializer, WorkoutProgramSerializer, UserWorkoutProgressSerializer, HomeBannerSerializer, HomeProgramSerializer, AIChatSerializer, UserSerializer, DietaryPreferenceSerializer, BodyTypeProfileSerializer, PhysicalProfileSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from django.conf import settings
-from .models import DietaryPreference, BodyTypeProfile, PhysicalProfile, HomeProgram, HomeBanner, UserWeekWorkout, UserExerciseProgress, UserWorkoutProgress, WorkoutDay, WorkoutProgram
+from .models import DietaryPreference, BodyTypeProfile, PhysicalProfile, HomeProgram, HomeBanner, UserWeekWorkout, UserExerciseProgress, UserWorkoutProgress, WorkoutDay, WorkoutExercise, WorkoutProgram
 import cohere
 import logging
 import random
@@ -695,3 +695,137 @@ class UserWorkoutStatsView(APIView):
         }
         
         return Response(stats, status=status.HTTP_200_OK)
+    
+class ExerciseDetailView(APIView):
+    """
+    Retrieve details of a specific exercise
+    """
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request, exercise_id):
+        exercise = get_object_or_404(WorkoutExercise, id=exercise_id)
+        
+        # Check if user has existing progress for this exercise
+        user_progress, created = UserExerciseProgress.objects.get_or_create(
+            user=request.user,
+            exercise=exercise
+        )
+        
+        serializer = UserExerciseProgressSerializer(user_progress)
+        return Response({
+            'exercise': {
+                'id': exercise.id,
+                'name': exercise.name,
+                'description': exercise.description,
+                'default_duration': exercise.default_duration,
+                'default_reps': exercise.default_reps,
+                'demonstration_video_url': exercise.demonstration_video_url,
+                'animation_path': exercise.animation_path
+            },
+            'user_progress': serializer.data
+        }, status=status.HTTP_200_OK)
+
+class UpdateExerciseProgressView(APIView):
+    """
+    Update user's progress for a specific exercise
+    """
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def put(self, request, exercise_id):
+        exercise = get_object_or_404(WorkoutExercise, id=exercise_id)
+        
+        # Get or create user progress
+        user_progress, created = UserExerciseProgress.objects.get_or_create(
+            user=request.user,
+            exercise=exercise
+        )
+        
+        # Update progress
+        serializer = UserExerciseProgressSerializer(
+            user_progress, 
+            data=request.data, 
+            partial=True
+        )
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                'message': 'Exercise progress updated successfully',
+                'progress': serializer.data
+            }, status=status.HTTP_200_OK)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class WorkoutDayProgressView(APIView):
+    """
+    Track and calculate progress for an entire workout day
+    """
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request, day_id):
+        """
+        Get overall progress for a workout day
+        """
+        workout_day = get_object_or_404(WorkoutDay, id=day_id)
+        
+        # Get progress for each exercise in the day
+        exercise_progresses = []
+        total_calories_burned = 0
+        
+        for exercise in workout_day.exercises.all():
+            user_progress, _ = UserExerciseProgress.objects.get_or_create(
+                user=request.user,
+                exercise=exercise
+            )
+            
+            serializer = UserExerciseProgressSerializer(user_progress)
+            exercise_progresses.append(serializer.data)
+            total_calories_burned += user_progress.calories_burned
+        
+        return Response({
+            'workout_day': {
+                'id': workout_day.id,
+                'week_number': workout_day.week_number,
+                'day_number': workout_day.day_number
+            },
+            'exercises': exercise_progresses,
+            'total_calories_burned': total_calories_burned
+        }, status=status.HTTP_200_OK)
+
+    def post(self, request, day_id):
+        """
+        Complete a workout day and finalize progress
+        """
+        workout_day = get_object_or_404(WorkoutDay, id=day_id)
+        
+        # Update progress for each exercise
+        exercise_progresses = []
+        total_calories_burned = 0
+        
+        for exercise in workout_day.exercises.all():
+            user_progress, _ = UserExerciseProgress.objects.get_or_create(
+                user=request.user,
+                exercise=exercise
+            )
+            
+            # Update exercise progress from request data
+            progress_data = request.data.get(str(exercise.id), {})
+            serializer = UserExerciseProgressSerializer(
+                user_progress, 
+                data=progress_data, 
+                partial=True
+            )
+            
+            if serializer.is_valid():
+                serializer.save()
+                exercise_progresses.append(serializer.data)
+                total_calories_burned += serializer.data['calories_burned']
+        
+        return Response({
+            'message': 'Workout day completed successfully',
+            'exercises': exercise_progresses,
+            'total_calories_burned': total_calories_burned
+        }, status=status.HTTP_200_OK)

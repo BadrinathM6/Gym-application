@@ -107,8 +107,8 @@ class WorkoutDayAdmin(admin.ModelAdmin):
 # Admin for WorkoutExercise
 @admin.register(WorkoutExercise)
 class WorkoutExerciseAdmin(admin.ModelAdmin):
-    list_display = ('name', 'workout_day', 'sets', 'reps', 'equipment')
-    list_filter = ('equipment', 'workout_day__program')
+    list_display = ('id', 'name', 'description', 'default_duration', 'default_reps', 'calories_per_set', 'demonstration_video_url','animation_path')
+    list_filter = ('workout_day__program',)
     search_fields = ('name', 'description')
 
 # Admin for UserWeekWorkout
@@ -128,8 +128,8 @@ class UserWorkoutProgressAdmin(admin.ModelAdmin):
 # Admin for UserExerciseProgress
 @admin.register(UserExerciseProgress)
 class UserExerciseProgressAdmin(admin.ModelAdmin):
-    list_display = ('user', 'exercise', 'completed', 'sets_completed', 'calories_burned')
-    list_filter = ('completed', 'exercise__workout_day__program')
+    list_display = ('user', 'exercise', 'sets_completed', 'calories_burned')
+    list_filter = ('sets_completed', 'exercise__workout_day__program')
     search_fields = ('user__user_id', 'exercise__name')
 
 

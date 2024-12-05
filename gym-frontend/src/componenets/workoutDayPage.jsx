@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import axiosInstance from './utils/axiosInstance';
 import { Player } from '@lottiefiles/react-lottie-player';
@@ -15,6 +15,7 @@ const currentDay = 1;
 const WorkoutChallenge = () => {
   // State for managing workout data
   const { programId } = useParams();
+  const navigate = useNavigate();
   const [program, setProgram] = useState(null);
   const [progress, setProgress] = useState(0);
   const [currentWeek, setCurrentWeek] = useState(1);
@@ -75,7 +76,7 @@ const WorkoutChallenge = () => {
   const handleStartWorkout = async (dayId) => {
     try {
       await axiosInstance.post(`/workout-day/${dayId}/start/`);
-      // Navigate to workout detail or update UI
+      navigate(`/exercise-day/${dayId}`)
     } catch (err) {
       console.error("Failed to start workout", err);
     }

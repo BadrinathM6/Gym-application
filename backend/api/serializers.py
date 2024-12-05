@@ -177,8 +177,17 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class WorkoutExerciseSerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkoutExercise
-        fields = ['id', 'name', 'description', 'sets', 'reps', 'rest_time', 
-                  'equipment', 'demonstration_video_url', 'calories_burned']
+        fields = [
+            'id', 
+            'name', 
+            'description', 
+            'default_duration', 
+            'default_reps',
+            'default_set',
+            'calories_per_set',
+            'demonstration_video_url',
+            'animation_path'
+        ]
 
 class WorkoutDaySerializer(serializers.ModelSerializer):
     exercises = WorkoutExerciseSerializer(many=True, read_only=True)
@@ -215,5 +224,26 @@ class UserExerciseProgressSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = UserExerciseProgress
-        fields = ['user', 'exercise', 'completed', 'sets_completed', 
-                  'time_spent', 'calories_burned']
+        fields = [
+            'id', 
+            'exercise', 
+            'duration', 
+            'reps', 
+            'sets_completed', 
+            'calories_burned',
+            'created_at',
+            'updated_at'
+        ]
+        read_only_fields = ['calories_burned']
+
+    def update(self, instance, validated_data):
+        # Allow updating duration, reps, and sets_completed
+        instance.duration = validated_data.get('duration', instance.duration)
+        instance.reps = validated_data.get('reps', instance.reps)
+        instance.sets_completed = validated_data.get('sets_completed', instance.sets_completed)
+        
+        # Recalculate calories
+        instance.calories_burned = instance.calculate_calories()
+        instance.save()
+        
+        return instance

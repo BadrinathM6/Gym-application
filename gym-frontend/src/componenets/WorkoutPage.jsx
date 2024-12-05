@@ -77,7 +77,7 @@ const WorkoutPage = () => {
     ) : (
         <div className="workout-page">
           <header className="workout-header">
-            <button className="back-button" onClick={() => navigate('/')}>
+            <button className="back-button" onClick={() => window.history.back()}>
               <FaArrowLeft />
             </button>
             <div className="logo-container">

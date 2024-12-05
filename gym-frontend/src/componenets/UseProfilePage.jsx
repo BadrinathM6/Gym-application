@@ -251,7 +251,7 @@ const ProfilePage = () => {
         <div className="profile-page">
           {/* Header Section */}
           <header className="profile-header">
-            <button className="back-button" onClick={() => navigate("/")}>
+            <button className="back-button" onClick={() => window.history.back()}>
               <FaArrowLeft />
             </button>
             <div className="logo-container">

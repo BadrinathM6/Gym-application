@@ -230,12 +230,12 @@ class WorkoutExercise(models.Model):
     workout_day = models.ForeignKey(WorkoutDay, on_delete=models.CASCADE, related_name='exercises')
     name = models.CharField(max_length=200)
     description = models.TextField()
-    sets = models.IntegerField()
-    reps = models.IntegerField()
-    rest_time = models.IntegerField(help_text="Rest time in seconds")
-    equipment = models.CharField(max_length=50, choices=EQUIPMENT_CHOICES)
+    default_duration = models.IntegerField(default=20)  # in seconds
+    default_reps = models.IntegerField(default=10)
+    default_set= models.IntegerField(default=1)
+    calories_per_set = models.FloatField(default=0.5)  # estimated calories burned per set
     demonstration_video_url = models.URLField(null=True, blank=True)
-    calories_burned = models.FloatField(default=0)
+    animation_path = models.CharField(max_length=255, null=True, blank=True)
 
 class UserWorkoutProgress(models.Model):
     """
@@ -253,11 +253,32 @@ class UserWorkoutProgress(models.Model):
 
 class UserExerciseProgress(models.Model):
     """
-    Tracks individual exercise completions and progress
+    Track individual user's progress for a specific exercise
     """
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     exercise = models.ForeignKey(WorkoutExercise, on_delete=models.CASCADE)
-    completed = models.BooleanField(default=False)
+    
+    # Customizable exercise parameters
+    duration = models.IntegerField(default=20)  # in seconds
+    reps = models.IntegerField(default=10)
     sets_completed = models.IntegerField(default=0)
-    time_spent = models.DurationField(default=timezone.timedelta)
+    
+    # Calories tracking
     calories_burned = models.FloatField(default=0)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def calculate_calories(self):
+        """
+        Calculate calories burned based on sets, reps, and exercise type
+        """
+        return self.exercise.calories_per_set * self.sets_completed * self.reps
+
+    def save(self, *args, **kwargs):
+        # Auto-calculate calories when saving
+        self.calories_burned = self.calculate_calories()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.exercise.name} Progress"
