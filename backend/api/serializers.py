@@ -185,6 +185,7 @@ class WorkoutExerciseSerializer(serializers.ModelSerializer):
             'default_reps',
             'default_set',
             'calories_per_set',
+            'calories_per_minute',
             'demonstration_video_url',
             'animation_path'
         ]

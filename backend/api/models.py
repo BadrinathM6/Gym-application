@@ -234,6 +234,7 @@ class WorkoutExercise(models.Model):
     default_reps = models.IntegerField(default=10)
     default_set= models.IntegerField(default=1)
     calories_per_set = models.FloatField(default=0.5)  # estimated calories burned per set
+    calories_per_minute = models.FloatField(default=0)
     demonstration_video_url = models.URLField(null=True, blank=True)
     animation_path = models.CharField(max_length=255, null=True, blank=True)
 
@@ -259,7 +260,7 @@ class UserExerciseProgress(models.Model):
     exercise = models.ForeignKey(WorkoutExercise, on_delete=models.CASCADE)
     
     # Customizable exercise parameters
-    duration = models.IntegerField(default=20)  # in seconds
+    duration = models.IntegerField(default=0)  # in seconds
     reps = models.IntegerField(default=10)
     sets_completed = models.IntegerField(default=0)
     
@@ -271,9 +272,19 @@ class UserExerciseProgress(models.Model):
 
     def calculate_calories(self):
         """
-        Calculate calories burned based on sets, reps, and exercise type
+        Calculate calories burned based on sets, reps, and duration.
         """
-        return self.exercise.calories_per_set * self.sets_completed * self.reps
+        calories = 0.0
+
+        # Calories from sets
+        if self.sets_completed > 0:
+            calories += self.exercise.calories_per_set * self.sets_completed
+
+        # Calories from duration
+        if self.duration > 0:
+            calories += (self.duration / 60) * self.exercise.calories_per_minute
+
+        return round(calories, 2)
 
     def save(self, *args, **kwargs):
         # Auto-calculate calories when saving
