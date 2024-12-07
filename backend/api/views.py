@@ -3,11 +3,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .serializers import LoginSerializer, UserExerciseProgressSerializer, UserProfileSerializer, UserWorkoutSerializer, WorkoutDaySerializer, WorkoutProgramSerializer, UserWorkoutProgressSerializer, HomeBannerSerializer, HomeProgramSerializer, AIChatSerializer, UserSerializer, DietaryPreferenceSerializer, BodyTypeProfileSerializer, PhysicalProfileSerializer
+from .serializers import FoodCategorySerializer, FoodSerializer, LoginSerializer, UserExerciseProgressSerializer, UserFoodLogSerializer, UserProfileSerializer, UserWorkoutSerializer, WorkoutDaySerializer, WorkoutProgramSerializer, UserWorkoutProgressSerializer, HomeBannerSerializer, HomeProgramSerializer, AIChatSerializer, UserSerializer, DietaryPreferenceSerializer, BodyTypeProfileSerializer, PhysicalProfileSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from django.conf import settings
-from .models import DietaryPreference, BodyTypeProfile, PhysicalProfile, HomeProgram, HomeBanner, UserWeekWorkout, UserExerciseProgress, UserWorkoutProgress, WorkoutDay, WorkoutExercise, WorkoutProgram
+from .models import DietaryPreference, BodyTypeProfile, FavoriteFoods, Food, FoodCategory, PhysicalProfile, HomeProgram, HomeBanner, UserFoodLog, UserWeekWorkout, UserExerciseProgress, UserWorkoutProgress, WorkoutDay, WorkoutExercise, WorkoutProgram
 import cohere
 import logging
 import random
@@ -829,3 +829,369 @@ class WorkoutDayProgressView(APIView):
             'exercises': exercise_progresses,
             'total_calories_burned': total_calories_burned
         }, status=status.HTTP_200_OK)
+    
+class FoodCategoryListView(APIView):
+    """
+    Retrieve food categories filtered by body type
+    """
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        try:
+            # Retrieve the user's body type profile
+            try:
+                body_type_profile = BodyTypeProfile.objects.get(user=request.user)
+                body_type = body_type_profile.body_type
+            except BodyTypeProfile.DoesNotExist:
+                return Response(
+                    {"error": "No body type profile found for the user"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            categories = FoodCategory.objects.filter(bodytype__body_type=body_type)
+
+            # Fetch food categories based on body type
+            # if body_type == 'FLABBY':
+            #     categories = FoodCategory.objects.filter(body_type='FLABBY')
+            # elif body_type == 'SKINNY':
+            #     categories = FoodCategory.objects.filter(body_type='SKINNY')
+            # elif body_type == 'IDEAL':
+            #     categories = FoodCategory.objects.filter(body_type='IDEAL')
+            # else:
+            #     categories = FoodCategory.objects.filter(body_type__in=['FLABBY', 'SKINNY', 'IDEAL'])
+
+            # Check if categories exist
+            if not categories.exists():
+                return Response(
+                    {"error": f"No food categories found for {body_type} body type"},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+            # Serialize and return data
+            serializer = FoodCategorySerializer(categories, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response(
+                {"error": "Error retrieving food categories", "details": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+class FoodListView(APIView):
+    """
+    Retrieve food items filtered by body type and other parameters
+    """
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        try:
+            # Retrieve the user's body type profile
+            try:
+                body_type_profile = BodyTypeProfile.objects.get(user=request.user)
+                body_type = body_type_profile.body_type
+            except BodyTypeProfile.DoesNotExist:
+                return Response(
+                    {"error": "No body type profile found for the user"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            foods = Food.objects.filter(bodytype__body_type=body_type)
+
+            # Filter food items based on body type
+            # if body_type == 'FLABBY':
+            #     foods = Food.objects.filter(body_type='FLABBY')
+            # elif body_type == 'SKINNY':
+            #     foods = Food.objects.filter(body_type='SKINNY')
+            # elif body_type == 'IDEAL':
+            #     foods = Food.objects.filter(body_type='IDEAL')
+            # else:
+            #     foods = Food.objects.filter(body_type__in=['FLABBY', 'SKINNY', 'IDEAL'])
+
+            # Additional filtering: meal type and recommended status
+            meal_type = request.query_params.get('meal_type')
+            if meal_type:
+                foods = foods.filter(meal_type=meal_type)
+
+            recommended_only = request.query_params.get('recommended', 'false').lower() == 'true'
+            if recommended_only:
+                foods = foods.filter(is_recommended=True)
+
+            # Check if any foods exist
+            if not foods.exists():
+                return Response(
+                    {"error": f"No food items found for {body_type} body type"},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+            # Serialize and return data
+            serializer = FoodSerializer(foods, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response(
+                {"error": "Error retrieving food items", "details": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+class UserFoodLogView(APIView):
+    """
+    Manage user's food log with additional functionality
+    """
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        """
+        Retrieve user's food log for the current day
+        """
+        from django.utils import timezone
+        today = timezone.now().date()
+        
+        food_logs = UserFoodLog.objects.filter(
+            user=request.user, 
+            consumed_at__date=today
+        ).order_by('-consumed_at')
+        
+        serializer = UserFoodLogSerializer(food_logs, many=True)
+        
+        # Calculate total daily metrics
+        total_calories = sum(log.calories_consumed for log in food_logs)
+        
+        response_data = {
+            'food_logs': serializer.data,
+            'total_calories': total_calories
+        }
+        
+        return Response(response_data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        """
+        Log a food item consumption with additional validation
+        """
+        food_id = request.data.get('food_id')
+        quantity = request.data.get('quantity', 1)
+
+        try:
+            food = Food.objects.get(id=food_id)
+            
+            # Check if the food is suitable for user's body type
+            body_type_profile = BodyTypeProfile.objects.get(user=request.user)
+            if food.body_type not in [body_type_profile.body_type, 'IDEAL']:
+                return Response(
+                    {"error": "This food is not recommended for your body type"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            food_log = UserFoodLog.objects.create(
+                user=request.user,
+                food=food,
+                quantity=quantity
+            )
+
+            serializer = UserFoodLogSerializer(food_log)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        except Food.DoesNotExist:
+            return Response(
+                {"error": "Food item not found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except BodyTypeProfile.DoesNotExist:
+            return Response(
+                {"error": "No body type profile found"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+class DailyNutritionSummaryView(APIView):
+    """
+    Get daily nutrition summary for the user
+    """
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        today = timezone.now().date()
+
+        # Get today's food logs
+        food_logs = UserFoodLog.objects.filter(
+            user=request.user, 
+            consumed_at__date=today
+        )
+
+        # Calculate total nutrients
+        total_calories = sum(log.calories_consumed for log in food_logs)
+        total_protein = sum(log.food.protein * log.quantity for log in food_logs)
+        total_carbs = sum(log.food.carbs * log.quantity for log in food_logs)
+        total_fat = sum(log.food.fat * log.quantity for log in food_logs)
+
+        # Get user's body type profile
+        try:
+            body_type_profile = PhysicalProfile.objects.get(user=request.user)
+            bmi = body_type_profile.bmi
+            weight = body_type_profile.weight
+        except PhysicalProfile.DoesNotExist:
+            bmi = None
+            weight = None
+
+        summary = {
+            'total_calories': total_calories,
+            'total_protein': total_protein,
+            'total_carbs': total_carbs,
+            'total_fat': total_fat,
+            'bmi': bmi,
+            'weight': weight
+        }
+
+        return Response(summary, status=status.HTTP_200_OK)
+    
+class FoodCategoriesView(APIView):
+    """
+    Get list of food categories
+    """
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        """
+        Return list of food category choices
+        """
+        categories = [choice[0] for choice in FoodCategory.CATEGORY_CHOICES]
+        return Response(categories, status=status.HTTP_200_OK)
+    
+class FavoriteFoodView(APIView):
+    """
+    Manage user's favorite foods
+    """
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def post(self, request):
+        """
+        Add or remove a food item from favorites
+        """
+        food_id = request.data.get('food_id')
+        
+        try:
+            food = Food.objects.get(id=food_id)
+            
+            # Check if the food is already a favorite
+            favorite, created = FavoriteFoods.objects.get_or_create(
+                user=request.user,
+                food=food
+            )
+            
+            if not created:
+                # If already exists, remove from favorites
+                favorite.delete()
+                return Response(
+                    {"message": "Food removed from favorites", "is_favorite": False},
+                    status=status.HTTP_200_OK
+                )
+            
+            return Response(
+                {"message": "Food added to favorites", "is_favorite": True},
+                status=status.HTTP_201_CREATED
+            )
+
+        except Food.DoesNotExist:
+            return Response(
+                {"error": "Food item not found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+    def get(self, request):
+        """
+        Retrieve user's favorite foods
+        """
+        favorite_foods = FavoriteFoods.objects.filter(user=request.user)
+        
+        # Use the context to pass request for is_favorite method
+        serializer = FoodSerializer(
+            [fav.food for fav in favorite_foods], 
+            many=True, 
+            context={'request': request}
+        )
+        
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class MealTypeFilterView(APIView):
+    """
+    Retrieve foods by meal type with consumption tracking
+    """
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        """
+        Retrieve foods for a specific meal type
+        """
+        try:
+            # Get user's body type
+            body_type_profile = BodyTypeProfile.objects.get(user=request.user)
+            body_type = body_type_profile.body_type
+
+            # Get meal type from query parameters
+            meal_type = request.query_params.get('meal_type')
+            if not meal_type:
+                return Response(
+                    {"error": "Meal type is required"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # Get today's consumed foods for the specific meal type
+            consumed_foods = UserFoodLog.objects.filter(
+                user=request.user,
+                food__meal_type=meal_type,
+                consumed_at__date=timezone.now().date()
+            ).values_list('food_id', flat=True)
+
+            # Filter foods
+            foods = Food.objects.filter(
+                Q(bodytype__body_type=body_type) | Q(bodytype__body_type='IDEAL'),
+                meal_type=meal_type
+            ).exclude(id__in=consumed_foods)
+
+            # Use the context to pass request for is_favorite method
+            serializer = FoodSerializer(
+                foods, 
+                many=True, 
+                context={'request': request}
+            )
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Food.DoesNotExist:
+            return Response(
+                {"error": "Food item not found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+    
+
+    def post(self, request):
+        """
+        Mark food as consumed for a specific meal type
+        """
+        food_id = request.data.get('food_id')
+        
+        try:
+            food = Food.objects.get(id=food_id)
+            
+            # Create food log entry
+            food_log = UserFoodLog.objects.create(
+                user=request.user,
+                food=food,
+                quantity=1  # Default quantity
+            )
+            
+            # Serialize the consumed food log
+            serializer = UserFoodLogSerializer(food_log)
+            
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        except Food.DoesNotExist:
+            return Response(
+                {"error": "Food item not found"},
+                status=status.HTTP_404_NOT_FOUND
+            )

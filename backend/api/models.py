@@ -293,3 +293,65 @@ class UserExerciseProgress(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.exercise.name} Progress"
+
+class FoodCategory(models.Model):
+
+    name = models.CharField(max_length=100)
+    bodytype = models.ForeignKey(BodyTypeProfile, on_delete=models.CASCADE)
+    description = models.TextField(blank=True, null=True)
+    image_path = models.CharField(max_length=255, blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.name} - {self.body_type} - {self.category}"
+
+class Food(models.Model):
+    MEAL_TYPE_CHOICES = [
+        ('BREAKFAST', 'Breakfast'),
+        ('LUNCH', 'Lunch'),
+        ('DINNER', 'Dinner'),
+        ('SNACKS', 'Snacks')
+    ]
+    
+    name = models.CharField(max_length=200)
+    description = models.TextField(blank=True, null=True)
+    bodytype = models.ForeignKey(BodyTypeProfile, on_delete=models.CASCADE)
+    meal_type = models.CharField(max_length=20, choices=MEAL_TYPE_CHOICES)
+    calories = models.IntegerField()
+    protein = models.DecimalField(max_digits=5, decimal_places=2)
+    carbs = models.DecimalField(max_digits=5, decimal_places=2)
+    fat = models.DecimalField(max_digits=5, decimal_places=2)
+    serving_size = models.CharField(max_length=100)
+    image_path = models.CharField(max_length=255, blank=True, null=True)
+    is_recommended = models.BooleanField(default=False)
+
+class UserFoodLog(models.Model):
+    """
+    Tracks user's food consumption
+    """
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    food = models.ForeignKey(Food, on_delete=models.CASCADE)
+    quantity = models.DecimalField(max_digits=5, decimal_places=2)
+    consumed_at = models.DateTimeField(auto_now_add=True)
+    calories_consumed = models.IntegerField()
+
+    def save(self, *args, **kwargs):
+        """
+        Calculate calories consumed based on quantity
+        """
+        self.calories_consumed = self.food.calories * float(self.quantity)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.user.user_id} - {self.food.name} - {self.consumed_at}"
+    
+class FavoriteFoods(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    food = models.ForeignKey(Food, on_delete=models.CASCADE)
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'food')
+
+    def __str__(self):
+        return f"{self.user.username}'s favorite - {self.food.name}"

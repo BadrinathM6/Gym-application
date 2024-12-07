@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser, DietaryPreference, PhysicalProfile, BodyTypeProfile, HomeBanner, HomeProgram, WorkoutProgram, WorkoutExercise, WorkoutDay, UserExerciseProgress, UserWorkoutProgress, UserWeekWorkout
+from .models import CustomUser, FavoriteFoods, FoodCategory, Food, UserFoodLog, DietaryPreference, PhysicalProfile, BodyTypeProfile, HomeBanner, HomeProgram, WorkoutProgram, WorkoutExercise, WorkoutDay, UserExerciseProgress, UserWorkoutProgress, UserWeekWorkout
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -248,3 +248,61 @@ class UserExerciseProgressSerializer(serializers.ModelSerializer):
         instance.save()
         
         return instance
+    
+class FoodCategorySerializer(serializers.ModelSerializer):
+    body_type = serializers.CharField(source='bodytype.body_type')
+    class Meta:
+        model = FoodCategory
+        fields = [
+            'id', 
+            'name', 
+            'body_type',
+            'description', 
+            'image_path'
+        ]
+
+class FoodSerializer(serializers.ModelSerializer):
+    body_type = serializers.CharField(source='bodytype.body_type', read_only=True)
+    category_name = serializers.CharField(source='category.name', read_only=True)
+    category_body_type = serializers.CharField(source='category.bodytype.body_type', read_only=True)
+    is_favorite = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Food
+        fields = [
+            'id', 
+            'name', 
+            'description', 
+            'body_type',
+            'category_name',
+            'category_body_type',
+            'meal_type',
+            'calories', 
+            'protein', 
+            'carbs', 
+            'fat', 
+            'serving_size', 
+            'image_path',
+            'is_recommended',
+            'is_favorite'
+        ]
+
+    def get_is_favorite(self, obj):
+        # Check if the food is in user's favorites
+        user = self.context.get('request').user
+        return FavoriteFoods.objects.filter(user=user, food=obj).exists()
+
+class UserFoodLogSerializer(serializers.ModelSerializer):
+    food = FoodSerializer(read_only=True)
+    
+    class Meta:
+        model = UserFoodLog
+        fields = [
+            'id', 
+            'user', 
+            'food', 
+            'quantity', 
+            'consumed_at', 
+            'calories_consumed'
+        ]
+        read_only_fields = ['calories_consumed', 'consumed_at']

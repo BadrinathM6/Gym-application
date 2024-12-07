@@ -1,10 +1,10 @@
 from django.urls import path
-from .views import ExerciseDetailView, UpdateExerciseProgressView, WorkoutDayProgressView, WorkoutStartView, WorkoutDayListView, WorkoutCompleteView, UserWorkoutStatsView, WorkoutDayDetailView, WorkoutProgramListView, WorkoutProgramProgressView, LoginView, DietaryPreferenceUpdateView, PhysicalProfileUpdateView, BodyTypeProfileUpdateView, UserProfileDetailView, HomePageView, WorkoutListView, WorkoutCategoriesView, UserWorkoutView, FavoriteWorkoutToggleView, UserDetailView, AIChatView, DietaryPreferenceView, BodyTypeProfileView, PhysicalProfileView, AgeUpdateView
+from .views import DailyNutritionSummaryView, ExerciseDetailView, FavoriteFoodView, FoodCategoriesView, FoodCategoryListView, FoodListView, MealTypeFilterView, UpdateExerciseProgressView, UserFoodLogView, WorkoutDayProgressView, WorkoutStartView, WorkoutDayListView, WorkoutCompleteView, UserWorkoutStatsView, WorkoutDayDetailView, WorkoutProgramListView, WorkoutProgramProgressView, LoginView, DietaryPreferenceUpdateView, PhysicalProfileUpdateView, BodyTypeProfileUpdateView, UserProfileDetailView, HomePageView, WorkoutListView, WorkoutCategoriesView, UserWorkoutView, FavoriteWorkoutToggleView, UserDetailView, AIChatView, DietaryPreferenceView, BodyTypeProfileView, PhysicalProfileView, AgeUpdateView
 from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
     path('user/', UserDetailView.as_view(), name='Dasboard'),
-     path('update-age/', AgeUpdateView.as_view(), name='update_age'),
+    path('update-age/', AgeUpdateView.as_view(), name='update_age'),
     path('login/', LoginView.as_view(), name='login'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('dietary-preferences/', DietaryPreferenceView.as_view(), name='dietary_preferences'),
@@ -30,4 +30,11 @@ urlpatterns = [
     path('exercise/<int:exercise_id>/', ExerciseDetailView.as_view(), name='exercise_detail'),
     path('exercise/<int:exercise_id>/update/', UpdateExerciseProgressView.as_view(), name='update_exercise_progress'),
     path('workout-day/<int:day_id>/progress/', WorkoutDayProgressView.as_view(), name='workout_day_progress'),
+    path('food-categories/', FoodCategoryListView.as_view(), name='food-categories'),
+    path('food-category-types/', FoodCategoriesView.as_view(), name='food-category-types'),
+    path('foods/', FoodListView.as_view(), name='food-list'),
+    path('food-log/', UserFoodLogView.as_view(), name='food-log'),
+    path('daily-nutrition-summary/', DailyNutritionSummaryView.as_view(), name='daily-nutrition-summary'),
+    path('favorite-foods/', FavoriteFoodView.as_view(), name='favorite-foods'),
+    path('meal-type-foods/', MealTypeFilterView.as_view(), name='meal-type-foods'),
 ]

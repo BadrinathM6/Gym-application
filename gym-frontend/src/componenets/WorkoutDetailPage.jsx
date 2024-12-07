@@ -6,7 +6,6 @@ import '../css/WorkoutDetailPage.css';
 import { FaArrowLeft } from "react-icons/fa";
 import logo from '../assets/logo.png'
 import loader from './Main Scene.json';
-import targetEvaluation from './target-evaluation.json';
 import FooterNav from "./FooterNav";
 import { Player } from '@lottiefiles/react-lottie-player';
 import CongratsModal from '../constants/congratsModal';

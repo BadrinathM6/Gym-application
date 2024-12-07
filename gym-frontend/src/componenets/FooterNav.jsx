@@ -18,7 +18,7 @@ const FooterNav = () => {
       <button className="footer-button" onClick={() => navigate("/workout-week")}>
         <img src={workoutIcon} alt="workout" />
       </button>
-      <button className="footer-button" onClick={() => navigate("/food")}>
+      <button className="footer-button" onClick={() => navigate("/foodpage")}>
         <img src={foodIcon} alt="food" />
       </button>
       <button className="footer-button" onClick={() => navigate("/user-profile")}>
