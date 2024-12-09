@@ -1,13 +1,13 @@
-/* General Styles */
+
   .page-container {
     font-family: 'Sour Gummy', sans-serif;
-    background-color: #fff;
+    background-color: #252B2D;
     height: 100vh;
   }
   
   
-  .challenge-header {
-    background-color: #c7e7d8;
+  .challenge-headers {
+    background-color: #252B2D;
     color: #fff;
     padding: 10px;
     display: flex;
@@ -17,7 +17,7 @@
   }
 
   .challenge-header h1{
-    color: #4E342E;
+    color: #ffffff;
   }
   
   .back-button {
@@ -67,11 +67,15 @@
     margin: 4px 0;
   }
   
-  .header-image {
+  .header-images {
     width: 100%;
     border-radius: 12px;
-    max-height: 200px;
+    height: 200px;
     object-fit: cover;
+    background-image: url("../assets/headerbg.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
   }
   
   /* Workout List Section */
@@ -85,6 +89,10 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 16px;
+  }
+
+  .workout-header2 p{
+    color: #ffffff;
   }
   
   .workout-summary {
@@ -124,6 +132,7 @@
   .workout-name {
     font-size: 16px;
     margin: 0 0 4px 0;
+    color: #ffffff;
   }
   
   .workout-metrics {
@@ -131,15 +140,21 @@
     color: #888;
     margin: 0;
   }
+
+  .workout-button{
+    display: flex;
+    justify-content: center;
+  }
   
   /* Start Button */
   .start-buttons {
     margin-top: 16px;
-    width: 100%;
+    width: 20%;
+    margin: 20px 0px;
     padding: 12px;
     font-size: 18px;
     color: #fff;
-    background-color: green;
+    background-color: #0ADD87;
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -161,5 +176,14 @@
       text-align: center;
       padding-top: 20px;
       margin-top: 20px;
+    }
+
+    .header-images {
+      background-image: url("../assets/dayheader.jpg");
+      height: 200px;
+    }
+
+    .start-buttons{
+      width: 40%;
     }
   }

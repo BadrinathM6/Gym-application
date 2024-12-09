@@ -11,7 +11,8 @@
     position: fixed;
     bottom: 0;
     width: 100%;
-    background-color: #EEB163; 
+    background: linear-gradient(to right, #6699CC, #33CC99); 
+    /* background-color: #CA8AC7; */
     border-top: 1px solid #ddd;
     padding: 10px 0;
     z-index: 10;

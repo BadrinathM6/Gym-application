@@ -6,7 +6,7 @@
 
 /* Homepage Layout */
 .homepage {
-  background-color:#c7e7d8;
+  background-color:#252B2D;
   font-family: 'Sour Gummy', sans-serif;
 }
 
@@ -15,7 +15,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #c7e7d8;
+  background-color: #252B2D;
   padding: 10px 10px;
   width: 100%;
 }
@@ -30,7 +30,7 @@
 }
 
 .header-top h1{
-  color: #4E342E;
+  color:  #FFFFFF;
 }
 
 .gym-logo {
@@ -42,7 +42,6 @@
 .header-title {
   font-size: 24px;
   font-weight: bold;
-  color: #333;
   margin: 0 auto;
   text-align: center;
 }
@@ -204,7 +203,7 @@
 .programs h2 {
   margin-bottom: 20px;
   font-size: 24px;
-  color: #333;
+  color:  #FFFFFF;
 }
 
 .program-grid {
@@ -215,7 +214,7 @@
 
 .program-card {
   position: relative;
-  background-color: white;
+  background-color: #FFFFFF;
   border-radius: 10px;
   padding: 15px;
   text-align: center;

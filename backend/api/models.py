@@ -331,7 +331,7 @@ class UserFoodLog(models.Model):
     """
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     food = models.ForeignKey(Food, on_delete=models.CASCADE)
-    quantity = models.DecimalField(max_digits=5, decimal_places=2)
+    serving_size = models.DecimalField(max_digits=5, decimal_places=2, default=100)
     consumed_at = models.DateTimeField(auto_now_add=True)
     calories_consumed = models.IntegerField()
 
@@ -339,7 +339,7 @@ class UserFoodLog(models.Model):
         """
         Calculate calories consumed based on quantity
         """
-        self.calories_consumed = self.food.calories * float(self.quantity)
+        self.calories_consumed = self.food.calories * (self.serving_size)
         super().save(*args, **kwargs)
 
     def __str__(self):

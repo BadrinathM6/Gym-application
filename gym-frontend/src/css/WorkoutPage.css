@@ -1,6 +1,6 @@
 .workout-page {
     font-family: 'Sour Gummy', sans-serif;
-    background-color: #c7e7d8;
+    background-color: #252B2D;
     color: #333;
   }
   
@@ -8,13 +8,13 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: #c7e7d8;
+    background-color: #252B2D;
     padding: 10px;
     position: relative; /* Allows the text to center relative to the entire header */
   }
 
   .workout-header h1{
-    color: #4E342E;
+    color: #ffffff;
   }
   
   .back-button {
@@ -55,7 +55,7 @@
     justify-content: flex-end; /* Align content to the right */
     align-items: center;
     padding: 10px;
-    background-color: #c7e7d8;
+    background-color: #252B2D;
     gap: 10px; /* Add spacing between elements */
   }
   
@@ -216,7 +216,7 @@
   .workout-footer {
     display: flex;
     justify-content: space-between;
-    background-color: #4E342E;
+    background-color: #252B2D;
     padding: 10px;
     color: white;
   }
@@ -294,7 +294,7 @@
       overflow-x: auto;
       display: flex;
       padding: 10px;
-      background-color: white;
+      background-color: #252B2D;
       margin: 0;
       scrollbar-width: none; /* For Firefox */
       -ms-overflow-style: none; /* For IE and Edge */

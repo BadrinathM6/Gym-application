@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 // import Lottie from "lottie-react";
 import axiosInstance from './utils/axiosInstance';
-import headerBgImg from "../assets/dayheader.jpg";
+import headerBgImg from "../assets/headerbg.png";
 import '../css/WorkoutListPage.css';
 import { FaArrowLeft } from "react-icons/fa";
 import logo from '../assets/logo.png'
@@ -89,7 +89,7 @@ const DayWorkoutPage = () => {
     ) : (
         <div className="page-container">
 
-          <div className="challenge-header">
+          <div className="challenge-headers">
             <button className="back-button" onClick={() => window.history.back()}>
               <FaArrowLeft />
             </button>
@@ -105,11 +105,7 @@ const DayWorkoutPage = () => {
               <h1 className="day-title">Day {workoutDay.day_number}</h1>
               <p className="workout-info">9 mins • {exercises.length} Workouts</p>
             </div>
-            <img
-              src={headerBgImg}
-              alt="Workout"
-              className="header-image"
-            />
+            <div className="header-images"></div>
           </div>
 
           {/* Workout List Section */}
@@ -160,12 +156,14 @@ const DayWorkoutPage = () => {
           </div>
 
           {/* Start Button */}
-          <button 
-            className="start-buttons"
-            onClick={handleStartWorkout}
-          >
-            START WORKOUT
-          </button>
+          <div className="workout-button">
+            <button 
+              className="start-buttons"
+              onClick={handleStartWorkout}
+            >
+              START WORKOUT
+            </button>
+          </div>
           
           <div className="foot">
             <FooterNav/>

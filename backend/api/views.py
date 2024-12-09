@@ -971,7 +971,7 @@ class UserFoodLogView(APIView):
         Log a food item consumption with additional validation
         """
         food_id = request.data.get('food_id')
-        quantity = request.data.get('quantity', 1)
+        serving_size = request.data.get('serving_size', 1)
 
         try:
             food = Food.objects.get(id=food_id)
@@ -987,7 +987,7 @@ class UserFoodLogView(APIView):
             food_log = UserFoodLog.objects.create(
                 user=request.user,
                 food=food,
-                quantity=quantity
+                serving_size=serving_size
             )
 
             serializer = UserFoodLogSerializer(food_log)
@@ -1022,9 +1022,9 @@ class DailyNutritionSummaryView(APIView):
 
         # Calculate total nutrients
         total_calories = sum(log.calories_consumed for log in food_logs)
-        total_protein = sum(log.food.protein * log.quantity for log in food_logs)
-        total_carbs = sum(log.food.carbs * log.quantity for log in food_logs)
-        total_fat = sum(log.food.fat * log.quantity for log in food_logs)
+        total_protein = sum(log.food.protein * log.serving_size for log in food_logs)
+        total_carbs = sum(log.food.carbs * log.serving_size for log in food_logs)
+        total_fat = sum(log.food.fat * log.serving_size for log in food_logs)
 
         # Get user's body type profile
         try:
@@ -1132,28 +1132,37 @@ class MealTypeFilterView(APIView):
             body_type_profile = BodyTypeProfile.objects.get(user=request.user)
             body_type = body_type_profile.body_type
 
-            # Get meal type from query parameters
+            # Base queryset for foods matching the user's body type
+            foods = Food.objects.filter(bodytype__body_type=body_type)
+
+            # Apply meal type filter if provided
             meal_type = request.query_params.get('meal_type')
-            if not meal_type:
+            if meal_type:
+                foods = foods.filter(meal_type=meal_type)
+
+            # Apply 'recommended only' filter if specified
+            recommended_only = request.query_params.get('recommended', 'false').lower() == 'true'
+            if recommended_only:
+                foods = foods.filter(is_recommended=True)
+
+            # Check if any foods exist
+            if not foods.exists():
                 return Response(
-                    {"error": "Meal type is required"},
-                    status=status.HTTP_400_BAD_REQUEST
+                    {"error": f"No food items found for {body_type} body type"},
+                    status=status.HTTP_404_NOT_FOUND
                 )
 
-            # Get today's consumed foods for the specific meal type
+            # Get today's consumed food IDs for the user and meal type
             consumed_foods = UserFoodLog.objects.filter(
                 user=request.user,
                 food__meal_type=meal_type,
                 consumed_at__date=timezone.now().date()
             ).values_list('food_id', flat=True)
 
-            # Filter foods
-            foods = Food.objects.filter(
-                Q(bodytype__body_type=body_type) | Q(bodytype__body_type='IDEAL'),
-                meal_type=meal_type
-            ).exclude(id__in=consumed_foods)
+            # Exclude consumed foods
+            foods = foods.exclude(id__in=consumed_foods)
 
-            # Use the context to pass request for is_favorite method
+            # Serialize and return the filtered foods
             serializer = FoodSerializer(
                 foods, 
                 many=True, 
@@ -1174,6 +1183,7 @@ class MealTypeFilterView(APIView):
         Mark food as consumed for a specific meal type
         """
         food_id = request.data.get('food_id')
+        serving_size = request.data.get('serving_size')
         
         try:
             food = Food.objects.get(id=food_id)
@@ -1182,7 +1192,7 @@ class MealTypeFilterView(APIView):
             food_log = UserFoodLog.objects.create(
                 user=request.user,
                 food=food,
-                quantity=1  # Default quantity
+                serving_size=serving_size # Default quantity
             )
             
             # Serialize the consumed food log

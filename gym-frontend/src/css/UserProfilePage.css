@@ -8,7 +8,7 @@
   .profile-page {
     font-family: 'Sour Gummy', sans-serif;
     color: #333;
-    background: #c7e7d8;
+    background: #252B2D;
   }
   
   /* Header Section */
@@ -16,14 +16,14 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #c7e7d8;
+    background-color: #252B2D;
     padding: 10px;
     margin: 0;
     position: relative; 
   }
 
   .profile-header h1{
-    color: #4E342E;
+    color: #ffffff;
   }
 
   .logo-container {
@@ -39,7 +39,7 @@
   .header-title {
     flex: 1; /* Ensures the title takes up available space */
     text-align: center; /* Centers the text */
-    color: white;
+    color: #ffffff;
     font-size: 24px;
     font-weight: bold;
   }
@@ -78,7 +78,7 @@
   .user-name {
     font-size: 18px;
     margin-top: 10px;
-    color: #064e3b;
+    color: #ffffff;
   }
 
   .button-container{

@@ -288,9 +288,18 @@ class FoodSerializer(serializers.ModelSerializer):
         ]
 
     def get_is_favorite(self, obj):
+        # Check if the request is available in the context
+        request = self.context.get('request')
+        
+        # If no request or user is not authenticated, return False
+        if not request or not request.user.is_authenticated:
+            return False
+        
         # Check if the food is in user's favorites
-        user = self.context.get('request').user
-        return FavoriteFoods.objects.filter(user=user, food=obj).exists()
+        return FavoriteFoods.objects.filter(
+            user=request.user, 
+            food=obj
+        ).exists()
 
 class UserFoodLogSerializer(serializers.ModelSerializer):
     food = FoodSerializer(read_only=True)
@@ -301,7 +310,7 @@ class UserFoodLogSerializer(serializers.ModelSerializer):
             'id', 
             'user', 
             'food', 
-            'quantity', 
+            'serving_size', 
             'consumed_at', 
             'calories_consumed'
         ]

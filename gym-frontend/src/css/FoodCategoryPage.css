@@ -1,7 +1,6 @@
 .food-page {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    background-color:#c7e7d8;
+    font-family: 'Sour Gummy', sans-serif;
+    background-color:#252B2D;
     height: 100vh;
   }
   
@@ -11,6 +10,7 @@
     justify-content: space-between;
     gap: 5px;
   }
+
   .backward-arrow {
     font-size: 24px;
     color: #333;
@@ -18,10 +18,20 @@
     position: absolute;
     left: 10px;
   }
-.food-header h1 {
+
+  .challenge-logo {
+    height: 30px;
+    transform: scale(2.7);
+    border-radius: 50px;
+    margin-bottom: 50px;
+    margin-top: 20px;
+  }
+
+  .food-header h1 {
     margin-left: 15px;
     color: black;
   }
+
   .food-list {
     display: flex;
     flex-direction: column;
@@ -30,14 +40,16 @@
   
   .food-card {
     display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 16px;
-  background-color:#c7e7d8;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  position: relative;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    background-color:#ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    margin: 5px 15px;
   }
   .food-details {
     flex-grow: 1;
@@ -48,6 +60,10 @@
     margin: 0 0 8px;
     font-size: 18px;
     font-weight: bold;
+    /* background: linear-gradient(to right, #6699CC, #33CC99);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; */
+    color: #0f73a8;
   }
   
   .food-details p {
@@ -75,20 +91,51 @@
   .like-icon {
     cursor: pointer;
   }
+
+  .food-footer{
+    display: flex;
+    justify-content: center;
+  }
   
   .open-now-button {
-    width: 100%;
+    width: 15%;
     padding: 12px;
-    background-color: #4caf50;
+    background: linear-gradient(to right, #6699CC, #33CC99);
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 10px;
     font-size: 16px;
     cursor: pointer;
-    margin-top: 10px;
+    margin-top: 15px;
+    margin-bottom: 25px;
   }
   
   .open-now-button:hover {
     background-color: #45a049;
+  }
+
+  .foot{
+    display: none;
+    color: white;
+    text-align: center;
+    padding-top: 20px;
+    margin-top: 20px;
+  }
+
+  @media screen and (max-width: 430px) and (max-height: 932px){
+
+    .foot{
+      display: block;
+      color: white;
+      text-align: center;
+      padding-top: 20px;
+      margin-top: 20px;
+    }
+
+    .open-now-button{
+      width: 30%;
+    }
+
+
   }
   

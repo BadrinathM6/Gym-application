@@ -96,7 +96,7 @@ const WorkoutChallenge = () => {
     ) : (
         <div className="challenge-container">
           {/* Header and Progress Section */}
-          <div className="challenge-header">
+          <div className="challenge-headers">
             <button className="back-button" onClick={() => window.history.back()}>
               <FaArrowLeft />
             </button>

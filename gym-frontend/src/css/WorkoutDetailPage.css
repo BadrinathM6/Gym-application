@@ -10,7 +10,7 @@
   }
 
   .challenge-header {
-    background-color: #c7e7d8;
+    background-color: #252B2D;
     color: #fff;
     padding: 10px;
     display: flex;
@@ -20,7 +20,7 @@
   }
 
   .challenge-header h1{
-    color: #4E342E;
+    color: #ffffff;
   }
   
   .back-button {
@@ -89,16 +89,18 @@
     justify-content: center;
     margin-bottom: 20px;
     padding: 20px 20px 0px;
+    gap: 40px;
   }
   
   .tab-button {
-    flex: 2;
+    /* flex: 2; */
     padding: 10px;
     border: none;
     cursor: pointer;
     background-color: #f1f1f1;
     font-weight: bold;
     border-radius: 5px;
+    width: 40%;
     
   }
   
@@ -115,20 +117,36 @@
   .exercise-details p{
     margin-top: 10px;
     padding: 5px;
+    color: #ffffff;
   }
   .exercise-details h2{
     margin-top: 10px;
+    color: #ffffff;
   }
+
+  .duration-section{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
   .duration-control {
     display: flex;
     align-items: center;
     gap: 10px;
   }
-  .duration-control h2{
+
+  .duration-control span{
     margin-top: 10px;
+    color: #ffffff;
   }
+
   .duration-control button {
+    margin-top: 10px;
     padding: 5px 10px;
+    color: #ffffff;
+    background-color: #0056b3;
   }
 
   .footer-land {
@@ -137,6 +155,10 @@
     align-items: center; /* Center vertically */
     padding: 20px; /* Optional padding for spacing */
     gap: 10px; /* Space between elements */
+  }
+
+  .footer-land p{
+    color: #ffffff;
   }
   
   .exercise-footer {

@@ -256,7 +256,7 @@ const ExercisePage = () => {
           <div className="exercise-details">
             {duration > 0 && (
                 <div className="duration-section">
-                  <h2>DURATION</h2>
+                  <h2 className="duration-text">DURATION</h2>
                   <div className="duration-control">
                     <button onClick={handleDecrementDuration}>-</button>
                     <span>{formatDuration(duration)}</span>
