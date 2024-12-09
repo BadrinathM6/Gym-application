@@ -15,6 +15,7 @@ import FoodConsumptionSuccess from "../constants/foodConsumedAnimation";
 const TodayPlanPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { categoryId, categoryName } = location.state || {};
   const [foods, setFoods] = useState([]);
   const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
   const [consumedCalories, setConsumedCalories] = useState(0);
@@ -38,15 +39,18 @@ const TodayPlanPage = () => {
   ];
 
   useEffect(() => {
-    fetchMealTypeFoods();
+    if (categoryId && categoryName) {
+      // Use the categoryId or categoryName to fetch category-specific data
+      fetchMealTypeFoods(categoryId, categoryName);
+    }
     fetchDailyNutrition();
-  }, [selectedMealType]);
+  }, [selectedMealType, categoryId, categoryName]);
 
-  const fetchMealTypeFoods = async () => {
+  const fetchMealTypeFoods = async (categoryId, categoryName) => {
     try {
       setLoading(true);
       const response = await axiosInstance.get("meal-type-foods/", {
-        params: { meal_type: selectedMealType },
+        params: {category_id: categoryId, category_name: categoryName, meal_type: selectedMealType},
       });
       const initialLikedState = response.data.reduce((acc, food) => {
         acc[food.id] = food.is_favorite;

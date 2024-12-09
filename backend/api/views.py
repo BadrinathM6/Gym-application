@@ -910,6 +910,7 @@ class FoodListView(APIView):
             #     foods = Food.objects.filter(body_type__in=['FLABBY', 'SKINNY', 'IDEAL'])
 
             # Additional filtering: meal type and recommended status
+
             meal_type = request.query_params.get('meal_type')
             if meal_type:
                 foods = foods.filter(meal_type=meal_type)
@@ -917,6 +918,7 @@ class FoodListView(APIView):
             recommended_only = request.query_params.get('recommended', 'false').lower() == 'true'
             if recommended_only:
                 foods = foods.filter(is_recommended=True)
+
 
             # Check if any foods exist
             if not foods.exists():
@@ -1134,6 +1136,10 @@ class MealTypeFilterView(APIView):
 
             # Base queryset for foods matching the user's body type
             foods = Food.objects.filter(bodytype__body_type=body_type)
+
+            category_name = request.query_params.get('category_name')
+            if category_name:
+                foods = foods.filter(category__name__iexact=category_name)
 
             # Apply meal type filter if provided
             meal_type = request.query_params.get('meal_type')

@@ -315,6 +315,7 @@ class Food(models.Model):
     
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True)
+    category = models.ForeignKey(FoodCategory, on_delete=models.CASCADE, related_name='foods', default=1)
     bodytype = models.ForeignKey(BodyTypeProfile, on_delete=models.CASCADE)
     meal_type = models.CharField(max_length=20, choices=MEAL_TYPE_CHOICES)
     calories = models.IntegerField()
