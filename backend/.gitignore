@@ -1,1 +1,5 @@
 .env
+food_data_vegan.csv
+food_data(1).csv
+workouts.csv
+generate_workouts.py
