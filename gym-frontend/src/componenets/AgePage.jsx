@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from 'framer-motion';
-import { Player } from '@lottiefiles/react-lottie-player';
-import axiosInstance from './utils/axiosInstance';
+import { motion } from "framer-motion";
+import { Player } from "@lottiefiles/react-lottie-player";
+import axiosInstance from "./utils/axiosInstance";
 import "../css/AgePage.css";
-import AgebgImg from '../assets/agepage.jpg';
+import AgebgImg from "../assets/agepage.jpg";
 import { FaAngleRight } from "react-icons/fa";
-import loader from './Main Scene.json';
-import { pageVariants, cardVariants } from '../constants/animations';
+import loader from "./Main Scene.json";
+import { pageVariants, cardVariants } from "../constants/animations";
 
 const AgePage = () => {
   const [age, setAge] = useState("");
@@ -19,12 +19,12 @@ const AgePage = () => {
   useEffect(() => {
     const fetchAge = async () => {
       try {
-        const response = await axiosInstance.get('/update-age/');
+        const response = await axiosInstance.get("/update-age/");
         if (response.data.age) {
           setAge(response.data.age.toString());
         }
       } catch (err) {
-        console.error('Error fetching age:', err);
+        console.error("Error fetching age:", err);
       }
     };
 
@@ -47,16 +47,16 @@ const AgePage = () => {
 
     setLoading(true);
     try {
-      await axiosInstance.put('/update-age/', {
-        age: ageNum
+      await axiosInstance.put("/update-age/", {
+        age: ageNum,
       });
-      
+
       setIsExiting(true);
       setTimeout(() => {
         navigate("/bodytypeselection");
       }, 500);
     } catch (err) {
-      console.error('Error updating age:', err);
+      console.error("Error updating age:", err);
       if (err.response?.data?.error) {
         setError(err.response.data.error);
       } else {
@@ -69,7 +69,7 @@ const AgePage = () => {
 
   const handleAgeChange = (e) => {
     const value = e.target.value;
-    if (value === '' || /^\d+$/.test(value)) {
+    if (value === "" || /^\d+$/.test(value)) {
       setAge(value);
       setError("");
     }
@@ -77,7 +77,7 @@ const AgePage = () => {
 
   return (
     <>
-      {(loading || isExiting) ? (
+      {loading || isExiting ? (
         <div className="loading-container">
           <Player
             autoplay
@@ -94,7 +94,7 @@ const AgePage = () => {
           animate="animate"
           exit="exit"
         >
-          <motion.header 
+          <motion.header
             className="age-header"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -109,20 +109,20 @@ const AgePage = () => {
               transition={{ delay: 0.3 }}
             />
           </motion.header>
-          
-          <motion.main 
+
+          <motion.main
             className="age-main"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
           >
-            <motion.div 
+            <motion.div
               className="age-card"
               variants={cardVariants}
               whileHover="hover"
               whileTap="tap"
             >
-              <motion.p 
+              <motion.p
                 className="age-prompt"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -130,7 +130,7 @@ const AgePage = () => {
               >
                 How old are you?
               </motion.p>
-              
+
               <motion.input
                 type="number"
                 placeholder="Enter your age"
@@ -144,7 +144,7 @@ const AgePage = () => {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.6 }}
               />
-              
+
               {error && (
                 <motion.p
                   className="error-message"
@@ -155,9 +155,9 @@ const AgePage = () => {
                   {error}
                 </motion.p>
               )}
-              
-              <motion.button 
-                className={`next-btn1 ${loading ? 'loading' : ''}`}
+
+              <motion.button
+                className={`next-btn1 ${loading ? "loading" : ""}`}
                 onClick={handleNext}
                 disabled={loading}
                 whileHover={{ scale: 1.05 }}

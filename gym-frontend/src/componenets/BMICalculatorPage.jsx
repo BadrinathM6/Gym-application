@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from 'framer-motion';
-import { Player } from '@lottiefiles/react-lottie-player';
-import axiosInstance from './utils/axiosInstance';
+import { motion } from "framer-motion";
+import { Player } from "@lottiefiles/react-lottie-player";
+import axiosInstance from "./utils/axiosInstance";
 import "../css/BmiCalculation.css";
-import WeightImg from '../assets/weightBmi.jpg';
-import HeightImg from '../assets/heightBmi.jpg';
-import loader from './Main Scene.json';
-import { pageVariants } from '../constants/animations'
+import WeightImg from "../assets/weightBmi.jpg";
+import HeightImg from "../assets/heightBmi.jpg";
+import loader from "./Main Scene.json";
+import { pageVariants } from "../constants/animations";
 
 const BMIPage = () => {
   const [weight, setWeight] = useState("");
@@ -21,13 +21,13 @@ const BMIPage = () => {
 
   const inputVariants = {
     hover: { scale: 1.02 },
-    tap: { scale: 0.98 }
+    tap: { scale: 0.98 },
   };
 
   useEffect(() => {
     const fetchPhysicalProfile = async () => {
       try {
-        const response = await axiosInstance.get('/physical-profile/');
+        const response = await axiosInstance.get("/physical-profile/");
         if (response.status === 200) {
           const { height, weight, bmi, bmi_category } = response.data;
           setHeight(height);
@@ -56,9 +56,9 @@ const BMIPage = () => {
     setError("");
 
     try {
-      const response = await axiosInstance.post('/physical-profile/', {
+      const response = await axiosInstance.post("/physical-profile/", {
         weight: parseFloat(weight),
-        height: parseFloat(height)
+        height: parseFloat(height),
       });
 
       if (response.status === 201) {
@@ -67,7 +67,9 @@ const BMIPage = () => {
         setBmiCategory(bmi_category);
       }
     } catch (err) {
-      setError(err.response?.data?.message || "An error occurred while calculating BMI");
+      setError(
+        err.response?.data?.message || "An error occurred while calculating BMI"
+      );
       console.error("Error calculating BMI:", err);
     } finally {
       setLoading(false);
@@ -88,7 +90,7 @@ const BMIPage = () => {
 
   return (
     <>
-      {(loading || isExiting) ? (
+      {loading || isExiting ? (
         <div className="loading-container">
           <Player
             autoplay
@@ -191,7 +193,9 @@ const BMIPage = () => {
               transition={{ delay: 0.2 }}
             >
               <motion.h2 className="bmi-result">Your BMI: {bmi}</motion.h2>
-              <motion.p className="bmi-category">Category: {bmiCategory}</motion.p>
+              <motion.p className="bmi-category">
+                Category: {bmiCategory}
+              </motion.p>
             </motion.div>
           )}
 

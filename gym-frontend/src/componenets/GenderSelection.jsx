@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axiosInstance from './utils/axiosInstance';
-import { motion } from 'framer-motion';
-import { Player } from '@lottiefiles/react-lottie-player';
-import male from '../assets/male.png';
-import female from '../assets/female.png';
-import loader from './Main Scene.json';
-import { pageVariants, cardVariants } from '../constants/animations';
-import '../css/GenderSelection.css';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axiosInstance from "./utils/axiosInstance";
+import { motion } from "framer-motion";
+import { Player } from "@lottiefiles/react-lottie-player";
+import male from "../assets/male.png";
+import female from "../assets/female.png";
+import loader from "./Main Scene.json";
+import { pageVariants, cardVariants } from "../constants/animations";
+import "../css/GenderSelection.css";
 
 const GenderSelectionPage = () => {
   const [selectedGender, setSelectedGender] = useState(null);
@@ -19,17 +19,17 @@ const GenderSelectionPage = () => {
   useEffect(() => {
     const checkUserGender = async () => {
       try {
-        const response = await axiosInstance.get('/user/');
+        const response = await axiosInstance.get("/user/");
         if (response.data.gender) {
           setIsExiting(true);
           setTimeout(() => {
-            navigate('/');
+            navigate("/");
           }, 500);
         }
       } catch (err) {
         if (err.response?.status !== 401) {
-          setError('Failed to fetch user data. Please try again.');
-          console.error('Error checking user gender:', err);
+          setError("Failed to fetch user data. Please try again.");
+          console.error("Error checking user gender:", err);
         }
       }
     };
@@ -53,28 +53,31 @@ const GenderSelectionPage = () => {
     setError(null);
 
     const genderMap = {
-      Male: 'M',
-      Female: 'F',
+      Male: "M",
+      Female: "F",
     };
 
     try {
-      await axiosInstance.put('/user/', {
+      await axiosInstance.put("/user/", {
         gender: genderMap[selectedGender],
       });
 
       setIsExiting(true);
       setTimeout(() => {
-        navigate('/age');
+        navigate("/age");
       }, 500);
     } catch (err) {
-      console.error('Error updating gender:', err);
+      console.error("Error updating gender:", err);
 
       if (err.response?.status === 400) {
-        setError('Invalid gender selection. Please try again.');
+        setError("Invalid gender selection. Please try again.");
       } else if (err.response?.status === 405) {
-        setError('Server configuration error. Please contact support.');
+        setError("Server configuration error. Please contact support.");
       } else if (err.response?.status !== 401) {
-        setError(err.response?.data?.error || 'Failed to update gender. Please try again.');
+        setError(
+          err.response?.data?.error ||
+            "Failed to update gender. Please try again."
+        );
       }
       setLoading(false);
     }
@@ -82,7 +85,7 @@ const GenderSelectionPage = () => {
 
   return (
     <>
-      {(loading || isExiting) ? (
+      {loading || isExiting ? (
         <div className="loading-container">
           <Player
             autoplay
@@ -120,8 +123,10 @@ const GenderSelectionPage = () => {
 
           <div className="gender-options">
             <motion.div
-              className={`gender-card ${selectedGender === 'Male' ? 'selected' : ''}`}
-              onClick={() => handleGenderSelection('Male')}
+              className={`gender-card ${
+                selectedGender === "Male" ? "selected" : ""
+              }`}
+              onClick={() => handleGenderSelection("Male")}
               variants={cardVariants}
               whileHover="hover"
               whileTap="tap"
@@ -138,8 +143,10 @@ const GenderSelectionPage = () => {
             </motion.div>
 
             <motion.div
-              className={`gender-card ${selectedGender === 'Female' ? 'selected' : ''}`}
-              onClick={() => handleGenderSelection('Female')}
+              className={`gender-card ${
+                selectedGender === "Female" ? "selected" : ""
+              }`}
+              onClick={() => handleGenderSelection("Female")}
               variants={cardVariants}
               whileHover="hover"
               whileTap="tap"
@@ -157,7 +164,7 @@ const GenderSelectionPage = () => {
           </div>
 
           <motion.button
-            className={`next-button ${loading ? 'loading' : ''}`}
+            className={`next-button ${loading ? "loading" : ""}`}
             onClick={handleNextClick}
             disabled={loading}
             whileHover={{ scale: 1.05 }}
@@ -166,7 +173,7 @@ const GenderSelectionPage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
           >
-            {loading ? 'Updating...' : 'Next'}
+            {loading ? "Updating..." : "Next"}
           </motion.button>
         </motion.div>
       )}

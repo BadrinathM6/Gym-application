@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from "react";
 import Slider from "react-slick";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from './utils/axiosInstance';
+import axiosInstance from "./utils/axiosInstance";
 import "slick-carousel/slick/slick.css";
-import { Player } from '@lottiefiles/react-lottie-player';
+import { Player } from "@lottiefiles/react-lottie-player";
 import "slick-carousel/slick/slick-theme.css";
 import "../css/Homepage.css";
 import FooterNav from "./FooterNav";
-import ChataiImg from '../assets/ai-icon.jpg'
-import logo from '../assets/logo.png'
-import shedule from '../assets/gym-schedulea.svg'
-import search from '../assets/search.svg'
-import userIcon from "../assets/user.svg"; 
-import workoutIcon from "../assets/muscle.svg"; 
+import ChataiImg from "../assets/ai-icon.jpg";
+import logo from "../assets/logo.png";
+import shedule from "../assets/gym-schedulea.svg";
+import search from "../assets/search.svg";
+import userIcon from "../assets/user.svg";
+import workoutIcon from "../assets/muscle.svg";
 import settingsIcon from "../assets/settings.svg";
-import loader from './Main Scene.json';
+import loader from "./Main Scene.json";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -24,26 +24,28 @@ const HomePage = () => {
 
   useEffect(() => {
     const fetchHomePageData = async () => {
-       setLoading(true);
+      setLoading(true);
       try {
-        const response = await axiosInstance.get('/home/');
-        
+        const response = await axiosInstance.get("/home/");
+
         // Transform banners
         const fetchedBanners = response.data.banners.map((banner, index) => ({
           id: banner.id,
           src: banner.image_path,
           alt: banner.title,
-          subtitle: banner.subtitle
+          subtitle: banner.subtitle,
         }));
         setBannerImages(fetchedBanners);
 
         // Transform programs
-        const fetchedPrograms = response.data.programs.map((program, index) => ({
-          id: program.id,
-          src: program.image_path,
-          title: program.title,
-          link: `/${program.category.toLowerCase().replace('_', '-')}`
-        }));
+        const fetchedPrograms = response.data.programs.map(
+          (program, index) => ({
+            id: program.id,
+            src: program.image_path,
+            title: program.title,
+            link: `/${program.category.toLowerCase().replace("_", "-")}`,
+          })
+        );
         setPrograms(fetchedPrograms);
       } catch (error) {
         console.error("Error fetching home page data:", error);
@@ -69,7 +71,7 @@ const HomePage = () => {
 
   return (
     <>
-    {(loading) ? (
+      {loading ? (
         <div className="loading-container">
           <Player
             autoplay
@@ -78,7 +80,7 @@ const HomePage = () => {
             style={{ width: 200, height: 200 }}
           />
         </div>
-    ) : (
+      ) : (
         <div className="homepage">
           {/* Header - same as before */}
           <div className="header1">
@@ -86,20 +88,27 @@ const HomePage = () => {
               <div onClick={() => navigate("/")} style={{ cursor: "pointer" }}>
                 <img src={logo} alt="Gym Logo" className="gym-logo" />
               </div>
-              <h1 className="header-title">Buffalo Gym</h1>     
-              <div onClick={() => navigate("/ai-chat")} style={{ cursor: "pointer" }}>
+              <h1 className="header-title">Buffalo Gym</h1>
+              <div
+                onClick={() => navigate("/ai-chat")}
+                style={{ cursor: "pointer" }}
+              >
                 <img src={ChataiImg} alt="AI Chat Logo" className="ai-logo" />
               </div>
             </div>
             <div className="header-bottom">
               <div className="search-bar">
-                <input type="text" placeholder="Search for workouts..." className="search-input" />
+                <input
+                  type="text"
+                  placeholder="Search for workouts..."
+                  className="search-input"
+                />
                 <button className="search-button">
-                  <img src={search} alt="search-icon" className="search-icon"/>
+                  <img src={search} alt="search-icon" className="search-icon" />
                 </button>
               </div>
               <button className="filter-button">
-                <img src={shedule} alt="setting-icon" className="filter-icon"/>
+                <img src={shedule} alt="setting-icon" className="filter-icon" />
               </button>
             </div>
           </div>
@@ -113,7 +122,11 @@ const HomePage = () => {
                   className="slide"
                   onClick={() => navigate(image.link)}
                 >
-                  <img src={image.src} alt={image.alt} className="banner1-image" />
+                  <img
+                    src={image.src}
+                    alt={image.alt}
+                    className="banner1-image"
+                  />
                   <h2 className="banner1-text">{image.alt}</h2>
                   {image.subtitle && <p>{image.subtitle}</p>}
                 </div>
@@ -122,30 +135,44 @@ const HomePage = () => {
           </section>
 
           <section className="section-buttons">
-            <div className="button workout" 
-                onClick={() => navigate("/workout-week")}
-                style={{ cursor: "pointer", display: "flex", alignItems: "center",}}
+            <div
+              className="button workout"
+              onClick={() => navigate("/workout-week")}
+              style={{
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+              }}
             >
-              <img src={workoutIcon} alt="Workout Icon"/>
+              <img src={workoutIcon} alt="Workout Icon" />
               <span>Workout</span>
             </div>
 
-            <div className="button user"
-              onClick={() => navigate("/user-profile")} 
-              style={{ cursor: "pointer", display: "flex", alignItems: "center",}}
+            <div
+              className="button user"
+              onClick={() => navigate("/user-profile")}
+              style={{
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+              }}
             >
               <img src={userIcon} alt="user Icon" />
               <span>Profile</span>
             </div>
-            
-            <div className="button setting"
+
+            <div
+              className="button setting"
               onClick={() => navigate("/settings")}
-              style={{ cursor: "pointer", display: "flex", alignItems: "center",}}
+              style={{
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+              }}
             >
               <img src={settingsIcon} alt="Settings Icon" />
               <span>Settings</span>
             </div>
-            
           </section>
 
           {/* Programs Section */}
@@ -159,7 +186,11 @@ const HomePage = () => {
                   onClick={() => navigate(program.link)}
                 >
                   <div className="heart-icon">🤍</div>
-                  <img src={program.src} alt={program.title} className="program-image" />
+                  <img
+                    src={program.src}
+                    alt={program.title}
+                    className="program-image"
+                  />
                   <h3>{program.title}</h3>
                 </div>
               ))}
@@ -168,7 +199,7 @@ const HomePage = () => {
 
           {/* Footer */}
           <div className="foot">
-            <FooterNav/>
+            <FooterNav />
           </div>
         </div>
       )}

@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import YouTube from "react-youtube";
-import axiosInstance from './utils/axiosInstance';
-import '../css/WorkoutDetailPage.css';
+import axiosInstance from "./utils/axiosInstance";
+import "../css/WorkoutDetailPage.css";
 import { FaArrowLeft } from "react-icons/fa";
-import logo from '../assets/logo.png'
-import loader from './Main Scene.json';
+import logo from "../assets/logo.png";
+import loader from "./Main Scene.json";
 import FooterNav from "./FooterNav";
-import { Player } from '@lottiefiles/react-lottie-player';
-import CongratsModal from '../constants/congratsModal';
-import WeekCompletedModal from '../constants/weekModal';
+import { Player } from "@lottiefiles/react-lottie-player";
+import CongratsModal from "../constants/congratsModal";
+import WeekCompletedModal from "../constants/weekModal";
 
 const ExercisePage = () => {
   const navigate = useNavigate();
@@ -20,12 +20,12 @@ const ExercisePage = () => {
   const [userProgress, setUserProgress] = useState(null);
   const [weekWorkouts, setWeekWorkouts] = useState([]);
   const [currentWorkoutIndex, setCurrentWorkoutIndex] = useState(0);
-  
+
   const [activeTab, setActiveTab] = useState("animation");
   const [duration, setDuration] = useState(20);
   const [sets, setSets] = useState(0);
   const [totalCalories, setTotalCalories] = useState(0);
-  
+
   const [loading, setLoading] = useState(true);
   const [imageLoadError, setImageLoadError] = useState(false);
   const [showCongratsModal, setShowCongratsModal] = useState(false);
@@ -35,36 +35,38 @@ const ExercisePage = () => {
   useEffect(() => {
     const fetchWorkoutDetails = async () => {
       try {
-        setLoading(true)
+        setLoading(true);
         // Fetch week's workouts
-        const weekResponse = await axiosInstance.get('workouts/');
+        const weekResponse = await axiosInstance.get("workouts/");
         console.log(weekResponse.data);
         setWeekWorkouts(weekResponse.data);
-        
+
         // Find current workout index
         const currentIndex = weekResponse.data.findIndex(
-          workout => workout.id === parseInt(exerciseId)
+          (workout) => workout.id === parseInt(exerciseId)
         );
         setCurrentWorkoutIndex(currentIndex);
-        
+
         // Fetch specific exercise details
-        const exerciseResponse = await axiosInstance.get(`exercise/${exerciseId}/`);
+        const exerciseResponse = await axiosInstance.get(
+          `exercise/${exerciseId}/`
+        );
         setExerciseData(exerciseResponse.data.exercise);
         setUserProgress(exerciseResponse.data.user_progress);
-        
+
         // Set initial duration and sets
-        const initialDuration = 
+        const initialDuration =
           exerciseResponse.data.user_progress?.exercise?.default_duration ??
           exerciseResponse.data.exercise?.default_duration ??
           20;
-        
+
         setDuration(initialDuration);
-        
-        const initialSets = 
+
+        const initialSets =
           exerciseResponse.data.user_progress?.exercise?.default_set ??
           exerciseResponse.data.exercise?.default_set ??
           0;
-        
+
         setSets(initialSets);
       } catch (error) {
         console.error("Error fetching workout details:", error);
@@ -79,20 +81,20 @@ const ExercisePage = () => {
   const formatDuration = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    return `${mins < 10 ? "0" : ""}${mins}:${secs < 10 ? "0" : ""}${secs}`;
   };
 
   // Calories Calculation
   const calculateTotalCalories = (exerciseData, sets, duration) => {
     if (!exerciseData) return 0;
 
-    const caloriesFromSets = sets > 0 
-      ? (exerciseData.calories_per_set || 0) * sets 
-      : 0;
+    const caloriesFromSets =
+      sets > 0 ? (exerciseData.calories_per_set || 0) * sets : 0;
 
-    const caloriesFromDuration = duration > 0
-      ? (exerciseData.calories_per_minute || 0) * (duration / 60)
-      : 0;
+    const caloriesFromDuration =
+      duration > 0
+        ? (exerciseData.calories_per_minute || 0) * (duration / 60)
+        : 0;
 
     return caloriesFromSets + caloriesFromDuration;
   };
@@ -100,7 +102,11 @@ const ExercisePage = () => {
   // Update calories when sets or duration change
   useEffect(() => {
     if (exerciseData) {
-      const calculatedCalories = calculateTotalCalories(exerciseData, sets, duration);
+      const calculatedCalories = calculateTotalCalories(
+        exerciseData,
+        sets,
+        duration
+      );
       setTotalCalories(calculatedCalories);
     }
   }, [sets, duration, exerciseData]);
@@ -111,21 +117,25 @@ const ExercisePage = () => {
       const progressData = {
         duration: duration,
         sets_completed: sets,
-        calories_burned: totalCalories
+        calories_burned: totalCalories,
       };
 
-      const response = await axiosInstance.put(`exercise/${exerciseId}/update/`, progressData);
+      const response = await axiosInstance.put(
+        `exercise/${exerciseId}/update/`,
+        progressData
+      );
       setUserProgress(response.data.progress);
-      
+
       // Show congratulations modal
       setShowCongratsModal(true);
-      
+
       // Check if this is the last workout of the week
       if (currentWorkoutIndex === weekWorkouts.length - 1) {
-        const weekTotalCalories = weekWorkouts.reduce((total, workout) => 
-          total + (workout.calories_burned || 0), 0
+        const weekTotalCalories = weekWorkouts.reduce(
+          (total, workout) => total + (workout.calories_burned || 0),
+          0
         );
-        
+
         setWeekCompletedModal(true);
       }
     } catch (error) {
@@ -135,7 +145,10 @@ const ExercisePage = () => {
 
   // Navigation Handlers
   const handleNextWorkout = () => {
-    if (weekWorkouts.length > 0 && currentWorkoutIndex < weekWorkouts.length - 1) {
+    if (
+      weekWorkouts.length > 0 &&
+      currentWorkoutIndex < weekWorkouts.length - 1
+    ) {
       const nextWorkout = weekWorkouts[currentWorkoutIndex + 1];
       navigate(`/exercise/${nextWorkout.id}`);
     }
@@ -159,10 +172,11 @@ const ExercisePage = () => {
   };
 
   // Increment/Decrement Handlers
-  const handleIncrementDuration = () => setDuration(prev => prev + 5);
-  const handleDecrementDuration = () => setDuration(prev => Math.max(5, prev - 5));
-  const handleIncrementSets = () => setSets(prev => prev + 1);
-  const handleDecrementSets = () => setSets(prev => Math.max(0, prev - 1));
+  const handleIncrementDuration = () => setDuration((prev) => prev + 5);
+  const handleDecrementDuration = () =>
+    setDuration((prev) => Math.max(5, prev - 5));
+  const handleIncrementSets = () => setSets((prev) => prev + 1);
+  const handleDecrementSets = () => setSets((prev) => Math.max(0, prev - 1));
 
   return (
     <>
@@ -179,7 +193,10 @@ const ExercisePage = () => {
         <div className="exercise-page">
           {/* Header */}
           <header className="challenge-header">
-            <button className="back-button" onClick={() => window.history.back()}>
+            <button
+              className="back-button"
+              onClick={() => window.history.back()}
+            >
               <FaArrowLeft />
             </button>
             <div className="logo-container">
@@ -193,18 +210,20 @@ const ExercisePage = () => {
             {activeTab === "animation" ? (
               <div className="animation-containers">
                 {!imageLoadError ? (
-                  exerciseData.animation_path.endsWith('.mp4') ? (
-                    <video 
-                      src={exerciseData.animation_path} 
+                  exerciseData.animation_path.endsWith(".mp4") ? (
+                    <video
+                      src={exerciseData.animation_path}
                       className="workout-animation"
-                      autoPlay 
-                      loop 
-                      muted 
+                      autoPlay
+                      loop
+                      muted
                     />
-                  ) : ['.gif', '.png', '.jpg', '.jpeg'].some(ext => exerciseData.animation_path.endsWith(ext)) ? (
-                    <img 
-                      src={exerciseData.animation_path} 
-                      alt="Workout Animation" 
+                  ) : [".gif", ".png", ".jpg", ".jpeg"].some((ext) =>
+                      exerciseData.animation_path.endsWith(ext)
+                    ) ? (
+                    <img
+                      src={exerciseData.animation_path}
+                      alt="Workout Animation"
                       className="workout-animation"
                       onError={handleImageError}
                     />
@@ -213,8 +232,11 @@ const ExercisePage = () => {
                   )
                 ) : (
                   <div className="image-error">
-                    <p>Unable to load image. Please check the URL or network connection.</p>
-                    <button 
+                    <p>
+                      Unable to load image. Please check the URL or network
+                      connection.
+                    </p>
+                    <button
                       className="replace-button"
                       onClick={() => setImageLoadError(false)}
                     >
@@ -227,7 +249,9 @@ const ExercisePage = () => {
               <div className="video-container">
                 {exerciseData.demonstration_video_url && (
                   <YouTube
-                    videoId={exerciseData.demonstration_video_url.split('v=')[1]}
+                    videoId={
+                      exerciseData.demonstration_video_url.split("v=")[1]
+                    }
                     opts={{ playerVars: { autoplay: 1 } }}
                     className="youtube-player"
                   />
@@ -239,7 +263,9 @@ const ExercisePage = () => {
           {/* Tabs */}
           <div className="exercise-tabs">
             <button
-              className={`tab-button ${activeTab === "animation" ? "active" : ""}`}
+              className={`tab-button ${
+                activeTab === "animation" ? "active" : ""
+              }`}
               onClick={() => handleTabClick("animation")}
             >
               Animation
@@ -255,26 +281,26 @@ const ExercisePage = () => {
           {/* Exercise Details */}
           <div className="exercise-details">
             {duration > 0 && (
-                <div className="duration-section">
-                  <h2 className="duration-text">DURATION</h2>
-                  <div className="duration-control">
-                    <button onClick={handleDecrementDuration}>-</button>
-                    <span>{formatDuration(duration)}</span>
-                    <button onClick={handleIncrementDuration}>+</button>
-                  </div>
+              <div className="duration-section">
+                <h2 className="duration-text">DURATION</h2>
+                <div className="duration-control">
+                  <button onClick={handleDecrementDuration}>-</button>
+                  <span>{formatDuration(duration)}</span>
+                  <button onClick={handleIncrementDuration}>+</button>
                 </div>
-              )}
+              </div>
+            )}
 
-              {sets > 0 && (
-                <div className="sets-section">
-                  <h2>SETS</h2>
-                  <div className="sets-control">
-                    <button onClick={handleDecrementSets}>-</button>
-                    <span>{sets}</span>
-                    <button onClick={handleIncrementSets}>+</button>
-                  </div>
+            {sets > 0 && (
+              <div className="sets-section">
+                <h2>SETS</h2>
+                <div className="sets-control">
+                  <button onClick={handleDecrementSets}>-</button>
+                  <span>{sets}</span>
+                  <button onClick={handleIncrementSets}>+</button>
                 </div>
-              )}
+              </div>
+            )}
 
             <div className="instructions-section">
               <h2>INSTRUCTIONS</h2>
@@ -284,23 +310,26 @@ const ExercisePage = () => {
 
           {/* Footer */}
           <div className="footer-land">
-              <p>🔥 {userProgress.calories_burned.toFixed(0)} Cal Burned</p>
+            <p>🔥 {userProgress.calories_burned.toFixed(0)} Cal Burned</p>
             <footer className="exercise-footer">
-              <button 
-                className={`previous-button ${currentWorkoutIndex === 0 ? 'non-touchable' : ''}`}
+              <button
+                className={`previous-button ${
+                  currentWorkoutIndex === 0 ? "non-touchable" : ""
+                }`}
                 onClick={handlePreviousWorkout}
                 disabled={currentWorkoutIndex === 0}
               >
                 {"<<"}
               </button>
-              <button 
-                className="save-button" 
-                onClick={handleUpdateProgress}
-              >
+              <button className="save-button" onClick={handleUpdateProgress}>
                 Save
               </button>
-              <button 
-                className={`next-button ${currentWorkoutIndex === weekWorkouts.length - 1 ? 'non-touchable' : ''}`}
+              <button
+                className={`next-button ${
+                  currentWorkoutIndex === weekWorkouts.length - 1
+                    ? "non-touchable"
+                    : ""
+                }`}
                 onClick={handleNextWorkout}
                 disabled={currentWorkoutIndex === weekWorkouts.length - 1}
               >
@@ -310,22 +339,22 @@ const ExercisePage = () => {
           </div>
 
           {showCongratsModal && (
-            <CongratsModal 
-              calories={userProgress.calories_burned} 
-              onClose={() => setShowCongratsModal(false)} 
+            <CongratsModal
+              calories={userProgress.calories_burned}
+              onClose={() => setShowCongratsModal(false)}
             />
           )}
 
           {weekCompletedModal && (
-            <WeekCompletedModal 
-              calories={totalCalories} 
-              onClose={() => setWeekCompletedModal(false)} 
+            <WeekCompletedModal
+              calories={totalCalories}
+              onClose={() => setWeekCompletedModal(false)}
             />
           )}
 
           {/* Footer Navigation */}
           <div className="foot">
-            <FooterNav/>
+            <FooterNav />
           </div>
         </div>
       )}

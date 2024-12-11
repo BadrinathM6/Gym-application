@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
-import Lottie from 'lottie-react';
-import targetEvaluation from '../componenets/target-evaluation.json';
-import './modalStyles.css';
+import React, { useEffect } from "react";
+import Lottie from "lottie-react";
+import targetEvaluation from "../componenets/target-evaluation.json";
+import "./modalStyles.css";
 
 const CongratsModal = ({ calories, onClose }) => {
   useEffect(() => {
@@ -23,10 +23,7 @@ const CongratsModal = ({ calories, onClose }) => {
         />
         <h2>Congratulations!</h2>
         <p>You burned {calories.toFixed(0)} calories</p>
-        <button 
-          className="modal-close-button"
-          onClick={onClose}
-        >
+        <button className="modal-close-button" onClick={onClose}>
           Close
         </button>
       </div>

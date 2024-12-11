@@ -1,282 +1,278 @@
-  .exercise-page {
-    font-family: 'Sour Gummy', sans-serif;
-  }
-  
-  .exercise-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: relative;
+.exercise-page {
+  font-family: "Sour Gummy", sans-serif;
+}
+
+.exercise-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.challenge-header {
+  background-color: #252b2d;
+  color: #fff;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+}
+
+.challenge-header h1 {
+  color: #ffffff;
+}
+
+.back-button {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.challenge-header h1 {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.challenge-logo {
+  height: 30px;
+  transform: scale(2.3);
+  border-radius: 50px;
+  margin-bottom: 4px;
+}
+
+.replace-button {
+  color: blue;
+  text-decoration: underline;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.exercise-content {
+  text-align: center;
+  margin: 20px 0;
+  padding: 20px;
+}
+
+.animation-containers {
+  width: 100%;
+  height: 150px;
+  max-width: 400px;
+  margin: 0 auto;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.animation-containers img {
+  transform: scale(5);
+  margin-top: 40px;
+}
+
+.video-container {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.youtube-player iframe {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+}
+
+.exercise-tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  padding: 20px 20px 0px;
+  gap: 40px;
+}
+
+.tab-button {
+  /* flex: 2; */
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  background-color: #f1f1f1;
+  font-weight: bold;
+  border-radius: 5px;
+  width: 40%;
+}
+
+.tab-button.active {
+  background-color: #007bff;
+  color: white;
+}
+
+.exercise-details {
+  margin-top: 20px;
+  gap: 20px;
+  padding: 20px 20px 0;
+}
+.exercise-details p {
+  margin-top: 10px;
+  padding: 5px;
+  color: #ffffff;
+}
+.exercise-details h2 {
+  margin-top: 10px;
+  color: #ffffff;
+}
+
+.duration-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.duration-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.duration-control span {
+  margin-top: 10px;
+  color: #ffffff;
+}
+
+.duration-control button {
+  margin-top: 10px;
+  padding: 5px 10px;
+  color: #ffffff;
+  background-color: #0056b3;
+}
+
+.footer-land {
+  display: flex;
+  justify-content: space-between; /* Evenly distribute space between elements */
+  align-items: center; /* Center vertically */
+  padding: 20px; /* Optional padding for spacing */
+  gap: 10px; /* Space between elements */
+}
+
+.footer-land p {
+  color: #ffffff;
+}
+
+.exercise-footer {
+  display: flex;
+  gap: 5px; /* Adds spacing between buttons */
+}
+
+.exercise-footer button {
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px; /* Rounded button edges */
+  cursor: pointer;
+}
+
+.exercise-footer button:hover {
+  background-color: #0056b3;
+}
+
+.image-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: #f8d7da;
+  border-radius: 5px;
+}
+
+.image-error p {
+  color: #721c24;
+  margin-bottom: 10px;
+}
+
+.replace-button {
+  color: #007bff;
+  background: white;
+  border: 1px solid #007bff;
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.foot {
+  display: none;
+  color: white;
+  text-align: center;
+  padding-top: 20px;
+  margin-top: 20px;
+}
+
+.non-touchable {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.non-touchable:hover {
+  cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media screen and (min-width: 600px) and (max-width: 820px) and (max-height: 1180px) {
+  .video-container {
+    max-width: 500px;
   }
 
-  .challenge-header {
-    background-color: #252B2D;
-    color: #fff;
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 70px;
-  }
-
-  .challenge-header h1{
-    color: #ffffff;
-  }
-  
-  .back-button {
-    background: transparent;
-    border: none;
-    color: #fff;
-    font-size: 1.5rem;
-    cursor: pointer;
-  }
-
-  .challenge-header h1 {
-    font-size: 1.5rem;
-    font-weight: bold;
-  }
-
-  .challenge-logo {
-    height: 30px;
-    transform: scale(2.3);
-    border-radius: 50px;
-    margin-bottom: 4px;
-  }
-
-  .replace-button {
-    color: blue;
-    text-decoration: underline;
-    background: none;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .exercise-content {
-    text-align: center;
-    margin: 20px 0;
-    padding: 20px;
-  }
-  
   .animation-containers {
     width: 100%;
     height: 150px;
     max-width: 400px;
     margin: 0 auto;
-    margin-top: 20px;
+    margin-top: 10px;
     display: flex;
     justify-content: center;
   }
 
-  .animation-containers img{
+  .animation-containers img {
     transform: scale(5);
-    margin-top: 40px;
+    margin-top: 50px;
   }
-  
-  .video-container {
-    width: 100%;
-    max-width: 640px;
-    margin: 0 auto;
-  }
-  
-  .youtube-player iframe {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 16 / 9;
-  }
-  
-  .exercise-tabs {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
-    padding: 20px 20px 0px;
-    gap: 40px;
-  }
-  
-  .tab-button {
-    /* flex: 2; */
-    padding: 10px;
-    border: none;
-    cursor: pointer;
-    background-color: #f1f1f1;
-    font-weight: bold;
-    border-radius: 5px;
-    width: 40%;
-    
-  }
-  
-  .tab-button.active {
-    background-color: #007bff;
-    color: white;
-  }
-  
+
   .exercise-details {
-    margin-top: 20px;
-    gap: 20px;
-    padding: 20px 20px 0;
+    padding: 0 10px;
   }
-  .exercise-details p{
-    margin-top: 10px;
-    padding: 5px;
-    color: #ffffff;
-  }
-  .exercise-details h2{
-    margin-top: 10px;
-    color: #ffffff;
+}
+
+@media screen and (max-width: 430px) and (max-height: 932px) {
+  .video-container {
+    max-width: 320px;
   }
 
-  .duration-section{
+  .animation-containers {
+    width: 100%;
+    height: 150px;
+    max-width: 400px;
+    margin: 0 auto;
     display: flex;
-    flex-direction: column;
     justify-content: center;
-    align-items: center;
   }
 
-  .duration-control {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  .animation-containers img {
+    transform: scale(4);
+    margin-top: 60px;
   }
 
-  .duration-control span{
-    margin-top: 10px;
-    color: #ffffff;
+  .exercise-details {
+    padding: 0 10px;
   }
 
-  .duration-control button {
-    margin-top: 10px;
-    padding: 5px 10px;
-    color: #ffffff;
-    background-color: #0056b3;
-  }
-
-  .footer-land {
-    display: flex;
-    justify-content: space-between; /* Evenly distribute space between elements */
-    align-items: center; /* Center vertically */
-    padding: 20px; /* Optional padding for spacing */
-    gap: 10px; /* Space between elements */
-  }
-
-  .footer-land p{
-    color: #ffffff;
-  }
-  
-  .exercise-footer {
-    display: flex;
-    gap: 5px; /* Adds spacing between buttons */
-  }
-  
-  .exercise-footer button {
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px; /* Rounded button edges */
-    cursor: pointer;
-  }
-  
-  .exercise-footer button:hover {
-    background-color: #0056b3;
-  }
-
-  .image-error {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background-color: #f8d7da;
-    border-radius: 5px;
-  }
-  
-  .image-error p {
-    color: #721c24;
-    margin-bottom: 10px;
-  }
-  
-  .replace-button {
-    color: #007bff;
-    background: white;
-    border: 1px solid #007bff;
-    padding: 5px 10px;
-    border-radius: 3px;
-    cursor: pointer;
-  }
-
-  .foot{
-    display: none;
+  .foot {
+    display: block;
     color: white;
     text-align: center;
     padding-top: 20px;
     margin-top: 20px;
   }
-
-  .non-touchable {
-    pointer-events: none;
-    opacity: 0.5;
-  }
-
-  .non-touchable:hover{
-    cursor: not-allowed;
-  }
-
-
-  /* Responsive Design */
-  @media screen and (min-width: 600px) and (max-width: 820px) and (max-height: 1180px){
-    .video-container {
-      max-width: 500px;
-    }
-
-    .animation-containers {
-      width: 100%;
-      height: 150px;
-      max-width: 400px;
-      margin: 0 auto;
-      margin-top: 10px;
-      display: flex;
-      justify-content: center;
-    }
-
-    .animation-containers img{
-      transform: scale(5);
-      margin-top: 50px;
-    }
-  
-    .exercise-details {
-      padding: 0 10px;
-    }
-  }
-
-  @media screen and (max-width: 430px) and (max-height: 932px){
-
-    .video-container {
-      max-width: 320px;
-    }
-
-    .animation-containers {
-      width: 100%;
-      height: 150px;
-      max-width: 400px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: center;
-    }
-
-    .animation-containers img{
-      transform: scale(4);
-      margin-top: 60px;
-    }
-  
-    .exercise-details {
-      padding: 0 10px;
-    }
-
-    .foot{
-      display: block;
-      color: white;
-      text-align: center;
-      padding-top: 20px;
-      margin-top: 20px;
-    }
-
-  }
+}

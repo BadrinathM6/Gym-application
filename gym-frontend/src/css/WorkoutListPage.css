@@ -1,189 +1,186 @@
+.page-container {
+  font-family: "Sour Gummy", sans-serif;
+  background-color: #252b2d;
+  height: 100vh;
+}
 
-  .page-container {
-    font-family: 'Sour Gummy', sans-serif;
-    background-color: #252B2D;
-    height: 100vh;
-  }
-  
-  
-  .challenge-headers {
-    background-color: #252B2D;
-    color: #fff;
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 70px;
-  }
+.challenge-headers {
+  background-color: #252b2d;
+  color: #fff;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+}
 
-  .challenge-header h1{
-    color: #ffffff;
-  }
-  
-  .back-button {
-    background: transparent;
-    border: none;
-    color: #fff;
-    font-size: 1.5rem;
-    cursor: pointer;
-  }
+.challenge-header h1 {
+  color: #ffffff;
+}
 
-  .challenge-header h1 {
-    font-size: 1.5rem;
-    font-weight: bold;
-  }
+.back-button {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
 
-  .challenge-logo {
-    height: 30px;
-    transform: scale(2.3);
-    border-radius: 50px;
-    margin-bottom: 4px;
-  }
+.challenge-header h1 {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
 
-  .headers {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: relative;
-  }
-  
-  .header-content {
-    position: absolute;
-    top: 20px;
-    left: 16px;
-    z-index: 1;
-    color: #fff;
-  }
-  
-  .day-title {
-    font-size: 24px;
-    font-weight: bold;
-    color: #fff;
-    margin: 0;
-  }
-  
-  .workout-info {
-    font-size: 16px;
-    margin: 4px 0;
-  }
-  
-  .header-images {
-    width: 100%;
-    border-radius: 12px;
-    height: 200px;
-    object-fit: cover;
-    background-image: url("../assets/headerbg.png");
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-  }
-  
-  /* Workout List Section */
-  .workout-container {
-    margin-top: 16px;
-    padding: 16px  16px 0px;
-  }
-  
-  .workout-header2 {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-  }
+.challenge-logo {
+  height: 30px;
+  transform: scale(2.3);
+  border-radius: 50px;
+  margin-bottom: 4px;
+}
 
-  .workout-header2 p{
-    color: #ffffff;
-  }
-  
-  .workout-summary {
-    font-size: 16px;
-    font-weight: bold;
-  }
-  /* Add specific styles for the Lottie animations */
+.headers {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.header-content {
+  position: absolute;
+  top: 20px;
+  left: 16px;
+  z-index: 1;
+  color: #fff;
+}
+
+.day-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #fff;
+  margin: 0;
+}
+
+.workout-info {
+  font-size: 16px;
+  margin: 4px 0;
+}
+
+.header-images {
+  width: 100%;
+  border-radius: 12px;
+  height: 200px;
+  object-fit: cover;
+  background-image: url("../assets/headerbg.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Workout List Section */
+.workout-container {
+  margin-top: 16px;
+  padding: 16px 16px 0px;
+}
+
+.workout-header2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.workout-header2 p {
+  color: #ffffff;
+}
+
+.workout-summary {
+  font-size: 16px;
+  font-weight: bold;
+}
+/* Add specific styles for the Lottie animations */
 .workout-animation {
-    width: 50px;
-    height: 50px;
-    border-radius: 8px;
-    overflow: hidden;
-  }
-  
-  /* Individual Workout Item */
-  .workout-item {
-    display: flex;
-    align-items: center;
-    padding: 12px 0;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .icon-placeholder {
-    margin-right: 16px;
-  }
-  
-  .workout-icon {
-    width: 50px;
-    height: 50px;
-    border-radius: 8px;
-  }
-  
-  .workout-details {
-    flex-grow: 1;
-  }
-  
-  .workout-name {
-    font-size: 16px;
-    margin: 0 0 4px 0;
-    color: #ffffff;
-  }
-  
-  .workout-metrics {
-    font-size: 14px;
-    color: #888;
-    margin: 0;
-  }
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  overflow: hidden;
+}
 
-  .workout-button{
-    display: flex;
-    justify-content: center;
-  }
-  
-  /* Start Button */
-  .start-buttons {
-    margin-top: 16px;
-    width: 20%;
-    margin: 20px 0px;
-    padding: 12px;
-    font-size: 18px;
-    color: #fff;
-    background-color: #0ADD87;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-  }
-  
-  .foot{
-    display: none;
+/* Individual Workout Item */
+.workout-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.icon-placeholder {
+  margin-right: 16px;
+}
+
+.workout-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+}
+
+.workout-details {
+  flex-grow: 1;
+}
+
+.workout-name {
+  font-size: 16px;
+  margin: 0 0 4px 0;
+  color: #ffffff;
+}
+
+.workout-metrics {
+  font-size: 14px;
+  color: #888;
+  margin: 0;
+}
+
+.workout-button {
+  display: flex;
+  justify-content: center;
+}
+
+/* Start Button */
+.start-buttons {
+  margin-top: 16px;
+  width: 20%;
+  margin: 20px 0px;
+  padding: 12px;
+  font-size: 18px;
+  color: #fff;
+  background-color: #0add87;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.foot {
+  display: none;
+  color: white;
+  text-align: center;
+  padding-top: 20px;
+  margin-top: 20px;
+}
+
+@media screen and (max-width: 430px) and (max-height: 932px) {
+  .foot {
+    display: block;
     color: white;
     text-align: center;
     padding-top: 20px;
     margin-top: 20px;
   }
 
-  @media screen and (max-width: 430px) and (max-height: 932px){
-
-    .foot{
-      display: block;
-      color: white;
-      text-align: center;
-      padding-top: 20px;
-      margin-top: 20px;
-    }
-
-    .header-images {
-      background-image: url("../assets/dayheader.jpg");
-      height: 200px;
-    }
-
-    .start-buttons{
-      width: 40%;
-    }
+  .header-images {
+    background-image: url("../assets/dayheader.jpg");
+    height: 200px;
   }
+
+  .start-buttons {
+    width: 40%;
+  }
+}

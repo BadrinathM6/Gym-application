@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
-import axiosInstance from './utils/axiosInstance';
-import { Player } from '@lottiefiles/react-lottie-player';
+import axiosInstance from "./utils/axiosInstance";
+import { Player } from "@lottiefiles/react-lottie-player";
 import "../css/workoutDayPage.css";
-import Mlogo from '../assets/logo 2.png';
-import logo from '../assets/logo.png'
+import Mlogo from "../assets/logo 2.png";
+import logo from "../assets/logo.png";
 import FooterNav from "./FooterNav";
-import loader from './Main Scene.json';
-import dumbell from '../assets/office (1).svg'
-import target from '../assets/arrow.svg'
+import loader from "./Main Scene.json";
+import dumbell from "../assets/office (1).svg";
+import target from "../assets/arrow.svg";
 const currentDay = 1;
 
 const WorkoutChallenge = () => {
@@ -24,42 +24,35 @@ const WorkoutChallenge = () => {
   const [error, setError] = useState(null);
 
   const DumbellIcon = () => (
-    <img
-      src={dumbell}
-      alt="Dumbbell Icon"
-      width="24"
-      height="24"
-    />
+    <img src={dumbell} alt="Dumbbell Icon" width="24" height="24" />
   );
-  
+
   const TargetIcon = () => (
-    <img
-      src={target}
-      alt="Target Icon"
-      width="20"
-      height="20"
-    />
+    <img src={target} alt="Target Icon" width="20" height="20" />
   );
 
   // Fetch program progress and days
   useEffect(() => {
     const fetchProgramDetails = async () => {
       try {
-
         const validProgramId = parseInt(programId, 10);
-        
+
         if (isNaN(validProgramId)) {
-          throw new Error('Invalid Program ID');
+          throw new Error("Invalid Program ID");
         }
 
         // Fetch program progress
-        const progressResponse = await axiosInstance.get(`/workout-program/${programId}/progress/`);
+        const progressResponse = await axiosInstance.get(
+          `/workout-program/${programId}/progress/`
+        );
         const progressData = progressResponse.data;
         setProgress(progressData.progress_percentage);
         setCurrentWeek(progressData.program.week_no);
 
         // Fetch workout days for current week
-        const daysResponse = await axiosInstance.get(`/workout-program/${programId}/week/${currentWeek}/days/`);
+        const daysResponse = await axiosInstance.get(
+          `/workout-program/${programId}/week/${currentWeek}/days/`
+        );
         setWorkoutDays(daysResponse.data);
         setProgram(progressData.program);
         setLoading(false);
@@ -76,7 +69,7 @@ const WorkoutChallenge = () => {
   const handleStartWorkout = async (dayId) => {
     try {
       await axiosInstance.post(`/workout-day/${dayId}/start/`);
-      navigate(`/exercise-day/${dayId}`)
+      navigate(`/exercise-day/${dayId}`);
     } catch (err) {
       console.error("Failed to start workout", err);
     }
@@ -84,7 +77,7 @@ const WorkoutChallenge = () => {
 
   return (
     <>
-    {(loading) ? (
+      {loading ? (
         <div className="loading-container">
           <Player
             autoplay
@@ -93,11 +86,14 @@ const WorkoutChallenge = () => {
             style={{ width: 200, height: 200 }}
           />
         </div>
-    ) : (
+      ) : (
         <div className="challenge-container">
           {/* Header and Progress Section */}
           <div className="challenge-headers">
-            <button className="back-button" onClick={() => window.history.back()}>
+            <button
+              className="back-button"
+              onClick={() => window.history.back()}
+            >
               <FaArrowLeft />
             </button>
             <div className="logo-container">
@@ -117,11 +113,7 @@ const WorkoutChallenge = () => {
           </div>
           {/* Challenge Intro */}
           <div className="challenge-intro">
-            <img
-              src={Mlogo}
-              alt="Logo"
-              className="challenge-logo"
-            />
+            <img src={Mlogo} alt="Logo" className="challenge-logo" />
             <p>{program.description}</p>
           </div>
 
@@ -129,23 +121,30 @@ const WorkoutChallenge = () => {
             {workoutDays.map((day) => (
               <div
                 key={day.id}
-                className={`day-card ${day.day_number === currentDay ? "active" : ""}`}
+                className={`day-card ${
+                  day.day_number === currentDay ? "active" : ""
+                }`}
               >
-                <span>Week {day.week_number} - Day {day.day_number}</span>
+                <span>
+                  Week {day.week_number} - Day {day.day_number}
+                </span>
                 <button
                   className="day-button"
                   onClick={() => handleStartWorkout(day.id)}
                 >
-                  {day.day_number === currentDay ? <DumbellIcon/> : <TargetIcon/>}
+                  {day.day_number === currentDay ? (
+                    <DumbellIcon />
+                  ) : (
+                    <TargetIcon />
+                  )}
                 </button>
               </div>
             ))}
           </div>
 
           <div className="foot">
-            <FooterNav/>
+            <FooterNav />
           </div>
-
         </div>
       )}
     </>

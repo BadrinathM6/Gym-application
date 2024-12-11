@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from 'framer-motion';
-import { Player } from '@lottiefiles/react-lottie-player';
-import axiosInstance from './utils/axiosInstance';
+import { motion } from "framer-motion";
+import { Player } from "@lottiefiles/react-lottie-player";
+import axiosInstance from "./utils/axiosInstance";
 import "../css/bodyTypeSelection.css";
-import loader from './Main Scene.json';
-import skinnyimg from '../assets/skinnyimg.jpg';
-import IdealImg from '../assets/ideal.jpg';
-import FlabbyImg from '../assets/flaby.jpg';
-import BannerImage from '../assets/BodySelectionTypeBanner.jpg';
-import { pageVariants, cardVariants } from '../constants/animations';
+import loader from "./Main Scene.json";
+import skinnyimg from "../assets/skinnyimg.jpg";
+import IdealImg from "../assets/ideal.jpg";
+import FlabbyImg from "../assets/flaby.jpg";
+import BannerImage from "../assets/BodySelectionTypeBanner.jpg";
+import { pageVariants, cardVariants } from "../constants/animations";
 
 const BodyTypeSelectionPage = () => {
   const [selectedBodyType, setSelectedBodyType] = useState("");
@@ -32,14 +32,14 @@ const BodyTypeSelectionPage = () => {
     setLoading(true);
     try {
       const bodyTypeMapping = {
-        "Skinny": "SKINNY",
-        "Ideal": "IDEAL",
-        "Flabby": "FLABBY"
+        Skinny: "SKINNY",
+        Ideal: "IDEAL",
+        Flabby: "FLABBY",
       };
 
-      const response = await axiosInstance.post('/body-type/', {
+      const response = await axiosInstance.post("/body-type/", {
         body_type: bodyTypeMapping[selectedBodyType],
-        fitness_goal: getFitnessGoal(bodyTypeMapping[selectedBodyType])
+        fitness_goal: getFitnessGoal(bodyTypeMapping[selectedBodyType]),
       });
 
       if (response.status === 201) {
@@ -49,7 +49,9 @@ const BodyTypeSelectionPage = () => {
         }, 500);
       }
     } catch (err) {
-      setError(err.response?.data?.message || "An error occurred. Please try again.");
+      setError(
+        err.response?.data?.message || "An error occurred. Please try again."
+      );
       console.error("Error saving body type:", err);
     } finally {
       setLoading(false);
@@ -57,17 +59,21 @@ const BodyTypeSelectionPage = () => {
   };
 
   const getFitnessGoal = (bodyType) => {
-    switch(bodyType) {
-      case 'SKINNY': return "Build muscle mass and increase strength";
-      case 'FLABBY': return "Lose fat and tone muscles";
-      case 'IDEAL': return "Maintain current physique and improve overall fitness";
-      default: return "";
+    switch (bodyType) {
+      case "SKINNY":
+        return "Build muscle mass and increase strength";
+      case "FLABBY":
+        return "Lose fat and tone muscles";
+      case "IDEAL":
+        return "Maintain current physique and improve overall fitness";
+      default:
+        return "";
     }
   };
 
   return (
     <>
-      {(loading || isExiting) ? (
+      {loading || isExiting ? (
         <div className="loading-container">
           <Player
             autoplay
@@ -106,11 +112,13 @@ const BodyTypeSelectionPage = () => {
             {[
               { type: "Skinny", image: skinnyimg },
               { type: "Ideal", image: IdealImg },
-              { type: "Flabby", image: FlabbyImg }
+              { type: "Flabby", image: FlabbyImg },
             ].map((item, index) => (
               <motion.div
                 key={item.type}
-                className={`body-type-card ${selectedBodyType === item.type ? 'selected' : ''}`}
+                className={`body-type-card ${
+                  selectedBodyType === item.type ? "selected" : ""
+                }`}
                 onClick={() => handleSelection(item.type)}
                 variants={cardVariants}
                 whileHover="hover"
@@ -140,20 +148,20 @@ const BodyTypeSelectionPage = () => {
             </motion.div>
           )}
 
-        <footer className="footer">
-          <motion.button
-            className="next-btn"
-            onClick={handleNext}
-            disabled={loading}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-          >
-            GET STARTED
-          </motion.button>
-        </footer>
+          <footer className="footer">
+            <motion.button
+              className="next-btn"
+              onClick={handleNext}
+              disabled={loading}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+            >
+              GET STARTED
+            </motion.button>
+          </footer>
         </motion.div>
       )}
     </>

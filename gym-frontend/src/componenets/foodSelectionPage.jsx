@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
-import { FaArrowLeft, FaPlus, FaMinus } from "react-icons/fa"
+import { FaArrowLeft, FaPlus, FaMinus } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
 import axiosInstance from "./utils/axiosInstance";
 import "../css/foodSelectionPage.css";
 import eggImg from "../assets/egg.jpg";
 import Logo from "../assets/logo.png";
 import search from "../assets/search.svg";
-import loader from './Main Scene.json';
+import loader from "./Main Scene.json";
 import FooterNav from "./FooterNav";
-import { Player } from '@lottiefiles/react-lottie-player';
+import { Player } from "@lottiefiles/react-lottie-player";
 import FoodConsumptionSuccess from "../constants/foodConsumedAnimation";
 
 const TodayPlanPage = () => {
@@ -50,7 +50,11 @@ const TodayPlanPage = () => {
     try {
       setLoading(true);
       const response = await axiosInstance.get("meal-type-foods/", {
-        params: {category_id: categoryId, category_name: categoryName, meal_type: selectedMealType},
+        params: {
+          category_id: categoryId,
+          category_name: categoryName,
+          meal_type: selectedMealType,
+        },
       });
       const initialLikedState = response.data.reduce((acc, food) => {
         acc[food.id] = food.is_favorite;
@@ -66,7 +70,7 @@ const TodayPlanPage = () => {
       setFoodQuantities(initialQuantityState);
     } catch (error) {
       console.error("Error fetching foods:", error);
-    }finally{
+    } finally {
       setLoading(false);
     }
   };
@@ -86,38 +90,44 @@ const TodayPlanPage = () => {
   };
 
   const toggleLike = async (foodId) => {
+    // Optimistically update the UI immediately
+    setLikedItems((prev) => ({
+      ...prev,
+      [foodId]: !prev[foodId],
+    }));
+
     try {
       await axiosInstance.post("favorite-foods/", { food_id: foodId });
-
+    } catch (error) {
+      // If the API call fails, revert the UI state
       setLikedItems((prev) => ({
         ...prev,
         [foodId]: !prev[foodId],
       }));
-    } catch (error) {
       console.error("Error toggling favorite:", error);
     }
   };
 
   const consumeFood = async (foodId) => {
     try {
-      const foodToConsume = foods.find(food => food.id === foodId);
+      const foodToConsume = foods.find((food) => food.id === foodId);
       const quantity = foodQuantities[foodId] || 1;
-      
-      const response = await axiosInstance.post("meal-type-foods/", { 
+
+      const response = await axiosInstance.post("meal-type-foods/", {
         food_id: foodId,
-        serving_size: quantity
+        serving_size: quantity,
       });
 
       const caloriesConsumed = response.data.calories_consumed;
 
       // Set calories for the success animation
       setConsumedCalories(caloriesConsumed);
-      
+
       // Show success animation
       setShowSuccessAnimation(true);
 
       setFoods((prevFoods) => prevFoods.filter((food) => food.id !== foodId));
-      setFoodQuantities((prev) => ({...prev, [foodId]: 1}));
+      setFoodQuantities((prev) => ({ ...prev, [foodId]: 1 }));
 
       fetchDailyNutrition();
     } catch (error) {
@@ -127,25 +137,26 @@ const TodayPlanPage = () => {
 
   const handleQuantityChange = (foodId, value) => {
     // Remove non-numeric characters and convert to number
-    const numericValue = value === '' ? 1 : parseInt(value.replace(/\D/g, ''), 10);
-    
+    const numericValue =
+      value === "" ? 1 : parseInt(value.replace(/\D/g, ""), 10);
+
     setFoodQuantities((prev) => ({
       ...prev,
-      [foodId]: Math.max(1, numericValue) // Ensure quantity is at least 1
+      [foodId]: Math.max(1, numericValue), // Ensure quantity is at least 1
     }));
   };
 
   const incrementQuantity = (foodId) => {
     setFoodQuantities((prev) => ({
       ...prev,
-      [foodId]: (prev[foodId] || 1) + 1
+      [foodId]: (prev[foodId] || 1) + 1,
     }));
   };
 
   const decrementQuantity = (foodId) => {
     setFoodQuantities((prev) => ({
       ...prev,
-      [foodId]: Math.max(1, (prev[foodId] || 1) - 1)
+      [foodId]: Math.max(1, (prev[foodId] || 1) - 1),
     }));
   };
 
@@ -168,7 +179,10 @@ const TodayPlanPage = () => {
       ) : (
         <div className="today-plan-page">
           <header className="workout-header">
-            <button className="back-button" onClick={() => window.history.back()}>
+            <button
+              className="back-button"
+              onClick={() => window.history.back()}
+            >
               <FaArrowLeft />
             </button>
             <div className="logo-container">
@@ -187,7 +201,7 @@ const TodayPlanPage = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
               <button className="search-button">
-                <img src={search} alt="search-icon" className="search-icon"/>
+                <img src={search} alt="search-icon" className="search-icon" />
               </button>
             </div>
           </div>
@@ -238,22 +252,24 @@ const TodayPlanPage = () => {
                   />
                   <div className="quantity-container">
                     <div className="quantity-control">
-                      <button 
-                        className="quantity-button" 
+                      <button
+                        className="quantity-button"
                         onClick={() => decrementQuantity(food.id)}
                       >
                         <FaMinus />
                       </button>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         className="quantity-input"
-                        value={foodQuantities[food.id] || 1}g
-                        onChange={(e) => handleQuantityChange(food.id, e.target.value)}
-                        style={{
-                        }}
+                        value={foodQuantities[food.id] || 1}
+                        g
+                        onChange={(e) =>
+                          handleQuantityChange(food.id, e.target.value)
+                        }
+                        style={{}}
                       />
-                      <button 
-                        className="quantity-button" 
+                      <button
+                        className="quantity-button"
                         onClick={() => incrementQuantity(food.id)}
                       >
                         <FaPlus />
@@ -265,10 +281,22 @@ const TodayPlanPage = () => {
                 <div className="food-details1">
                   <h3>{food.name}</h3>
                   <div className="food-nutrients">
-                    <h6> ► {food.calories} calories ({food.serving_size}).</h6>
-                    <h6> ► {food.protein}g proteins ({food.serving_size}).</h6>
-                    <h6> ► {food.carbs}g carbs ({food.serving_size}).</h6>
-                    <h6> ► {food.fat}g fat ({food.serving_size}).</h6>
+                    <h6>
+                      {" "}
+                      ► {food.calories} calories ({food.serving_size}).
+                    </h6>
+                    <h6>
+                      {" "}
+                      ► {food.protein}g proteins ({food.serving_size}).
+                    </h6>
+                    <h6>
+                      {" "}
+                      ► {food.carbs}g carbs ({food.serving_size}).
+                    </h6>
+                    <h6>
+                      {" "}
+                      ► {food.fat}g fat ({food.serving_size}).
+                    </h6>
                   </div>
                 </div>
 
@@ -279,9 +307,13 @@ const TodayPlanPage = () => {
                       onClick={() => toggleLike(food.id)}
                     >
                       {likedItems[food.id] ? (
-                        <AiFillHeart style={{ color: "red", fontSize: "20px" }} />
+                        <AiFillHeart
+                          style={{ color: "red", fontSize: "20px" }}
+                        />
                       ) : (
-                        <AiOutlineHeart style={{ color: "gray", fontSize: "20px" }} />
+                        <AiOutlineHeart
+                          style={{ color: "gray", fontSize: "20px" }}
+                        />
                       )}
                     </div>
                     <button
@@ -297,16 +329,15 @@ const TodayPlanPage = () => {
           </div>
 
           <div className="foot">
-            <FooterNav/>
+            <FooterNav />
           </div>
 
           {showSuccessAnimation && (
-            <FoodConsumptionSuccess 
+            <FoodConsumptionSuccess
               calories={consumedCalories}
               onClose={() => setShowSuccessAnimation(false)}
             />
           )}
-
         </div>
       )}
     </>

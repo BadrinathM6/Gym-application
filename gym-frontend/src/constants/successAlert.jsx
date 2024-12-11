@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react';
-import Lottie from 'lottie-react';
-import successAnimation from '../componenets/successfully-done.json';
-import './successAlert.css'
+import React, { useEffect } from "react";
+import Lottie from "lottie-react";
+import successAnimation from "../componenets/successfully-done.json";
+import "./successAlert.css";
 
 const SuccessAlert = ({ message, onClose }) => {
   useEffect(() => {
-    // Automatically close the alert after 3 seconds
     const timer = setTimeout(() => {
       onClose();
     }, 3000);
@@ -23,10 +22,7 @@ const SuccessAlert = ({ message, onClose }) => {
           style={{ width: 200, height: 200 }}
         />
         <p className="success-message">{message}</p>
-        <button
-          className="success-close-button"
-          onClick={onClose}
-        >
+        <button className="success-close-button" onClick={onClose}>
           Close
         </button>
       </div>

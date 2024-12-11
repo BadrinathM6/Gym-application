@@ -1,135 +1,135 @@
 /* General Styling */
 .veg-nonveg-container {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    font-family: 'Sour Gummy', sans-serif;
-  }
-  
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 100px;
-    padding: 15px;
-    background-color: #fff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
-  .tittle2{
-    font-weight: lighter;
-    text-align: center;
-    padding: 10px;
-  }
-  .title {
-    width: 80px;
-    margin-top: -40px;
-  }
-  
-  .main-content{
-    display: block;
-    align-items: center;
-  }
-  
-  .food-planning-banner {
-    display: flex;
-    justify-content: center;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .banner-image {
-    display:inline-block;
-    align-items: center;
-    width: 200px;
-    border-radius: 8px;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  font-family: "Sour Gummy", sans-serif;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100px;
+  padding: 15px;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.tittle2 {
+  font-weight: lighter;
+  text-align: center;
+  padding: 10px;
+}
+.title {
+  width: 80px;
+  margin-top: -40px;
+}
+
+.main-content {
+  display: block;
+  align-items: center;
+}
+
+.food-planning-banner {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.banner-image {
+  display: inline-block;
+  align-items: center;
+  width: 200px;
+  border-radius: 8px;
+}
+
+.options-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.option-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.option-card img {
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
+}
+
+.option-card h3 {
+  flex: 1;
+  margin-left: 10px;
+  font-size: 16px;
+}
+
+.option-card .toggle-switch {
+  display: flex;
+  align-items: center;
+}
+
+.toggle-switch input {
+  width: 20px;
+  height: 20px;
+}
+
+.selected {
+  border: 2px solid #4caf50;
+}
+
+/* Footer */
+.footer {
+  padding: 15px;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+}
+
+.next-btn {
+  width: 100%;
+  padding: 15px;
+  background-color: #e53935;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.next-btn:hover {
+  background-color: #d32f2f;
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
   .options-container {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+    flex-direction: row;
+    justify-content: space-around;
   }
-  
+
   .option-card {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 10px;
-    padding: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-  }
-  
-  .option-card img {
-    width: 60px;
-    height: 60px;
-    border-radius: 10px;
-  }
-  
-  .option-card h3 {
     flex: 1;
-    margin-left: 10px;
-    font-size: 16px;
+    margin: 0 10px;
   }
-  
-  .option-card .toggle-switch {
-    display: flex;
-    align-items: center;
-  }
-  
-  .toggle-switch input {
-    width: 20px;
-    height: 20px;
-  }
-  
-  .selected {
-    border: 2px solid #4caf50;
-  }
-  
-  /* Footer */
+
   .footer {
-    padding: 15px;
-    background-color: white;
-    display: flex;
-    justify-content: center;
+    padding: 20px;
   }
-  
+
   .next-btn {
-    width: 100%;
-    padding: 15px;
-    background-color: #e53935;
-    color: white;
-    border: none;
-    border-radius: 30px;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
+    max-width: 300px;
+    margin: 0 auto;
   }
-  
-  .next-btn:hover {
-    background-color: #d32f2f;
-  }
-  
-  /* Responsive Design */
-  @media (min-width: 768px) {
-    .options-container {
-      flex-direction: row;
-      justify-content: space-around;
-    }
-  
-    .option-card {
-      flex: 1;
-      margin: 0 10px;
-    }
-  
-    .footer {
-      padding: 20px;
-    }
-  
-    .next-btn {
-      max-width: 300px;
-      margin: 0 auto;
-    }
-  }
+}

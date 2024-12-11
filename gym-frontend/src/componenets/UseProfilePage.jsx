@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from "react";
 import "../css/UserProfilePage.css";
 import { FaPen, FaDumbbell, FaBell } from "react-icons/fa";
-import { Player } from '@lottiefiles/react-lottie-player';
-import usericonImg from '../assets/user-icon.jpg'
-import callenderimg from '../assets/callender.jpg'
-import { useNavigate } from "react-router-dom"; 
+import { Player } from "@lottiefiles/react-lottie-player";
+import usericonImg from "../assets/user-icon.jpg";
+import callenderimg from "../assets/callender.jpg";
+import { useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
-import axiosInstance from './utils/axiosInstance';
-import SuccessAlert from '../constants/successAlert';
-import logo from '../assets/logo.png'
+import axiosInstance from "./utils/axiosInstance";
+import SuccessAlert from "../constants/successAlert";
+import logo from "../assets/logo.png";
 import FooterNav from "./FooterNav";
-import loader from './Main Scene.json';
+import loader from "./Main Scene.json";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
-  
+
   // State for user details
   const [userDetails, setUserDetails] = useState({
-    user_id: '',
-    gender: '',
+    user_id: "",
+    gender: "",
     age: null,
   });
 
@@ -27,12 +27,12 @@ const ProfilePage = () => {
 
   // State for dietary preferences
   const [dietaryPreferences, setDietaryPreferences] = useState({
-    diet_type: '',
+    diet_type: "",
   });
 
   // State for body type
   const [bodyTypeProfile, setBodyTypeProfile] = useState({
-    body_type: '',
+    body_type: "",
   });
 
   // State for physical profile
@@ -46,14 +46,14 @@ const ProfilePage = () => {
 
   // Temporary state for unsaved changes
   const [tempUserDetails, setTempUserDetails] = useState({
-    gender: '',
+    gender: "",
     age: null,
   });
   const [tempDietaryPreferences, setTempDietaryPreferences] = useState({
-    diet_type: '',
+    diet_type: "",
   });
   const [tempBodyTypeProfile, setTempBodyTypeProfile] = useState({
-    body_type: '',
+    body_type: "",
   });
   const [tempPhysicalProfile, setTempPhysicalProfile] = useState({
     height: null,
@@ -62,25 +62,25 @@ const ProfilePage = () => {
 
   // Dropdown options
   const GENDER_OPTIONS = [
-    { value: '', label: 'Select Gender' },
-    { value: 'M', label: 'Male' },
-    { value: 'F', label: 'Female' },
-    { value: 'O', label: 'Other' },
-    { value: 'N', label: 'Prefer not to say' }
+    { value: "", label: "Select Gender" },
+    { value: "M", label: "Male" },
+    { value: "F", label: "Female" },
+    { value: "O", label: "Other" },
+    { value: "N", label: "Prefer not to say" },
   ];
 
   const DIET_TYPE_OPTIONS = [
-    { value: '', label: 'Select Diet Type' },
-    { value: 'VEG', label: 'Vegetarian' },
-    { value: 'NON_VEG', label: 'Non-Vegetarian' },
-    { value: 'VEGAN', label: 'Vegan' }
+    { value: "", label: "Select Diet Type" },
+    { value: "VEG", label: "Vegetarian" },
+    { value: "NON_VEG", label: "Non-Vegetarian" },
+    { value: "VEGAN", label: "Vegan" },
   ];
 
   const BODY_TYPE_OPTIONS = [
-    { value: '', label: 'Select Body Type' },
-    { value: 'SKINNY', label: 'Skinny - Need to gain muscle mass' },
-    { value: 'FLABBY', label: 'Flabby - Need to lose fat and tone up' },
-    { value: 'IDEAL', label: 'Ideal - Maintain current physique' }
+    { value: "", label: "Select Body Type" },
+    { value: "SKINNY", label: "Skinny - Need to gain muscle mass" },
+    { value: "FLABBY", label: "Flabby - Need to lose fat and tone up" },
+    { value: "IDEAL", label: "Ideal - Maintain current physique" },
   ];
 
   // Fetch functions
@@ -94,16 +94,16 @@ const ProfilePage = () => {
   const fetchUserDetails = async () => {
     try {
       setLoading(true);
-      const response = await axiosInstance.get('user/');
+      const response = await axiosInstance.get("user/");
       setUserDetails(response.data);
       // Initialize temp state with current values
       setTempUserDetails({
         gender: response.data.gender,
-        age: response.data.age
+        age: response.data.age,
       });
     } catch (error) {
-      console.error('Error fetching user details:', error);
-    }finally{
+      console.error("Error fetching user details:", error);
+    } finally {
       setLoading(false);
     }
   };
@@ -111,15 +111,15 @@ const ProfilePage = () => {
   const fetchDietaryPreferences = async () => {
     try {
       setLoading(true);
-      const response = await axiosInstance.get('update-dietary-preferences/');
+      const response = await axiosInstance.get("update-dietary-preferences/");
       setDietaryPreferences(response.data);
       // Initialize temp state with current values
       setTempDietaryPreferences({
-        diet_type: response.data.diet_type
+        diet_type: response.data.diet_type,
       });
     } catch (error) {
-      console.error('Error fetching dietary preferences:', error);
-    }finally{
+      console.error("Error fetching dietary preferences:", error);
+    } finally {
       setLoading(false);
     }
   };
@@ -127,15 +127,15 @@ const ProfilePage = () => {
   const fetchBodyTypeProfile = async () => {
     try {
       setLoading(true);
-      const response = await axiosInstance.get('update-body-type/');
+      const response = await axiosInstance.get("update-body-type/");
       setBodyTypeProfile(response.data);
       // Initialize temp state with current values
       setTempBodyTypeProfile({
-        body_type: response.data.body_type
+        body_type: response.data.body_type,
       });
     } catch (error) {
-      console.error('Error fetching body type profile:', error);
-    }finally{
+      console.error("Error fetching body type profile:", error);
+    } finally {
       setLoading(false);
     }
   };
@@ -143,16 +143,16 @@ const ProfilePage = () => {
   const fetchPhysicalProfile = async () => {
     try {
       setLoading(true);
-      const response = await axiosInstance.get('update-physical-profile/');
+      const response = await axiosInstance.get("update-physical-profile/");
       setPhysicalProfile(response.data);
       // Initialize temp state with current values
       setTempPhysicalProfile({
         height: response.data.height,
-        weight: response.data.weight
+        weight: response.data.weight,
       });
     } catch (error) {
-      console.error('Error fetching physical profile:', error);
-    }finally{
+      console.error("Error fetching physical profile:", error);
+    } finally {
       setLoading(false);
     }
   };
@@ -160,25 +160,25 @@ const ProfilePage = () => {
   // Update save function
   const saveAllChanges = async () => {
     try {
-      await axiosInstance.put('user/', {
+      await axiosInstance.put("user/", {
         gender: tempUserDetails.gender,
-        age: tempUserDetails.age
+        age: tempUserDetails.age,
       });
 
       // Update dietary preferences
-      await axiosInstance.put('update-dietary-preferences/', {
-        diet_type: tempDietaryPreferences.diet_type
+      await axiosInstance.put("update-dietary-preferences/", {
+        diet_type: tempDietaryPreferences.diet_type,
       });
 
       // Update body type
-      await axiosInstance.put('update-body-type/', {
-        body_type: tempBodyTypeProfile.body_type
+      await axiosInstance.put("update-body-type/", {
+        body_type: tempBodyTypeProfile.body_type,
       });
 
       // Update physical profile
-      await axiosInstance.put('update-physical-profile/', {
+      await axiosInstance.put("update-physical-profile/", {
         height: tempPhysicalProfile.height,
-        weight: tempPhysicalProfile.weight
+        weight: tempPhysicalProfile.weight,
       });
 
       // Refresh all data after updates
@@ -187,10 +187,10 @@ const ProfilePage = () => {
       fetchBodyTypeProfile();
       fetchPhysicalProfile();
 
-      setShowSuccessAlert(true)
+      setShowSuccessAlert(true);
     } catch (error) {
-      console.error('Error updating profile:', error);
-      alert('Failed to update profile. Please try again.');
+      console.error("Error updating profile:", error);
+      alert("Failed to update profile. Please try again.");
     }
   };
 
@@ -200,14 +200,14 @@ const ProfilePage = () => {
       <div className="editable-field">
         <div className="field-label">
           <span>{label}</span>
-          <span>{value || 'Not set'}</span>
+          <span>{value || "Not set"}</span>
         </div>
-        <select 
+        <select
           className="edit-input"
           value={value}
           onChange={(e) => onChangeFn(e.target.value)}
         >
-          {options.map(option => (
+          {options.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
             </option>
@@ -223,13 +223,13 @@ const ProfilePage = () => {
       <div className="editable-field">
         <div className="field-label">
           <span>{label}</span>
-          <span>{value || 'Not set'}</span>
+          <span>{value || "Not set"}</span>
         </div>
         <input
           type="number"
           placeholder={`Enter new ${label.toLowerCase()}`}
           className="edit-input"
-          value={value || ''}
+          value={value || ""}
           onChange={(e) => onChangeFn(e.target.value)}
         />
       </div>
@@ -238,7 +238,7 @@ const ProfilePage = () => {
 
   return (
     <>
-    {(loading) ? (
+      {loading ? (
         <div className="loading-container">
           <Player
             autoplay
@@ -247,11 +247,14 @@ const ProfilePage = () => {
             style={{ width: 200, height: 200 }}
           />
         </div>
-    ) : (
+      ) : (
         <div className="profile-page">
           {/* Header Section */}
           <header className="profile-header">
-            <button className="back-button" onClick={() => window.history.back()}>
+            <button
+              className="back-button"
+              onClick={() => window.history.back()}
+            >
               <FaArrowLeft />
             </button>
             <div className="logo-container">
@@ -262,16 +265,14 @@ const ProfilePage = () => {
 
           {/* Profile Info Section */}
           <div className="profile-info">
-            <img
-              src={usericonImg} 
-              alt="User"
-              className="profile-picture"
-            />
+            <img src={usericonImg} alt="User" className="profile-picture" />
             <h2 className="user-name"> User id : {userDetails.user_id}</h2>
           </div>
 
           <div className="button-container">
-            <button className="stats-button" onClick={()=> navigate("/stat")}>Stats</button>
+            <button className="stats-button" onClick={() => navigate("/stat")}>
+              Stats
+            </button>
           </div>
 
           {/* My Journey Section */}
@@ -292,10 +293,7 @@ const ProfilePage = () => {
               </div>
             </div>
             <div className="calendar-box">
-              <img
-                src={callenderimg}
-                alt="Calendar"
-              />
+              <img src={callenderimg} alt="Calendar" />
               <p>Calendar</p>
               <span className="arrow">→</span>
             </div>
@@ -305,8 +303,8 @@ const ProfilePage = () => {
           <div className="settings">
             <h3>Settings</h3>
             <div className="settings-options">
-              <div 
-                className="option" 
+              <div
+                className="option"
                 onClick={() => setIsEditProfileExpanded(!isEditProfileExpanded)}
               >
                 <FaPen />
@@ -316,53 +314,76 @@ const ProfilePage = () => {
                 <div className="edit-profile-container">
                   <div className="edit-profile-details">
                     {renderDropdownField(
-                      'Gender', 
-                      tempUserDetails.gender || userDetails.gender, 
+                      "Gender",
+                      tempUserDetails.gender || userDetails.gender,
                       GENDER_OPTIONS,
-                      (value) => setTempUserDetails({...tempUserDetails, gender: value})
+                      (value) =>
+                        setTempUserDetails({
+                          ...tempUserDetails,
+                          gender: value,
+                        })
                     )}
                   </div>
                   <div className="edit-profile-details">
                     {renderNumericField(
-                      'Age', 
-                      tempUserDetails.age || userDetails.age, 
-                      (value) => setTempUserDetails({...tempUserDetails, age: value})
+                      "Age",
+                      tempUserDetails.age || userDetails.age,
+                      (value) =>
+                        setTempUserDetails({ ...tempUserDetails, age: value })
                     )}
                   </div>
-                  <div className="edit-profile-details"> 
+                  <div className="edit-profile-details">
                     {renderDropdownField(
-                      'Diet Type', 
-                      tempDietaryPreferences.diet_type || dietaryPreferences.diet_type, 
+                      "Diet Type",
+                      tempDietaryPreferences.diet_type ||
+                        dietaryPreferences.diet_type,
                       DIET_TYPE_OPTIONS,
-                      (value) => setTempDietaryPreferences({...tempDietaryPreferences, diet_type: value})
+                      (value) =>
+                        setTempDietaryPreferences({
+                          ...tempDietaryPreferences,
+                          diet_type: value,
+                        })
                     )}
                   </div>
-                  <div className="edit-profile-details"> 
+                  <div className="edit-profile-details">
                     {renderDropdownField(
-                      'Body Type', 
-                      tempBodyTypeProfile.body_type || bodyTypeProfile.body_type, 
+                      "Body Type",
+                      tempBodyTypeProfile.body_type ||
+                        bodyTypeProfile.body_type,
                       BODY_TYPE_OPTIONS,
-                      (value) => setTempBodyTypeProfile({...tempBodyTypeProfile, body_type: value})
+                      (value) =>
+                        setTempBodyTypeProfile({
+                          ...tempBodyTypeProfile,
+                          body_type: value,
+                        })
                     )}
                   </div>
-                  <div className="edit-profile-details">  
+                  <div className="edit-profile-details">
                     {renderNumericField(
-                      'Height (cm)', 
-                      tempPhysicalProfile.height || physicalProfile.height, 
-                      (value) => setTempPhysicalProfile({...tempPhysicalProfile, height: value})
+                      "Height (cm)",
+                      tempPhysicalProfile.height || physicalProfile.height,
+                      (value) =>
+                        setTempPhysicalProfile({
+                          ...tempPhysicalProfile,
+                          height: value,
+                        })
                     )}
                   </div>
-                  <div className="edit-profile-details"> 
+                  <div className="edit-profile-details">
                     {renderNumericField(
-                      'Weight (kg)', 
-                      tempPhysicalProfile.weight || physicalProfile.weight, 
-                      (value) => setTempPhysicalProfile({...tempPhysicalProfile, weight: value})
+                      "Weight (kg)",
+                      tempPhysicalProfile.weight || physicalProfile.weight,
+                      (value) =>
+                        setTempPhysicalProfile({
+                          ...tempPhysicalProfile,
+                          weight: value,
+                        })
                     )}
                   </div>
 
                   <div className="save-changes-container">
-                    <button 
-                      className="save-changes-button" 
+                    <button
+                      className="save-changes-button"
                       onClick={saveAllChanges}
                     >
                       Save Changes
@@ -382,14 +403,14 @@ const ProfilePage = () => {
           </div>
 
           {showSuccessAlert && (
-            <SuccessAlert 
-              message="Profile Updated Successfully!" 
-              onClose={() => setShowSuccessAlert(false)} 
+            <SuccessAlert
+              message="Profile Updated Successfully!"
+              onClose={() => setShowSuccessAlert(false)}
             />
           )}
 
           <div className="foot">
-            <FooterNav/>
+            <FooterNav />
           </div>
         </div>
       )}
