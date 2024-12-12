@@ -261,14 +261,43 @@ class UserExerciseProgress(models.Model):
     
     # Customizable exercise parameters
     duration = models.IntegerField(default=0)  # in seconds
-    reps = models.IntegerField(default=10)
+    reps = models.IntegerField(default=0)
     sets_completed = models.IntegerField(default=0)
+    
+    # Progress tracking
+    progress_percentage = models.FloatField(default=0)
+    total_workout_time = models.IntegerField(default=0)  # in seconds
     
     # Calories tracking
     calories_burned = models.FloatField(default=0)
-    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def calculate_progress_percentage(self):
+        """
+        Calculate progress percentage based on both duration and sets/reps.
+        """
+        duration_progress = 0
+        sets_progress = 0
+
+        # Calculate progress for duration
+        if self.duration > 0 and self.exercise.default_duration > 0:
+            duration_progress = (self.duration / self.exercise.default_duration) * 100
+
+        # Calculate progress for sets
+        if self.sets_completed > 0 and self.exercise.default_set > 0:
+            sets_progress = (self.sets_completed / self.exercise.default_set) * 100
+
+        # Combine progress metrics if both are applicable
+        if self.exercise.default_duration > 0 and self.exercise.default_set > 0:
+            total_progress = (duration_progress + sets_progress) / 2
+        elif self.exercise.default_duration > 0:
+            total_progress = duration_progress
+        else:
+            total_progress = sets_progress
+
+        # Clamp progress between 0 and 100
+        return min(max(total_progress, 0), 100)
 
     def calculate_calories(self):
         """
@@ -287,7 +316,9 @@ class UserExerciseProgress(models.Model):
         return round(calories, 2)
 
     def save(self, *args, **kwargs):
-        # Auto-calculate calories when saving
+        # Auto-calculate progress percentage and calories when saving
+        self.progress_percentage = self.calculate_progress_percentage()
+        self.total_workout_time = self.duration
         self.calories_burned = self.calculate_calories()
         super().save(*args, **kwargs)
 

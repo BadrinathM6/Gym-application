@@ -18,6 +18,7 @@ import DayWorkoutPage from "./componenets/WorkoutListPage";
 import ExercisePage from "./componenets/WorkoutDetailPage";
 import FoodPage from "./componenets/FoodCategorySelectionPage";
 import TodayPlanPage from "./componenets/foodSelectionPage";
+import WorkoutStatsPage from "./componenets/statsPage";
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -124,6 +125,10 @@ const App = () => {
         <Route
           path="/today"
           element={<AuthenticatedRoute element={TodayPlanPage} />}
+        />
+        <Route
+          path="/stat"
+          element={<AuthenticatedRoute element={WorkoutStatsPage} />}
         />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

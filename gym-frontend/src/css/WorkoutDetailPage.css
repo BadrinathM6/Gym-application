@@ -130,7 +130,20 @@
   align-items: center;
 }
 
+.sets-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .duration-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sets-control {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -141,7 +154,19 @@
   color: #ffffff;
 }
 
+.sets-control span {
+  margin-top: 10px;
+  color: #ffffff;
+}
+
 .duration-control button {
+  margin-top: 10px;
+  padding: 5px 10px;
+  color: #ffffff;
+  background-color: #0056b3;
+}
+
+.sets-control button {
   margin-top: 10px;
   padding: 5px 10px;
   color: #ffffff;

@@ -5,7 +5,14 @@ export default {
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'custom-bg': '#252b2d', // Custom background color
+      },
+      fontFamily: {
+        'sour-gummy': ['"Sour Gummy"', 'sans-serif'], // Custom font family
+      },
+    },
   },
   plugins: [],
 };

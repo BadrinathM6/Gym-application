@@ -118,6 +118,8 @@ const ExercisePage = () => {
         duration: duration,
         sets_completed: sets,
         calories_burned: totalCalories,
+        progress_percentage: calculateProgressPercentage(),
+        total_workout_time: duration
       };
 
       const response = await axiosInstance.put(
@@ -135,12 +137,17 @@ const ExercisePage = () => {
           (total, workout) => total + (workout.calories_burned || 0),
           0
         );
-
-        setWeekCompletedModal(true);
+        setWeekCompletedModal(true);  
       }
     } catch (error) {
       console.error("Error updating exercise progress:", error);
     }
+  };
+
+  const calculateProgressPercentage = () => {
+    const defaultSets = exerciseData.default_reps || 10;
+    const progressPercentage = (sets / defaultSets) * 100;
+    return Math.min(Math.max(progressPercentage, 0), 100);
   };
 
   // Navigation Handlers

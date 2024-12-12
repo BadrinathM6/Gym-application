@@ -683,12 +683,12 @@ class UserWorkoutStatsView(APIView):
         """
         Get overall workout statistics for the user
         """
-        workout_progresses = UserWorkoutProgress.objects.filter(user=request.user)
+        workout_progresses = UserExerciseProgress.objects.filter(user=request.user)
         
         stats = {
             'total_programs_enrolled': workout_progresses.count(),
-            'total_calories_burned': sum(progress.total_calories_burned for progress in workout_progresses),
-            'total_workout_time': sum((progress.total_workout_time for progress in workout_progresses), timezone.timedelta()),
+            'total_calories_burned': sum(progress.calories_burned for progress in workout_progresses),
+            'total_workout_time': sum(progress.total_workout_time for progress in workout_progresses),
             'completed_programs': workout_progresses.filter(
                 progress_percentage=100
             ).count()
@@ -829,6 +829,46 @@ class WorkoutDayProgressView(APIView):
             'exercises': exercise_progresses,
             'total_calories_burned': total_calories_burned
         }, status=status.HTTP_200_OK)
+    
+class UserWorkoutProgressView(APIView):
+    """
+    Manage and track overall user workout progress
+    """
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        """
+        Get detailed workout progress for the user
+        """
+        # Get all exercise progresses for the user
+        exercise_progresses = UserExerciseProgress.objects.filter(user=request.user)
+
+        exercise_details = [
+            {
+                "name": progress.exercise.name,
+                "progress_percentage": progress.progress_percentage,
+                "calories_burned": progress.calories_burned,
+                "total_workout_time": progress.total_workout_time,
+                "sets_completed": progress.sets_completed,
+            }
+            for progress in exercise_progresses
+        ]
+        
+        # Calculate overall workout statistics
+        stats = {
+            'total_exercises': exercise_progresses.count(),
+            'total_completed_exercises': exercise_progresses.filter(progress_percentage=100).count(),
+            'total_workout_time': sum(progress.total_workout_time for progress in exercise_progresses),
+            'total_calories_burned': sum(progress.calories_burned for progress in exercise_progresses),
+            'overall_progress_percentage': (
+                sum(progress.progress_percentage for progress in exercise_progresses) / 
+                exercise_progresses.count() if exercise_progresses.exists() else 0
+            ),
+            "exercise_details": exercise_details,
+        }
+        
+        return Response(stats, status=status.HTTP_200_OK)
     
 class FoodCategoryListView(APIView):
     """
