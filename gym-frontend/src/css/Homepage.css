@@ -8,6 +8,7 @@
 .homepage {
   background-color: #252b2d;
   font-family: "Sour Gummy", sans-serif;
+  min-height: 100vh;
 }
 
 /* Header Section */
@@ -270,6 +271,14 @@
   text-align: center;
   padding-top: 20px;
   margin-top: 20px;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #252b2d; /* Optional: Adjust the background */
 }
 
 /* Responsive Design */

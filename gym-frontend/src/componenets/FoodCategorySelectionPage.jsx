@@ -77,7 +77,7 @@ const FoodPage = () => {
             autoplay
             loop
             src={loader}
-            style={{ width: 200, height: 200 }}
+            style={{ width: 300, height: 300 }}
           />
         </div>
       ) : (
@@ -141,7 +141,7 @@ const FoodPage = () => {
             <button className="open-now-button">Open Now</button>
           </footer>
 
-          <div className="foots">
+          <div className="foot">
             <FooterNav />
           </div>
         </div>

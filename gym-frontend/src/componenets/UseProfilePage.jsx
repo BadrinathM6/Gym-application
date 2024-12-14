@@ -244,7 +244,7 @@ const ProfilePage = () => {
             autoplay
             loop
             src={loader}
-            style={{ width: 200, height: 200 }}
+            style={{ width: 300, height: 300 }}
           />
         </div>
       ) : (

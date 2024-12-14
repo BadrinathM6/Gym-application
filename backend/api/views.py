@@ -882,14 +882,14 @@ class FoodCategoryListView(APIView):
             # Retrieve the user's body type profile
             try:
                 body_type_profile = BodyTypeProfile.objects.get(user=request.user)
-                body_type = body_type_profile.body_type
+                body_type = body_type_profile.id
             except BodyTypeProfile.DoesNotExist:
                 return Response(
                     {"error": "No body type profile found for the user"},
                     status=status.HTTP_400_BAD_REQUEST
                 )
             
-            categories = FoodCategory.objects.filter(bodytype__body_type=body_type)
+            categories = FoodCategory.objects.filter(bodytype__id=body_type)
 
             # Fetch food categories based on body type
             # if body_type == 'FLABBY':

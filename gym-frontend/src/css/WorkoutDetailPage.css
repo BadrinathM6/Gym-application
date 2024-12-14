@@ -244,10 +244,22 @@
   cursor: not-allowed;
 }
 
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #252b2d; /* Optional: Adjust the background */
+}
+
 /* Responsive Design */
 @media screen and (min-width: 600px) and (max-width: 820px) and (max-height: 1180px) {
   .video-container {
     max-width: 500px;
+  }
+
+  .back-button {
+    display: none;
   }
 
   .animation-containers {
@@ -273,6 +285,10 @@
 @media screen and (max-width: 430px) and (max-height: 932px) {
   .video-container {
     max-width: 320px;
+  }
+
+  .back-button {
+    display: none;
   }
 
   .animation-containers {

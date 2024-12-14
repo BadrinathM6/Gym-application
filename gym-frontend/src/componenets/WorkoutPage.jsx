@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import "../css/WorkoutPage.css";
 import { FaHeart, FaArrowLeft } from "react-icons/fa";
 import axiosInstance from "./utils/axiosInstance";
-import { Player } from "@lottiefiles/react-lottie-player";
 import Week1 from "../assets/week1.jpg";
 import Week2 from "../assets/week2.jpg";
 import Week3 from "../assets/week3.jpg";
 import Week4 from "../assets/week4.jpg";
 import Week5 from "../assets/week5.jpg";
 import search from "../assets/search.svg";
-import Logo from "../assets/logo.png";
-import FooterNav from "./FooterNav";
-import loader from "./Main Scene.json";
+import Logo from "../assets/logo.webp";
+import WorkoutPageSkeleton from "./workoutSkeleton";
+const FooterNav = React.lazy(() => import("./FooterNav"));
+import FooterSkeleton from "./FooterLoading";
 
 const WorkoutPage = () => {
   const navigate = useNavigate();
@@ -67,14 +67,7 @@ const WorkoutPage = () => {
   return (
     <>
       {loading ? (
-        <div className="loading-container">
-          <Player
-            autoplay
-            loop
-            src={loader}
-            style={{ width: 200, height: 200 }}
-          />
-        </div>
+        <WorkoutPageSkeleton />
       ) : (
         <div className="workout-page">
           <header className="workout-header">
@@ -85,7 +78,7 @@ const WorkoutPage = () => {
               <FaArrowLeft />
             </button>
             <div className="logo-container">
-              <img src={Logo} alt="Logo" className="logo" />
+              <img src={Logo} alt="Logo" className="logo" loading="eager" />
             </div>
             <h1 className="header-title">BUFFALO GYM</h1>
           </header>
@@ -100,7 +93,7 @@ const WorkoutPage = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
               <div className="search-icon-container">
-                <img src={search} alt="search-icon" className="search-icon" />
+                <img src={search} alt="search-icon" className="search-icon" loading="eager"/>
               </div>
             </div>
             <button className="plan-button">PLAN OVER</button>
@@ -154,7 +147,9 @@ const WorkoutPage = () => {
           </footer>
 
           <div className="foot">
-            <FooterNav />
+            <Suspense fallback={<FooterSkeleton />}>
+              <FooterNav />
+            </Suspense>
           </div>
         </div>
       )}
@@ -203,6 +198,7 @@ const WorkoutCard = ({ workout, navigate, programId }) => {
         }
         alt={workout.title}
         className="workout-image"
+        loading="lazy"
       />
       <div className="workout-details">
         <h3>{workout.name}</h3>

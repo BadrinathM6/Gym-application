@@ -120,12 +120,20 @@ body {
   color: #fff;
 }
 
-.foots {
+.foot {
   display: none;
   color: white;
   text-align: center;
   padding-top: 20px;
   margin-top: 20px;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #252b2d; /* Optional: Adjust the background */
 }
 
 @media screen and (max-width: 430px) and (max-height: 932px) {
@@ -135,6 +143,10 @@ body {
     text-align: center;
     padding-top: 20px;
     margin-top: 20px;
+  }
+
+  .back-button {
+    display: none;
   }
 
   .day-card {

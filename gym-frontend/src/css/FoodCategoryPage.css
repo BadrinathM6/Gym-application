@@ -1,7 +1,53 @@
 .food-page {
   font-family: "Sour Gummy", sans-serif;
   background-color: #252b2d;
-  height: 100vh;
+  min-height: 100vh;
+}
+
+.workout-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #252b2d;
+  padding: 10px;
+  position: relative; /* Allows the text to center relative to the entire header */
+}
+
+.workout-header h1 {
+  color: #ffffff;
+}
+
+.back-button {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 20px;
+  cursor: pointer;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.back-button:hover {
+  color: #ffa500;
+}
+
+.logo {
+  height: 20px;
+  margin-left: 17px;
+  transform: scale(6);
+}
+
+.logo-container {
+  flex: 0 0 auto; /* Prevents shrinking */
+}
+
+.header-title {
+  flex: 1; /* Ensures the title takes up available space */
+  text-align: center; /* Centers the text */
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
 }
 
 .food-header {
@@ -17,6 +63,13 @@
   cursor: pointer;
   position: absolute;
   left: 10px;
+}
+
+.challenge-intro{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
 }
 
 .challenge-logo {
@@ -122,6 +175,14 @@
   margin-top: 20px;
 }
 
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #252b2d; /* Optional: Adjust the background */
+}
+
 @media screen and (max-width: 430px) and (max-height: 932px) {
   .foot {
     display: block;
@@ -133,5 +194,9 @@
 
   .open-now-button {
     width: 30%;
+  }
+
+  .back-button {
+    display: none;
   }
 }

@@ -101,6 +101,7 @@ class BodyTypeProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = BodyTypeProfile
         fields = [
+            'id',
             'body_type',
             'fitness_goal',
             'created_at',
@@ -132,8 +133,6 @@ class HomeProgramSerializer(serializers.ModelSerializer):
         fields = [
             'id', 
             'title', 
-            'category', 
-            'description', 
             'image_path'
         ]
         read_only_fields = ['id']
@@ -143,9 +142,7 @@ class HomeBannerSerializer(serializers.ModelSerializer):
     class Meta:
         model = HomeBanner
         fields = [
-            'id', 
-            'title', 
-            'subtitle', 
+            'id',  
             'image_path', 
             'order'
         ]

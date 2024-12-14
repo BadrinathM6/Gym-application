@@ -28,12 +28,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         ('N', 'Prefer not to say')
     ]
     
-    user_id = models.CharField(max_length=50, unique=True)
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
-    age = models.PositiveIntegerField(null=True, blank=True)
-    is_active = models.BooleanField(default=True)
+    user_id = models.CharField(max_length=50, unique=True, db_index=True)
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, db_index=True)
+    age = models.PositiveIntegerField(null=True, blank=True, db_index=True)
+    is_active = models.BooleanField(default=True, db_index=True)
     is_staff = models.BooleanField(default=False)
-    date_joined = models.DateTimeField(auto_now_add=True)
+    date_joined = models.DateTimeField(auto_now_add=True, db_index=True)
     
     objects = CustomUserManager()
     
@@ -42,7 +42,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     
     def __str__(self):
         return self.user_id
-
 
 class DietaryPreference(models.Model):
     DIET_TYPES = [
@@ -113,7 +112,7 @@ class BodyTypeProfile(models.Model):
     )
     body_type = models.CharField(
         max_length=20,
-        choices=BODY_TYPE_CHOICES
+        choices=BODY_TYPE_CHOICES,
     )
     fitness_goal = models.TextField(
         help_text="Specific fitness goals based on body type",
@@ -179,14 +178,14 @@ class WorkoutProgram(models.Model):
     week = models.CharField(max_length=20, choices=WEEK_CHOICES)
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
     image = models.CharField(max_length=255)
-    bodytype = models.ForeignKey(BodyTypeProfile, on_delete=models.CASCADE)
+    bodytype = models.ForeignKey(BodyTypeProfile, on_delete=models.CASCADE, db_index=True)
     
     def __str__(self):
         return self.name
     
 class UserWeekWorkout(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    workout = models.ForeignKey(WorkoutProgram, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, db_index=True)
+    workout = models.ForeignKey(WorkoutProgram, on_delete=models.CASCADE, db_index=True)
     is_favorite = models.BooleanField(default=False)
     started_at = models.DateTimeField(null=True, blank=True)
     ended_at = models.DateTimeField(null=True, blank=True)
@@ -208,7 +207,7 @@ class WorkoutDay(models.Model):
         ('ADVANCED', 'Advanced')
     ]
 
-    program = models.ForeignKey(WorkoutProgram, on_delete=models.CASCADE, related_name='days')
+    program = models.ForeignKey(WorkoutProgram, on_delete=models.CASCADE, related_name='days', db_index=True)
     week_number = models.IntegerField()
     day_number = models.IntegerField()
     difficulty = models.CharField(max_length=20, choices=DIFFICULTY_CHOICES, default='BEGINNER')
@@ -227,7 +226,7 @@ class WorkoutExercise(models.Model):
         ('NO_EQUIPMENT', 'No Equipment')
     ]
 
-    workout_day = models.ForeignKey(WorkoutDay, on_delete=models.CASCADE, related_name='exercises')
+    workout_day = models.ForeignKey(WorkoutDay, on_delete=models.CASCADE, related_name='exercises', db_index=True)
     name = models.CharField(max_length=200)
     description = models.TextField()
     default_duration = models.IntegerField(default=20)  # in seconds
@@ -242,8 +241,8 @@ class UserWorkoutProgress(models.Model):
     """
     Tracks user progress through workout programs
     """
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    program = models.ForeignKey(WorkoutProgram, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, db_index=True)
+    program = models.ForeignKey(WorkoutProgram, on_delete=models.CASCADE, db_index=True)
     current_week = models.IntegerField(default=1)
     current_day = models.IntegerField(default=1)
     progress_percentage = models.FloatField(default=0)
@@ -256,8 +255,8 @@ class UserExerciseProgress(models.Model):
     """
     Track individual user's progress for a specific exercise
     """
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    exercise = models.ForeignKey(WorkoutExercise, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, db_index=True)
+    exercise = models.ForeignKey(WorkoutExercise, on_delete=models.CASCADE, db_index=True)
     
     # Customizable exercise parameters
     duration = models.IntegerField(default=0)  # in seconds
@@ -328,7 +327,7 @@ class UserExerciseProgress(models.Model):
 class FoodCategory(models.Model):
 
     name = models.CharField(max_length=100)
-    bodytype = models.ForeignKey(BodyTypeProfile, on_delete=models.CASCADE)
+    bodytype = models.ForeignKey(BodyTypeProfile, on_delete=models.CASCADE, db_index=True)
     description = models.TextField(blank=True, null=True)
     image_path = models.CharField(max_length=255, blank=True, null=True)
     is_active = models.BooleanField(default=True)
@@ -346,8 +345,8 @@ class Food(models.Model):
     
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True)
-    category = models.ForeignKey(FoodCategory, on_delete=models.CASCADE, related_name='foods', default=1)
-    bodytype = models.ForeignKey(BodyTypeProfile, on_delete=models.CASCADE)
+    category = models.ForeignKey(FoodCategory, on_delete=models.CASCADE, related_name='foods', default=1, db_index=True)
+    bodytype = models.ForeignKey(BodyTypeProfile, on_delete=models.CASCADE, db_index=True)
     meal_type = models.CharField(max_length=20, choices=MEAL_TYPE_CHOICES)
     calories = models.IntegerField()
     protein = models.DecimalField(max_digits=5, decimal_places=2)
@@ -361,8 +360,8 @@ class UserFoodLog(models.Model):
     """
     Tracks user's food consumption
     """
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    food = models.ForeignKey(Food, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, db_index=True)
+    food = models.ForeignKey(Food, on_delete=models.CASCADE, db_index=True)
     serving_size = models.DecimalField(max_digits=5, decimal_places=2, default=100)
     consumed_at = models.DateTimeField(auto_now_add=True)
     calories_consumed = models.IntegerField()
@@ -378,8 +377,8 @@ class UserFoodLog(models.Model):
         return f"{self.user.user_id} - {self.food.name} - {self.consumed_at}"
     
 class FavoriteFoods(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    food = models.ForeignKey(Food, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, db_index=True)
+    food = models.ForeignKey(Food, on_delete=models.CASCADE, db_index=True)
     added_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
