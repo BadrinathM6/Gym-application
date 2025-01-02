@@ -17,11 +17,11 @@ import userIcon from "../assets/user.svg";
 import workoutIcon from "../assets/muscle.svg";
 import settingsIcon from "../assets/settings.svg";
 
-import bannerLaptop1 from "../assets/1.webp";
-import bannerLaptop2 from "../assets/2.webp";
-import bannerLaptop3 from "../assets/3.webp";
-import bannerMobile1 from "../assets/1 (1).webp";
-import bannerMobile2 from "../assets/2 (1).webp";
+import bannerLaptop1 from "../assets/Banner1.png";
+import bannerLaptop2 from "../assets/Banner2.png";
+import bannerLaptop3 from "../assets/Banner3.png";
+import bannerMobile1 from "../assets/1.png";
+import bannerMobile2 from "../assets/2.png";
 import bannerMobile3 from "../assets/3 (1).webp";
 
 const HomePage = () => {
@@ -34,20 +34,20 @@ const HomePage = () => {
   const bannerImages = [
     {
       id: 1,
-      mobileSrc: bannerMobile1,
-      laptopSrc: bannerLaptop1,
+      mobileSrc: bannerMobile1 + "?c_scale,w_600,q_60,f_webp",
+      laptopSrc: bannerLaptop1 + "?c_scale,w_1200,q_70,f_webp",
       alt: "Buffalo Gym Banner 1",
     },
     {
       id: 2,
-      mobileSrc: bannerMobile2,
-      laptopSrc: bannerLaptop2,
+      mobileSrc: bannerMobile2 + "?c_scale,w_600,q_60,f_webp",
+      laptopSrc: bannerLaptop2 + "?c_scale,w_1200,q_70,f_webp",
       alt: "Buffalo Gym Banner 2",
     },
     {
       id: 3,
-      mobileSrc: bannerMobile3,
-      laptopSrc: bannerLaptop3,
+      mobileSrc: bannerMobile3 + "?c_scale,w_600,q_60,f_webp",
+      laptopSrc: bannerLaptop3 + "?c_scale,w_1200,q_70,f_webp",
       alt: "Buffalo Gym Banner 3",
     },
   ];
@@ -101,7 +101,7 @@ const HomePage = () => {
     if (bannerImages.length > 1) {
       const interval = setInterval(() => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % bannerImages.length);
-      }, 5000);
+      }, 4000);
 
       return () => clearInterval(interval);
     }
@@ -123,11 +123,6 @@ const HomePage = () => {
   // Render optimized component
   return (
     <>
-      {/* Add preload for critical images */}
-      {bannerImages.length > 0 && (
-        <link rel="preload" href={bannerImages[currentIndex]} as="image" />
-      )}
-
       {loading ? (
         <HomepageSkeleton />
       ) : (
@@ -190,13 +185,15 @@ const HomePage = () => {
             </div>
           </div>
 
-          <section className="banner1 relative overflow-hidden">
-            <div className="relative w-full h-48 md:h-96 lg:h-[20rem]">
+          <section className="custom-carousel relative overflow-hidden">
+            <div className="carousel-container relative w-full h-48 md:h-96 lg:h-[20rem]">
               {bannerImages.map((image, index) => (
                 <div
                   key={image.id}
-                  className={`absolute inset-0 transition-opacity duration-1000 ${
-                    index === currentIndex ? "opacity-100" : "opacity-0"
+                  className={`carousel-slide absolute inset-0 transition-opacity duration-1000 ${
+                    index === currentIndex
+                      ? "opacity-100 z-10"
+                      : "opacity-0 z-0"
                   }`}
                 >
                   {/* Responsive image with mobile and laptop sources */}
@@ -214,41 +211,68 @@ const HomePage = () => {
                     <img
                       src={image.laptopSrc}
                       alt={image.alt}
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                      width={1280}
-                      height={720}
-                      fetchpriority={index === currentIndex ? "high" : "low"}
+                      className="w-full h-full object-fill"
+                      loading={index === currentIndex ? "eager" : "lazy"}
+                      width={600}
+                      height={360}
                     />
                   </picture>
                 </div>
               ))}
 
-              {/* Optional: Navigation Dots */}
-              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+              {/* Navigation Dots */}
+              <div className="dots absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
                 {bannerImages.map((_, index) => (
                   <button
                     key={index}
                     onClick={() => setCurrentIndex(index)}
-                    className={`w-3 h-3 rounded-full ${
-                      index === currentIndex ? "bg-white" : "bg-gray-400"
+                    className={`dot w-3 h-3 rounded-full ${
+                      index === currentIndex ? "bg-white" : "bg-gray-500"
                     }`}
                   />
                 ))}
               </div>
 
-              {/* Optional: Previous and Next Buttons */}
+              {/* Previous and Next Buttons */}
               <button
                 onClick={prevSlide}
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full"
+                className="prev absolute left-4 top-1/2 z-20 transform -translate-y-1/2 bg-transparent text-white p-2 rounded-full"
               >
-                ←
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="27"
+                  height="27"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  id="round-alt-arrow-left"
+                >
+                  <path
+                    fill="#fff"
+                    fill-rule="evenodd"
+                    d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22ZM14.0303 8.46967C14.3232 8.76256 14.3232 9.23744 14.0303 9.53033L11.5607 12L14.0303 14.4697C14.3232 14.7626 14.3232 15.2374 14.0303 15.5303C13.7374 15.8232 13.2626 15.8232 12.9697 15.5303L9.96967 12.5303C9.67678 12.2374 9.67678 11.7626 9.96967 11.4697L12.9697 8.46967C13.2626 8.17678 13.7374 8.17678 14.0303 8.46967Z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
               </button>
               <button
                 onClick={nextSlide}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full"
+                className="next absolute right-4 top-1/2 z-20 transform -translate-y-1/2 bg-transparent text-white p-2 rounded-full"
               >
-                →
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="27"
+                  height="27"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  id="round-alt-arrow-right"
+                >
+                  <path
+                    fill="#fff"
+                    fill-rule="evenodd"
+                    d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22ZM9.96967 8.46967C9.67678 8.76256 9.67678 9.23744 9.96967 9.53033L12.4393 12L9.96967 14.4697C9.67678 14.7626 9.67678 15.2374 9.96967 15.5303C10.2626 15.8232 10.7374 15.8232 11.0303 15.5303L14.0303 12.5303C14.3232 12.2374 14.3232 11.7626 14.0303 11.4697L11.0303 8.46967C10.7374 8.17678 10.2626 8.17678 9.96967 8.46967Z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
               </button>
             </div>
           </section>

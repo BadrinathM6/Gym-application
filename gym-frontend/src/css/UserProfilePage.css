@@ -141,28 +141,10 @@
 .calendar-box {
   display: flex;
   align-items: center;
-  background: white;
+  /* background: white; */
   border-radius: 10px;
   padding: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.calendar-box img {
-  width: 100px;
-  height: 100px;
-  margin-right: 10px;
-  border-radius: 7px;
-}
-
-.calendar-box p {
-  flex: 1;
-  text-align: left;
-  margin: 0;
-}
-
-.calendar-box .arrow {
-  font-size: 20px;
-  color: #064e3b;
 }
 
 /* Settings Section */

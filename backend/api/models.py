@@ -206,7 +206,8 @@ class WorkoutDay(models.Model):
         ('INTERMEDIATE', 'Intermediate'),
         ('ADVANCED', 'Advanced')
     ]
-
+    
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, db_index=True, null=True, blank=True)
     program = models.ForeignKey(WorkoutProgram, on_delete=models.CASCADE, related_name='days', db_index=True)
     week_number = models.IntegerField()
     day_number = models.IntegerField()
@@ -250,6 +251,7 @@ class UserWorkoutProgress(models.Model):
     completed_workouts = models.ManyToManyField(WorkoutDay, related_name='completed_by')
     total_calories_burned = models.FloatField(default=0)
     total_workout_time = models.DurationField(default=timezone.timedelta)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
 
 class UserExerciseProgress(models.Model):
     """

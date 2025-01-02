@@ -215,7 +215,7 @@ class UserWorkoutProgressSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserWorkoutProgress
         fields = ['user', 'program', 'current_week', 'current_day', 
-                  'progress_percentage', 'total_calories_burned', 'total_workout_time']
+                  'progress_percentage', 'total_calories_burned', 'total_workout_time', 'created_at']
 
 class UserExerciseProgressSerializer(serializers.ModelSerializer):
     name = serializers.CharField(source='exercise.name')

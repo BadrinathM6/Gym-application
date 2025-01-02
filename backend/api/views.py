@@ -14,6 +14,9 @@ import random
 from django.db.models import Q
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
+from datetime import datetime, timedelta
+from django.utils import timezone
+from django.db.models import Sum
 
 class LoginView(APIView):
     permission_classes = [AllowAny]
@@ -323,7 +326,7 @@ class AIChatView(APIView):
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 class HomePageView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def get(self, request):
         """
@@ -1251,3 +1254,43 @@ class MealTypeFilterView(APIView):
                 {"error": "Food item not found"},
                 status=status.HTTP_404_NOT_FOUND
             )
+
+class CalendarView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        date_param = request.query_params.get('date')
+        if date_param:
+            current_month = datetime.strptime(date_param, '%Y-%m')
+        else:
+            current_month = timezone.now()
+
+        start_date = current_month.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        end_date = (start_date + timedelta(days=32)).replace(day=1) - timedelta(days=1)
+        
+        calendar_data = []
+        current_date = start_date.date()
+        user_creation_date = request.user.date_joined.date()
+        
+        while current_date <= min(end_date.date(), timezone.now().date()):
+            if current_date >= user_creation_date:
+                calories = UserExerciseProgress.objects.filter(
+                    user=request.user,
+                    updated_at__date=current_date
+                ).aggregate(
+                    total_calories=Sum('calories_burned')
+                )['total_calories'] or 0
+                
+                calendar_data.append({
+                    'date': current_date.isoformat(),
+                    'calories_burned': calories,
+                    'has_workout': calories > 0
+                })
+            
+            current_date += timedelta(days=1)
+        
+        return Response({
+            'calendar_data': calendar_data,
+            'user_creation_date': user_creation_date.isoformat()
+        })

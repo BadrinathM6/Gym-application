@@ -3,7 +3,6 @@ import "../css/UserProfilePage.css";
 import { FaPen, FaDumbbell, FaBell } from "react-icons/fa";
 import { Player } from "@lottiefiles/react-lottie-player";
 import usericonImg from "../assets/user-icon.jpg";
-import callenderimg from "../assets/callender.jpg";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import axiosInstance from "./utils/axiosInstance";
@@ -11,6 +10,7 @@ import SuccessAlert from "../constants/successAlert";
 import logo from "../assets/logo.png";
 import FooterNav from "./FooterNav";
 import loader from "./Main Scene.json";
+import Calender from "./calender";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
@@ -292,10 +292,11 @@ const ProfilePage = () => {
                 <p>Minutes</p>
               </div>
             </div>
-            <div className="calendar-box">
-              <img src={callenderimg} alt="Calendar" />
-              <p>Calendar</p>
-              <span className="arrow">→</span>
+            <div className="calender mb-6 mt-6">
+              <h3>Workout-Calender</h3>
+            </div>
+            <div className="calendar-box max-w-3xl mx-auto flex justify-center">
+              <Calender />
             </div>
           </div>
 

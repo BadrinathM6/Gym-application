@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import DailyNutritionSummaryView, ExerciseDetailView, FavoriteFoodView, FoodCategoriesView, FoodCategoryListView, FoodListView, MealTypeFilterView, UpdateExerciseProgressView, UserFoodLogView, UserWorkoutProgressView, WorkoutDayProgressView, WorkoutStartView, WorkoutDayListView, WorkoutCompleteView, UserWorkoutStatsView, WorkoutDayDetailView, WorkoutProgramListView, WorkoutProgramProgressView, LoginView, DietaryPreferenceUpdateView, PhysicalProfileUpdateView, BodyTypeProfileUpdateView, UserProfileDetailView, HomePageView, WorkoutListView, WorkoutCategoriesView, UserWorkoutView, FavoriteWorkoutToggleView, UserDetailView, AIChatView, DietaryPreferenceView, BodyTypeProfileView, PhysicalProfileView, AgeUpdateView
+from .views import DailyNutritionSummaryView, ExerciseDetailView, CalendarView, FavoriteFoodView, FoodCategoriesView, FoodCategoryListView, FoodListView, MealTypeFilterView, UpdateExerciseProgressView, UserFoodLogView, UserWorkoutProgressView, WorkoutDayProgressView, WorkoutStartView, WorkoutDayListView, WorkoutCompleteView, UserWorkoutStatsView, WorkoutDayDetailView, WorkoutProgramListView, WorkoutProgramProgressView, LoginView, DietaryPreferenceUpdateView, PhysicalProfileUpdateView, BodyTypeProfileUpdateView, UserProfileDetailView, HomePageView, WorkoutListView, WorkoutCategoriesView, UserWorkoutView, FavoriteWorkoutToggleView, UserDetailView, AIChatView, DietaryPreferenceView, BodyTypeProfileView, PhysicalProfileView, AgeUpdateView
 from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
@@ -38,4 +38,5 @@ urlpatterns = [
     path('favorite-foods/', FavoriteFoodView.as_view(), name='favorite-foods'),
     path('meal-type-foods/', MealTypeFilterView.as_view(), name='meal-type-foods'),
     path('workout-progress/', UserWorkoutProgressView.as_view(), name='user_workout_progress'),
+    path('calender/', CalendarView.as_view(), name='calender_user_data'),
 ]
